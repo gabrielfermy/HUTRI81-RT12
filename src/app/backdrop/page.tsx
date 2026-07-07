@@ -2,46 +2,59 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Flag, Award, Heart, Sparkles, Maximize2 } from 'lucide-react';
+import { Flag, Award, Heart, Sparkles, Maximize2, RefreshCw } from 'lucide-react';
 
 export default function BackdropPage() {
   const [sponsors, setSponsors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
 
-  useEffect(() => {
-    async function loadSponsors() {
-      try {
-        const { data, error } = await supabase
-          .from('sponsorship')
-          .select('*')
-          .order('nominal', { ascending: false });
+  async function loadSponsors() {
+    try {
+      const { data, error } = await supabase
+        .from('sponsorship')
+        .select('*')
+        .order('nominal', { ascending: false });
 
-        if (data && !error) {
-          setSponsors(data);
-        } else {
-          // Fallback mock sponsors
-          setSponsors([
-            { nama: 'Toko Kelontong Bu Sri', tipe: 'Platinum' },
-            { nama: 'Apotek Sehat Abadi', tipe: 'Gold' },
-            { nama: 'Susu Segar Pelem', tipe: 'Silver' },
-            { nama: 'Warteg Pelem Kidul', tipe: 'Silver' },
-          ]);
-        }
-      } catch (err) {
-        console.error('Error loading sponsors for backdrop:', err);
-      } finally {
-        setLoading(false);
+      if (data && !error) {
+        setSponsors(data);
+      } else {
+        // Fallback mock sponsors
+        setSponsors([
+          { nama: 'Toko Kelontong Bu Sri', tipe: 'Platinum' },
+          { nama: 'Apotek Sehat Abadi', tipe: 'Gold' },
+          { nama: 'Susu Segar Pelem', tipe: 'Silver' },
+          { nama: 'Warteg Pelem Kidul', tipe: 'Silver' },
+        ]);
       }
+    } catch (err) {
+      console.error('Error loading sponsors for backdrop:', err);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     loadSponsors();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('backdrop-sponsor-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        loadSponsors();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setFullscreen(true));
+      document.documentElement.requestFullscreen().then(() => setFullscreen(true)).catch(() => {});
     } else {
-      document.exitFullscreen().then(() => setFullscreen(false));
+      document.exitFullscreen().then(() => setFullscreen(false)).catch(() => {});
     }
   };
 
@@ -50,118 +63,179 @@ export default function BackdropPage() {
   const silverAndDonors = sponsors.filter(s => s.tipe === 'Silver' || s.tipe === 'Donatur Warga');
 
   return (
-    <div className="flex-grow flex flex-col justify-between min-h-screen bg-[#450A0A] text-white p-6 sm:p-12 relative overflow-hidden">
-      {/* Background Graphic Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#991B1B]/40 via-[#450A0A] to-[#450A0A] pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-white to-red-500" />
-      
-      {/* Floating Sparkles decoration */}
-      <div className="absolute top-10 left-10 opacity-20 animate-pulse">
-        <Sparkles className="h-8 w-8 text-yellow-400" />
-      </div>
-      <div className="absolute bottom-10 right-10 opacity-20 animate-pulse delay-1000">
-        <Sparkles className="h-10 w-10 text-yellow-400" />
+    <div className="flex-grow flex flex-col justify-between min-h-screen bg-[#E5E7EB] text-slate-900 relative overflow-hidden select-none font-sans">
+      {/* Light Concrete Texture overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.85)_0%,_rgba(229,231,235,0.9)_100%)] pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+
+      {/* 🔴 Top Drapery / Red-White Curtains */}
+      <div className="absolute top-0 left-0 w-full z-20 flex flex-col pointer-events-none">
+        <div className="h-6 bg-red-650 shadow-md w-full" />
+        {/* Curved hanging flag shapes */}
+        <div className="flex justify-between w-full -mt-0.5">
+          {Array.from({ length: 16 }).map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-10 w-full rounded-b-[40px] shadow-sm ${
+                idx % 2 === 0 ? 'bg-red-650' : 'bg-white'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Screen Control Button */}
-      <div className="absolute top-4 right-4 z-50 print:hidden">
+      <div className="absolute top-18 right-6 z-50 print:hidden">
         <button
           onClick={handleFullscreen}
-          className="p-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl transition-all"
-          title="Toggle Fullscreen"
+          className="p-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg hover:scale-105 transition-all flex items-center gap-2 text-xs font-bold"
         >
-          <Maximize2 className="h-4.5 w-4.5 text-white" />
+          <Maximize2 className="h-4 w-4" />
+          <span>{fullscreen ? 'Normal' : 'Layar Penuh'}</span>
         </button>
       </div>
 
-      {/* Header section */}
-      <header className="text-center space-y-4 max-w-4xl mx-auto z-10">
-        <div className="inline-flex items-center space-x-2 bg-white/10 border border-white/20 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase text-red-200">
-          <Flag className="h-4 w-4 text-red-500" />
-          <span>Malam Tirakatan & Pentas Seni</span>
+      {/* 🎏 Left Bamboo Pole with Ribbon */}
+      <div className="absolute left-4 sm:left-8 bottom-0 top-12 w-6 sm:w-10 z-20 pointer-events-none flex flex-col justify-between items-center">
+        {/* Bamboo segment styling */}
+        <div className="w-full flex-grow bg-gradient-to-r from-green-800 via-green-600 to-green-900 rounded-lg relative overflow-hidden border-r border-green-950">
+          {/* Bamboo ridges */}
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="absolute w-full h-1.5 bg-green-950/40 border-b border-green-500/20"
+              style={{ top: `${(idx + 1) * 8}%` }}
+            />
+          ))}
+          {/* Red & White flag ribbon wrapped around */}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,_rgba(185,28,28,0.85)_0px,_rgba(185,28,28,0.85)_40px,_rgba(255,255,255,0.95)_40px,_rgba(255,255,255,0.95)_80px)] mix-blend-overlay opacity-90 animate-pulse" />
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-red-200 leading-tight">
-          HUT RI Ke-81 RT 12
-        </h1>
-        <p className="text-xl sm:text-3xl font-black italic text-[#FACC15] tracking-wide">
-          "Guyub Rukun Membangun Negeri"
-        </p>
-        <div className="text-xs sm:text-sm text-slate-350 font-bold uppercase tracking-widest">
-          Pelem Kidul - 16 Agustus 2026
-        </div>
-      </header>
+      </div>
 
-      {/* Sponsors Grid Container */}
-      <main className="my-12 max-w-5xl mx-auto w-full space-y-12 z-10 flex-grow flex flex-col justify-center">
+      {/* 🎏 Right Bamboo Pole with Ribbon */}
+      <div className="absolute right-4 sm:right-8 bottom-0 top-12 w-6 sm:w-10 z-20 pointer-events-none flex flex-col justify-between items-center">
+        <div className="w-full flex-grow bg-gradient-to-r from-green-800 via-green-600 to-green-900 rounded-lg relative overflow-hidden border-l border-green-950">
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="absolute w-full h-1.5 bg-green-950/40 border-b border-green-500/20"
+              style={{ top: `${(idx + 1) * 8}%` }}
+            />
+          ))}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,_rgba(185,28,28,0.85)_0px,_rgba(185,28,28,0.85)_40px,_rgba(255,255,255,0.95)_40px,_rgba(255,255,255,0.95)_80px)] mix-blend-overlay opacity-90 animate-pulse" />
+        </div>
+      </div>
+
+      {/* Top Badges (Garuda, Seals, HUT 81) */}
+      <div className="w-full max-w-6xl mx-auto px-12 sm:px-20 pt-16 sm:pt-20 flex justify-between items-center z-10">
+        {/* Left: Golden Garuda Pancasila Vector */}
+        <div className="w-16 sm:w-24 h-16 sm:h-24 flex items-center justify-center filter drop-shadow-md">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-amber-500 fill-current">
+            {/* Elegant Golden eagle vector placeholder / SVG representation */}
+            <path d="M50 5 L60 25 L85 25 L65 40 L75 65 L50 50 L25 65 L35 40 L15 25 L40 25 Z" />
+            <circle cx="50" cy="38" r="10" className="text-red-650" />
+            <path d="M47 38 L53 38" className="text-white stroke-2" />
+          </svg>
+        </div>
+
+        {/* Center: Regency / Village Seals */}
+        <div className="flex gap-4 items-center">
+          {/* Mock Bantul Seal */}
+          <div className="h-10 sm:h-12 w-10 sm:w-12 bg-white/80 border border-slate-300 rounded-full flex items-center justify-center p-1 shadow-sm">
+            <span className="text-[7px] font-black text-blue-900 leading-none text-center">KAB BANTUL</span>
+          </div>
+          {/* Mock Baturetno Seal */}
+          <div className="h-10 sm:h-12 w-10 sm:w-12 bg-white/80 border border-slate-300 rounded-full flex items-center justify-center p-1 shadow-sm">
+            <span className="text-[7px] font-black text-red-700 leading-none text-center">BATURETNO</span>
+          </div>
+        </div>
+
+        {/* Right: HUT RI 81 Emblem */}
+        <div className="h-16 sm:h-20 w-16 sm:w-20 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg relative font-black tracking-tighter text-2xl sm:text-3xl">
+          <span className="animate-bounce">81</span>
+          <span className="absolute -bottom-2 bg-white text-red-600 px-2 py-0.5 text-[8px] font-black rounded-full uppercase border border-red-600 tracking-widest">
+            HUT RI
+          </span>
+        </div>
+      </div>
+
+      {/* Main stage Backdrop Content */}
+      <main className="text-center my-6 max-w-5xl mx-auto w-full px-12 sm:px-20 z-10 flex-grow flex flex-col justify-center space-y-6">
         
-        {/* PLATINUM SPONSORS */}
-        <section className="space-y-4 text-center">
-          <h3 className="text-[10px] font-black tracking-widest uppercase text-[#FACC15] opacity-80 flex items-center justify-center gap-1.5">
-            <Award className="h-4 w-4 text-[#FACC15]" />
-            <span>Sponsor Utama Platinum</span>
-          </h3>
-          <div className="flex flex-wrap justify-center gap-6">
-            {platinum.map((s, i) => (
-              <div
-                key={i}
-                className="px-8 py-5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-[#450A0A] font-black text-2xl sm:text-4xl shadow-xl shadow-yellow-500/10 border border-yellow-200 transform hover:scale-[1.03] transition-all"
-              >
-                {s.nama}
-              </div>
-            ))}
-            {platinum.length === 0 && (
-              <p className="text-xs text-white/40 italic">Menunggu Sponsor Platinum</p>
-            )}
-          </div>
-        </section>
+        {/* Ribbon decoration banner */}
+        <div className="inline-flex items-center gap-3 bg-red-650 text-white px-8 py-2 rounded-full shadow-lg border border-red-500/20 max-w-fit mx-auto">
+          <Sparkles className="h-4.5 w-4.5 text-yellow-400 fill-current animate-spin" />
+          <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest">DIRGAHAYU</span>
+          <Sparkles className="h-4.5 w-4.5 text-yellow-400 fill-current animate-spin" />
+        </div>
 
-        {/* GOLD SPONSORS */}
-        <section className="space-y-4 text-center">
-          <h3 className="text-[10px] font-black tracking-widest uppercase text-slate-300 opacity-80 flex items-center justify-center gap-1.5">
-            <Award className="h-4 w-4 text-slate-300" />
-            <span>Sponsor Pendukung Gold</span>
-          </h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {gold.map((s, i) => (
-              <div
-                key={i}
-                className="px-6 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white font-extrabold text-lg sm:text-2xl shadow-md hover:border-white/30 transition-all"
-              >
-                {s.nama}
-              </div>
-            ))}
-            {gold.length === 0 && (
-              <p className="text-xs text-white/40 italic">Menunggu Sponsor Gold</p>
-            )}
-          </div>
-        </section>
+        {/* 3D Bold Title: REPUBLIK INDONESIA */}
+        <div className="space-y-1">
+          <h1 
+            className="text-5xl sm:text-8xl font-extrabold text-red-650 tracking-tight leading-none filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)] select-none uppercase"
+            style={{ textShadow: '2px 2px 0px #fff, 5px 5px 0px rgba(0,0,0,0.1)' }}
+          >
+            Republik Indonesia
+          </h1>
+          <h2 className="text-lg sm:text-2xl font-black text-slate-700 tracking-wider">
+            17 AGUSTUS 1945 - 17 AGUSTUS 2026
+          </h2>
+        </div>
 
-        {/* SILVER & DONOR SPONSORS */}
-        {silverAndDonors.length > 0 && (
-          <section className="space-y-3 text-center pt-4 border-t border-white/5">
-            <h3 className="text-[10px] font-black tracking-widest uppercase text-red-200 opacity-80 flex items-center justify-center gap-1.5">
-              <Heart className="h-4 w-4 text-red-400" />
-              <span>Apresiasi Donatur & Sponsor Silver</span>
-            </h3>
-            <div className="flex flex-wrap justify-center items-center gap-y-2 gap-x-4 max-w-3xl mx-auto">
-              {silverAndDonors.map((s, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <span className="text-white/20 text-xs font-bold">•</span>}
-                  <span className="text-xs sm:text-sm font-semibold text-slate-300">
-                    {s.nama} {s.keterangan ? `(${s.keterangan})` : ''}
-                  </span>
-                </React.Fragment>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Independence Subtitle */}
+        <div className="bg-red-600/10 border-y border-red-500/20 py-2.5 max-w-2xl mx-auto w-full rounded-xl">
+          <p className="text-sm sm:text-xl font-bold text-red-700 italic">
+            "Indonesia Berdaulat, Adil dan Makmur"
+          </p>
+        </div>
+
+        {/* Target Address */}
+        <div className="space-y-1">
+          <p className="text-xs sm:text-sm text-slate-500 font-bold uppercase tracking-widest">Diselenggarakan Oleh Warga:</p>
+          <h3 className="text-xl sm:text-3xl font-black text-slate-900 bg-white/70 border border-slate-200/80 px-6 py-3 rounded-2xl shadow-sm inline-block tracking-wider">
+            RT 12 Pelem Kidul, Baturetno, Banguntapan, Bantul
+          </h3>
+        </div>
 
       </main>
 
-      {/* Footer Branding */}
-      <footer className="text-center text-[10px] text-white/40 uppercase tracking-widest z-10 pt-6 border-t border-white/5">
-        Panitia Peringatan HUT RI Ke-81 RT 12 Pelem Kidul © 2026
-      </footer>
+      {/* 🧱 Grass / Red Brick Wall Bottom Segment */}
+      <div className="w-full relative z-10 flex flex-col pointer-events-none mt-4">
+        {/* Horizontal Grass overlay */}
+        <div className="h-4 bg-gradient-to-t from-emerald-600 to-transparent w-full" />
+        
+        {/* Red Brick Grid Pattern */}
+        <div className="h-8 bg-red-600 relative overflow-hidden border-t-2 border-white flex flex-col justify-between">
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,_transparent_49%,_rgba(255,255,255,0.4)_50%,_transparent_51%)] [background-size:40px_100%] pointer-events-none" />
+          <div className="h-0.5 bg-white/40 w-full" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,_transparent_49%,_rgba(255,255,255,0.4)_50%,_transparent_51%)] [background-size:40px_100%] [background-position:20px_0] pointer-events-none" />
+        </div>
+      </div>
+
+      {/* 🎪 Sponsor Scrolling Ticker (Realtime Showcase) */}
+      <div className="w-full bg-[#1E293B]/90 backdrop-blur-md text-white py-3 px-6 z-30 relative shadow-2xl border-t border-slate-750 flex items-center space-x-4 print:hidden">
+        <div className="shrink-0 flex items-center gap-1.5 bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider shadow-md">
+          <Award className="h-4 w-4 animate-bounce" />
+          <span>Sponsor Kami</span>
+        </div>
+        
+        {/* Infinite Scrolling Ticker Text */}
+        <div className="flex-grow overflow-hidden relative w-full text-xs font-semibold text-slate-200 whitespace-nowrap">
+          <div className="inline-block animate-[marquee_20s_linear_infinite] space-x-12">
+            <span>🏆 <strong>PLATINUM:</strong> {platinum.map(s => s.nama).join(', ') || 'RT 12 Kas'}</span>
+            <span>⭐ <strong>GOLD:</strong> {gold.map(s => s.nama).join(', ') || 'Donatur Warga'}</span>
+            <span>❤️ <strong>SILVER & DONATUR:</strong> {silverAndDonors.map(s => s.nama).join(', ') || 'Warga Gotong Royong'}</span>
+          </div>
+        </div>
+
+        {/* CSS for infinite marquee */}
+        <style jsx global>{`
+          @keyframes marquee {
+            0% { transform: translateX(50%); }
+            100% { transform: translateX(-100%); }
+          }
+        `}</style>
+      </div>
 
     </div>
   );
