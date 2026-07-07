@@ -24,7 +24,7 @@ export default function Footer() {
         </div>
         <div className="text-center md:text-right text-xs">
           <p>© 2026 RT 12 Pelem Kidul. Guyub Rukun Membangun Negeri.</p>
-          <p className="text-slate-500 mt-1">Dikembangkan oleh Tech Lead RT 12 dengan Next.js & Supabase</p>
+          <p className="text-slate-500 mt-1">Dikembangkan oleh Ashvin Labs Indonesia untuk RT 12 Pelem Kidul</p>
         </div>
       </div>
     </footer>
