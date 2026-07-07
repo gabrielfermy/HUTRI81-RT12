@@ -1,4 +1,4 @@
--- Setup Tables for HUT RI 81 RT12 Web App
+-- Setup Tables for HUT RI 81 RT12 Web App (Overhauled)
 
 -- 1. Table: Panitia
 CREATE TABLE IF NOT EXISTS public.panitia (
@@ -6,42 +6,35 @@ CREATE TABLE IF NOT EXISTS public.panitia (
     nama TEXT NOT NULL,
     seksi TEXT NOT NULL,
     jabatan TEXT NOT NULL DEFAULT 'Anggota',
+    pin_akses TEXT NOT NULL DEFAULT '1212', -- PIN login default
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- Enable RLS for Panitia
 ALTER TABLE public.panitia ENABLE ROW LEVEL SECURITY;
-
--- Allow Public Read Access
-CREATE POLICY "Allow public read access for panitia" ON public.panitia
-    FOR SELECT USING (true);
-
--- Allow Admin Insert/Update/Delete (Enable for all for ease of use in demo, or lock to authenticated)
-CREATE POLICY "Allow all modifications for panitia" ON public.panitia
-    FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public read access for panitia" ON public.panitia FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for panitia" ON public.panitia FOR ALL USING (true) WITH CHECK (true);
 
 
 -- 2. Table: Rundown
 CREATE TABLE IF NOT EXISTS public.rundown (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    waktu TEXT NOT NULL,
-    durasi INTEGER NOT NULL, -- in minutes
+    tanggal DATE NOT NULL,
+    jam_mulai TEXT NOT NULL,
+    jam_selesai TEXT NOT NULL,
     kegiatan TEXT NOT NULL,
-    keterangan TEXT,
-    kategori TEXT NOT NULL DEFAULT 'Utama', -- e.g. Utama, Anak-anak, Dewasa
-    sort_order SERIAL
+    keterangan TEXT, -- Deskripsi untuk warga umum
+    seksi_pj TEXT[] NOT NULL DEFAULT '{}', -- Array nama seksi penanggung jawab
+    instruksi_internal TEXT, -- Deskripsi detail persiapan internal panitia
+    kategori TEXT NOT NULL DEFAULT 'Utama', -- e.g. Utama, Lomba Anak, Lomba Dewasa
+    sort_order SERIAL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- Enable RLS for Rundown
 ALTER TABLE public.rundown ENABLE ROW LEVEL SECURITY;
-
--- Allow Public Read Access
-CREATE POLICY "Allow public read access for rundown" ON public.rundown
-    FOR SELECT USING (true);
-
--- Allow Admin Insert/Update/Delete
-CREATE POLICY "Allow all modifications for rundown" ON public.rundown
-    FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public read access for rundown" ON public.rundown FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for rundown" ON public.rundown FOR ALL USING (true) WITH CHECK (true);
 
 
 -- 3. Table: RAB (Rencana Anggaran Biaya)
@@ -58,14 +51,8 @@ CREATE TABLE IF NOT EXISTS public.rab (
 
 -- Enable RLS for RAB
 ALTER TABLE public.rab ENABLE ROW LEVEL SECURITY;
-
--- Allow Public Read Access
-CREATE POLICY "Allow public read access for rab" ON public.rab
-    FOR SELECT USING (true);
-
--- Allow Admin Insert/Update/Delete
-CREATE POLICY "Allow all modifications for rab" ON public.rab
-    FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public read access for rab" ON public.rab FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for rab" ON public.rab FOR ALL USING (true) WITH CHECK (true);
 
 
 -- 4. Table: Warga & Status Iuran
@@ -81,55 +68,159 @@ CREATE TABLE IF NOT EXISTS public.warga (
 
 -- Enable RLS for Warga
 ALTER TABLE public.warga ENABLE ROW LEVEL SECURITY;
-
--- Allow Public Read Access
-CREATE POLICY "Allow public read access for warga" ON public.warga
-    FOR SELECT USING (true);
-
--- Allow Admin Insert/Update/Delete
-CREATE POLICY "Allow all modifications for warga" ON public.warga
-    FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public read access for warga" ON public.warga FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for warga" ON public.warga FOR ALL USING (true) WITH CHECK (true);
 
 
+-- 5. Table: Rapat & Notulen
+CREATE TABLE IF NOT EXISTS public.rapat (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    tanggal DATE NOT NULL,
+    waktu TEXT NOT NULL,
+    tempat TEXT NOT NULL,
+    agenda TEXT NOT NULL,
+    notulen TEXT, -- Markdown format
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Rapat
+ALTER TABLE public.rapat ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for rapat" ON public.rapat FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for rapat" ON public.rapat FOR ALL USING (true) WITH CHECK (true);
+
+
+-- 6. Table: Donatur & Sponsorship
+CREATE TABLE IF NOT EXISTS public.sponsorship (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    nama TEXT NOT NULL,
+    tipe TEXT NOT NULL, -- 'Platinum', 'Gold', 'Silver', 'Donatur Warga'
+    nominal NUMERIC DEFAULT 0,
+    keterangan TEXT, -- e.g. "Dana Segar" atau "Hadiah 5 unit kipas angin"
+    is_paid BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Sponsorship
+ALTER TABLE public.sponsorship ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for sponsorship" ON public.sponsorship FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for sponsorship" ON public.sponsorship FOR ALL USING (true) WITH CHECK (true);
+
+
+-- 7. Table: Pengeluaran Riil (Expense Tracking)
+CREATE TABLE IF NOT EXISTS public.pengeluaran (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    rab_id UUID REFERENCES public.rab(id) ON DELETE SET NULL,
+    item_pembelian TEXT NOT NULL,
+    nominal_riil NUMERIC NOT NULL DEFAULT 0,
+    tanggal_pembelian DATE NOT NULL,
+    seksi_pj TEXT NOT NULL,
+    pic TEXT NOT NULL,
+    bukti_nota_url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Pengeluaran
+ALTER TABLE public.pengeluaran ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for pengeluaran" ON public.pengeluaran FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for pengeluaran" ON public.pengeluaran FOR ALL USING (true) WITH CHECK (true);
+
+
+-- 8. Table: Audit Log
+CREATE TABLE IF NOT EXISTS public.audit_log (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    panitia_id UUID REFERENCES public.panitia(id) ON DELETE SET NULL,
+    nama_panitia TEXT NOT NULL,
+    aksi TEXT NOT NULL,
+    detail TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Audit Log
+ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for audit_log" ON public.audit_log FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for audit_log" ON public.audit_log FOR ALL USING (true) WITH CHECK (true);
+
+
+-- ==========================================================
 -- Insert Seed Data (Panitia)
-INSERT INTO public.panitia (nama, seksi, jabatan) VALUES
-('Gabriel Fermy Aswinta', 'Inti', 'Ketua Panitia'),
-('Mas Ikhsan', 'Inti', 'Sekretaris'),
-('Pak Tri', 'Inti', 'Bendahara'),
-('Pak Yudhi', 'Perlengkapan & Dekorasi', 'Koordinator'),
-('Pak Asbani', 'Perlengkapan & Dekorasi', 'Anggota'),
-('Pak Heribertus', 'Acara', 'Koordinator Umum'),
-('Bu Agus', 'Acara', 'Koordinator Sesi Pagi'),
-('Ibu Ketua Dasawisma', 'Konsumsi', 'Koordinator'),
-('Pak Randy', 'Keamanan & Kebersihan', 'Koordinator'),
-('Pak Mardi', 'Dokumentasi', 'Koordinator');
+-- ==========================================================
+INSERT INTO public.panitia (nama, seksi, jabatan, pin_akses) VALUES
+('Gabriel Fermy Aswinta', 'Inti', 'Ketua Panitia', '1212'),
+('Mas Ikhsan', 'Inti', 'Sekretaris', '1212'),
+('Pak Tri', 'Inti', 'Bendahara', '1212'),
+('Pak Yudhi', 'Perlengkapan & Dekorasi', 'Koordinator', '1212'),
+('Pak Asbani', 'Perlengkapan & Dekorasi', 'Anggota', '1212'),
+('Pak Heribertus', 'Acara', 'Koordinator Umum', '1212'),
+('Bu Agus', 'Acara', 'Koordinator Sesi Pagi', '1212'),
+('Ibu Ketua Dasawisma', 'Konsumsi', 'Koordinator', '1212'),
+('Pak Randy', 'Keamanan & Kebersihan', 'Koordinator', '1212'),
+('Pak Mardi', 'Dokumentasi', 'Koordinator', '1212');
 
+
+-- ==========================================================
 -- Insert Seed Data (Rundown)
-INSERT INTO public.rundown (waktu, durasi, kegiatan, keterangan, kategori) VALUES
-('06.00 - 07.30', 90, 'Senam Kemerdekaan', 'Minggu, 9 Agst - Diikuti seluruh warga RT 12', 'Utama'),
-('07.30 - 10.30', 180, 'Lomba Anak & Dewasa', 'Minggu, 9 Agst - Sesi paralel di Area 1 & Area 2', 'Utama'),
-('19.30 - 20.00', 30, 'Kirab Kemerdekaan', 'Minggu, 16 Agst - Rute keliling RT 12 (Lampion & Obor)', 'Utama'),
-('20.00 - 20.45', 45, 'Tirakatan, Doa & Makan Soto', 'Minggu, 16 Agst - Makan bersama & doa bersama syukuran', 'Utama'),
-('20.45 - 22.30', 105, 'Pentas Seni & Pembagian Hadiah', 'Minggu, 16 Agst - Panggung gembira & pembagian hadiah lomba', 'Utama');
+-- ==========================================================
+INSERT INTO public.rundown (tanggal, jam_mulai, jam_selesai, kegiatan, keterangan, seksi_pj, instruksi_internal, kategori) VALUES
+('2026-08-09', '06:00', '07:30', 'Senam Kemerdekaan', 'Senam pagi gembira bersama instruktur profesional.', ARRAY['Acara', 'Konsumsi'], 'Instruktur senam harus standby jam 05:45. Sie Konsumsi menyiapkan air mineral gelas.', 'Utama'),
+('2026-08-09', '07:30', '10:30', 'Lomba Rakyat (Sesi 1)', 'Lomba paralel kategori anak-anak & dewasa.', ARRAY['Acara', 'Perlengkapan'], 'Lomba Area 1 (Anak) dipandu Bu Agus. Lomba Area 2 (Dewasa) dipandu Pak Heribertus. Alat peraga disiapkan Sie Perkap.', 'Utama'),
+('2026-08-16', '19:30', '20:00', 'Kirab Kemerdekaan', 'Pawai lampion & obor mengelilingi wilayah RT 12.', ARRAY['Perlengkapan', 'Keamanan'], 'Menyiapkan obor & lampion minyak. Sie Keamanan menutup akses jalan sementara & memandu rute.', 'Utama'),
+('2026-08-16', '20:00', '20:45', 'Tirakatan & Doa Syukuran', 'Doa bersama keselamatan bangsa, pemotongan tumpeng, & soto prasmanan.', ARRAY['Konsumsi', 'Acara'], 'Tumpeng utama diletakkan di panggung. Sie Konsumsi memandu pembagian Soto Ayam (200 Porsi).', 'Utama'),
+('2026-08-16', '20:45', '22:30', 'Pentas Seni & Pembagian Hadiah', 'Panggung gembira, penampilan warga, dan pembagian piala/hadiah.', ARRAY['Acara', 'Dokumentasi'], 'MC memandu pembagian hadiah secara runtut. Sie Dokumentasi mengabadikan setiap foto pemenang di panggung.', 'Utama');
 
+
+-- ==========================================================
 -- Insert Seed Data (RAB)
-INSERT INTO public.rab (kategori, item, kuantitas, satuan, harga_satuan) VALUES
-('Hadiah Lomba', 'Hadiah Lomba Anak-anak', 1, 'Paket', 1500000),
-('Hadiah Lomba', 'Hadiah Lomba Bapak-bapak', 1, 'Paket', 700000),
-('Hadiah Lomba', 'Hadiah Lomba Ibu-ibu', 1, 'Paket', 700000),
-('Hadiah Lomba', 'Hadiah Lomba Pemuda', 1, 'Paket', 600000),
-('Konsumsi Puncak', 'Soto Ayam', 200, 'Pax', 12000),
-('Perlengkapan', 'Sewa Panggung & Sound', 1, 'Paket', 1500000),
-('Perlengkapan', 'Umbul-umbul & Bendera', 10, 'Set', 60000),
-('Perlengkapan', 'Spanduk Utama', 1, 'Pcs', 200000),
-('Perlengkapan', 'Sewa Tenda & Kursi', 1, 'Paket', 500000),
-('Perlengkapan', 'Cat Panggung', 2, 'Kaleng', 100000),
-('Gotong Royong', 'Konsumsi Gotong Royong 9 Agst', 20, 'Pax', 20000),
-('Gotong Royong', 'Konsumsi Gotong Royong 15 Agst', 20, 'Pax', 20000),
-('Gotong Royong', 'Paku & Kabel Tambahan', 1, 'Set', 200000),
-('Dana Cadangan', 'Biaya Tak Terduga', 1, 'Lumpsum', 1900000);
+-- ==========================================================
+INSERT INTO public.rab (id, kategori, item, kuantitas, satuan, harga_satuan) VALUES
+('59550e50-2521-4f96-be99-52e46b9a89d1', 'Hadiah Lomba', 'Hadiah Lomba Anak-anak', 1, 'Paket', 1500000),
+('59550e50-2521-4f96-be99-52e46b9a89d2', 'Hadiah Lomba', 'Hadiah Lomba Bapak-bapak', 1, 'Paket', 700000),
+('59550e50-2521-4f96-be99-52e46b9a89d3', 'Hadiah Lomba', 'Hadiah Lomba Ibu-ibu', 1, 'Paket', 700000),
+('59550e50-2521-4f96-be99-52e46b9a89d4', 'Hadiah Lomba', 'Hadiah Lomba Pemuda', 1, 'Paket', 600000),
+('59550e50-2521-4f96-be99-52e46b9a89d5', 'Konsumsi Puncak', 'Soto Ayam', 200, 'Pax', 12000),
+('59550e50-2521-4f96-be99-52e46b9a89d6', 'Perlengkapan', 'Sewa Panggung & Sound', 1, 'Paket', 1500000),
+('59550e50-2521-4f96-be99-52e46b9a89d7', 'Perlengkapan', 'Umbul-umbul & Bendera', 10, 'Set', 60000),
+('59550e50-2521-4f96-be99-52e46b9a89d8', 'Perlengkapan', 'Spanduk Utama', 1, 'Pcs', 200000),
+('59550e50-2521-4f96-be99-52e46b9a89d9', 'Perlengkapan', 'Sewa Tenda & Kursi', 1, 'Paket', 500000),
+('59550e50-2521-4f96-be99-52e46b9a89da', 'Perlengkapan', 'Cat Panggung', 2, 'Kaleng', 100000),
+('59550e50-2521-4f96-be99-52e46b9a89db', 'Gotong Royong', 'Konsumsi Gotong Royong 9 Agst', 20, 'Pax', 20000),
+('59550e50-2521-4f96-be99-52e46b9a89dc', 'Gotong Royong', 'Konsumsi Gotong Royong 15 Agst', 20, 'Pax', 20000),
+('59550e50-2521-4f96-be99-52e46b9a89dd', 'Gotong Royong', 'Paku & Kabel Tambahan', 1, 'Set', 200000),
+('59550e50-2521-4f96-be99-52e46b9a89de', 'Dana Cadangan', 'Biaya Tak Terduga', 1, 'Lumpsum', 1900000);
 
+
+-- ==========================================================
+-- Insert Seed Data (Rapat Awal)
+-- ==========================================================
+INSERT INTO public.rapat (tanggal, waktu, tempat, agenda, notulen) VALUES
+('2026-07-05', '19:30 - 21:30', 'Rumah Ketua RT 12', 'Rapat Koordinasi Perdana & Pembentukan Panitia', '### Hasil Rapat Perdana HUT RI 81
+1. **Ketua Panitia terpilih**: Gabriel Fermy Aswinta.
+2. **Tema Acara disepakati**: "Guyub Rukun Membangun Negeri".
+3. **Anggaran Belanja**: Target sebesar **Rp 12.000.000**, dengan kas awal RT sebesar **Rp 2.000.000**.
+4. **Sistem Iuran**: Iuran wajib warga disepakati sebesar **Rp 50.000 per KK** (target 80 KK).
+5. **Rencana Kegiatan**: Dibagi menjadi Sesi 1 (Jalan Sehat/Senam & Lomba tanggal 9 Agustus) dan Sesi 2 (Malam Tirakatan & Pentas Seni tanggal 16 Agustus).');
+
+
+-- ==========================================================
+-- Insert Seed Data (Sponsorship)
+-- ==========================================================
+INSERT INTO public.sponsorship (nama, tipe, nominal, keterangan, is_paid) VALUES
+('Toko Kelontong Bu Sri', 'Platinum', 750000, 'Dana Segar & Voucher Belanja Lomba', true),
+('Apotek Sehat Abadi', 'Gold', 400000, 'Penyediaan Paket P3K Lomba & Spanduk', true),
+('Susu Segar Pelem', 'Silver', 250000, 'Donasi Produk Susu untuk Lomba Anak', true),
+('Donatur Hamba Allah', 'Donatur Warga', 1000000, 'Dana Segar untuk Tambahan Soto', true);
+
+
+-- ==========================================================
+-- Insert Seed Data (Pengeluaran Awal)
+-- ==========================================================
+INSERT INTO public.pengeluaran (rab_id, item_pembelian, nominal_riil, tanggal_pembelian, seksi_pj, pic) VALUES
+('59550e50-2521-4f96-be99-52e46b9a89d7', 'Pembelian Umbul-Umbul Merah Putih (10 Pcs)', 550000, '2026-07-06', 'Perlengkapan & Dekorasi', 'Pak Yudhi'),
+('59550e50-2521-4f96-be99-52e46b9a89d8', 'Cetak Spanduk Utama Panggung (4x2m)', 180000, '2026-07-06', 'Perlengkapan & Dekorasi', 'Pak Yudhi');
+
+
+-- ==========================================================
 -- Insert Seed Data (Warga - 80 KK Mock data for testing)
+-- ==========================================================
 DO $$
 DECLARE
     i INTEGER;
@@ -137,7 +228,7 @@ BEGIN
     FOR i IN 1..80 LOOP
         INSERT INTO public.warga (nama, blok, nominal_iuran, is_paid)
         VALUES (
-            'Warga ' || i,
+            'Keluarga KK ' || LPAD(i::text, 2, '0'),
             'Blok ' || CHR(65 + (i % 4)), -- A, B, C, D
             50000,
             (i % 3 = 0) -- Set some as paid

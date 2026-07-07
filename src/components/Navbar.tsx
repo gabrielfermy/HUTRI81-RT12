@@ -3,21 +3,27 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Flag, Award, Calendar, Users, DollarSign } from 'lucide-react';
+import { Menu, X, Flag, Calendar, Users } from 'lucide-react';
 
 const navItems = [
-  { name: 'Beranda', href: '/', icon: Flag },
-  { name: 'Rundown Lomba', href: '/rundown', icon: Calendar },
-  { name: 'Panitia', href: '/panitia', icon: Users },
-  { name: 'Keuangan', href: '/keuangan', icon: DollarSign },
+  { name: 'Portal Warga', href: '/', icon: Flag },
+  { name: 'Akses Panitia', href: '/kepanitiaan', icon: Users },
+  { name: 'Backdrop Panggung', href: '/backdrop', icon: Calendar },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  // If printing proposal or backdrop, hide Navbar entirely
+  const isPrint = pathname.startsWith('/proposal/print');
+  const isBackdrop = pathname.startsWith('/backdrop');
+  if (isPrint || isBackdrop) {
+    return null;
+  }
+
   return (
-    <nav className="sticky top-0 z-50 bg-[#1D3557]/90 backdrop-blur-md border-b border-red-500/20 text-white shadow-lg">
+    <nav className="sticky top-0 z-50 bg-[#1D3557]/95 backdrop-blur-md border-b border-red-500/20 text-white shadow-lg print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Title */}
@@ -39,7 +45,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.name}
@@ -76,7 +82,7 @@ export default function Navbar() {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.name}
