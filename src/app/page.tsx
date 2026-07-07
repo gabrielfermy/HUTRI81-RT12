@@ -13,15 +13,36 @@ const fallbackPanitia = [
 ];
 
 const fallbackRundown = [
-  { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.' },
-  { tanggal: '2026-08-09', jam_mulai: '07:30', jam_selesai: '10:30', kegiatan: 'Lomba Rakyat (Sesi 1)', keterangan: 'Lomba paralel kategori anak-anak & dewasa.' },
-  { tanggal: '2026-08-16', jam_mulai: '19:30', jam_selesai: '20:00', kegiatan: 'Kirab Kemerdekaan', keterangan: 'Pawai lampion & obor mengelilingi wilayah RT 12.' },
-  { tanggal: '2026-08-16', jam_mulai: '20:00', jam_selesai: '20:45', kegiatan: 'Tirakatan & Doa Syukuran', keterangan: 'Doa bersama keselamatan bangsa, pemotongan tumpeng, & soto prasmanan.' }
+  { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.', kategori: 'Utama' },
+  { tanggal: '2026-08-09', jam_mulai: '07:30', jam_selesai: '08:15', kegiatan: 'Lomba Memasukkan Bola', keterangan: 'Lomba estafet memasukkan bola menggunakan gelas di pinggang.', kategori: 'Lomba Anak' },
+  { tanggal: '2026-08-09', jam_mulai: '08:15', jam_selesai: '09:00', kegiatan: 'Lomba Memasukkan Pensil ke Botol', keterangan: 'Lomba ketangkasan memasukkan pensil yang diikat di corong kepala ke dalam botol.', kategori: 'Lomba Anak' },
+  { tanggal: '2026-08-09', jam_mulai: '09:00', jam_selesai: '09:45', kegiatan: 'Lomba Makan Kerupuk', keterangan: 'Lomba makan kerupuk gantung klasik tanpa tangan.', kategori: 'Lomba Anak' },
+  { tanggal: '2026-08-09', jam_mulai: '09:45', jam_selesai: '10:30', kegiatan: 'Lomba Balap Karung Helm', keterangan: 'Balap karung menggunakan helm pengaman untuk keselamatan.', kategori: 'Lomba Anak' },
+  { tanggal: '2026-08-09', jam_mulai: '07:30', jam_selesai: '08:30', kegiatan: 'Lomba Memaku Paku Estafet', keterangan: 'Lomba kelompok memaku paku ke balok kayu secara estafet cepat.', kategori: 'Lomba Dewasa' },
+  { tanggal: '2026-08-09', jam_mulai: '08:30', jam_selesai: '09:30', kegiatan: 'Lomba Menarik Kaleng', keterangan: 'Lomba kekuatan fisik & keseimbangan menarik kaleng yang terikat di pinggang.', kategori: 'Lomba Dewasa' },
+  { tanggal: '2026-08-09', jam_mulai: '09:30', jam_selesai: '10:30', kegiatan: 'Lomba Tebak Gaya / Logika', keterangan: 'Lomba tebak ekspresi dan kekompakan kelompok.', kategori: 'Lomba Dewasa' },
+  { tanggal: '2026-08-15', jam_mulai: '19:30', jam_selesai: '23:00', kegiatan: 'Gotong Royong & Persiapan Panggung', keterangan: 'Pemasangan tenda, panggung utama, sound system, dekorasi bendera & obor.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '19:00', jam_selesai: '19:45', kegiatan: 'Kirab Kemerdekaan', keterangan: 'Pawai lampion & obor mengelilingi wilayah RT 12.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '19:45', jam_selesai: '20:30', kegiatan: 'Makan Malam Bersama (Soto)', keterangan: 'Makan malam soto ayam prasmanan dari vendor lokal untuk seluruh warga.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '20:30', jam_selesai: '22:00', kegiatan: 'Tirakatan & Doa Syukuran', keterangan: 'Doa bersama keselamatan bangsa, pemotongan tumpeng, & sambutan ketua RT.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '22:00', jam_selesai: '23:30', kegiatan: 'Pentas Seni & Pembagian Hadiah', keterangan: 'Panggung gembira, penampilan warga, dan pembagian piala/hadiah.', kategori: 'Utama' }
 ];
 
 const fallbackRab = [
-  { id: '1', kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Anak-anak', kuantitas: 1, satuan: 'Paket', harga_satuan: 1500000 },
-  { id: '2', kategori: 'Konsumsi Puncak', item: 'Soto Ayam', kuantitas: 200, satuan: 'Pax', harga_satuan: 12000 }
+  { id: '1', kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Anak-anak', kuantitas: 1, satuan: 'Paket', harga_satuan: 1500000, total_idr: 1500000 },
+  { id: '2', kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Bapak-bapak', kuantitas: 1, satuan: 'Paket', harga_satuan: 700000, total_idr: 700000 },
+  { id: '3', kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Ibu-ibu', kuantitas: 1, satuan: 'Paket', harga_satuan: 700000, total_idr: 700000 },
+  { id: '4', kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Pemuda', kuantitas: 1, satuan: 'Paket', harga_satuan: 600000, total_idr: 600000 },
+  { id: '5', kategori: 'Konsumsi Puncak', item: 'Soto Ayam', kuantitas: 200, satuan: 'Pax', harga_satuan: 12000, total_idr: 2400000 },
+  { id: '6', kategori: 'Perlengkapan', item: 'Sewa Panggung & Sound', kuantitas: 1, satuan: 'Paket', harga_satuan: 1500000, total_idr: 1500000 },
+  { id: '7', kategori: 'Perlengkapan', item: 'Umbul-umbul & Bendera', kuantitas: 10, satuan: 'Set', harga_satuan: 60000, total_idr: 600000 },
+  { id: '8', kategori: 'Perlengkapan', item: 'Spanduk Utama', kuantitas: 1, satuan: 'Pcs', harga_satuan: 200000, total_idr: 200000 },
+  { id: '9', kategori: 'Perlengkapan', item: 'Sewa Tenda & Kursi', kuantitas: 1, satuan: 'Paket', harga_satuan: 500000, total_idr: 500000 },
+  { id: '10', kategori: 'Perlengkapan', item: 'Cat Panggung', kuantitas: 2, satuan: 'Kaleng', harga_satuan: 100000, total_idr: 200000 },
+  { id: '11', kategori: 'Gotong Royong', item: 'Konsumsi Gotong Royong 9 Agst', kuantitas: 20, satuan: 'Pax', harga_satuan: 20000, total_idr: 400000 },
+  { id: '12', kategori: 'Gotong Royong', item: 'Konsumsi Gotong Royong 15 Agst', kuantitas: 20, satuan: 'Pax', harga_satuan: 20000, total_idr: 400000 },
+  { id: '13', kategori: 'Gotong Royong', item: 'Paku & Kabel Tambahan', kuantitas: 1, satuan: 'Set', harga_satuan: 200000, total_idr: 200000 },
+  { id: '14', kategori: 'Dana Cadangan', item: 'Biaya Tak Terduga', kuantitas: 1, satuan: 'Lumpsum', harga_satuan: 1900000, total_idr: 1900000 }
 ];
 
 const fallbackSponsors = [
