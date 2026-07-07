@@ -43,7 +43,7 @@ export default function KepanitiaanDashboard() {
 
   // States for stats
   const [panitiaCount, setPanitiaCount] = useState(0);
-  const [totalCollected, setTotalCollected] = useState(12000000); // default
+  const [totalCollected, setTotalCollected] = useState(2000000); // default is initial RT Kas
   const [totalSpent, setTotalSpent] = useState(0);
   const [lunasCount, setLunasCount] = useState(0);
   
@@ -274,7 +274,7 @@ export default function KepanitiaanDashboard() {
             <DollarSign className="h-4.5 w-4.5 text-emerald-400" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-white">Rp {totalCollected.toLocaleString('id-ID')}</div>
-          <div className="text-[10px] text-slate-500 font-semibold">RT Kas + Iuran KK Lunas + Sponsor</div>
+          <div className="text-[10px] text-slate-500 font-semibold">Target: Rp 12.000.000 | RT Kas + Iuran + Sponsor</div>
         </div>
 
         <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-4">

@@ -11,6 +11,41 @@ export default function ProposalPrintPage() {
 
   // Database Data States
   const [panitiaList, setPanitiaList] = useState<any[]>([]);
+
+  // Memoized custom sorting for committee members (Inti first, then Sections with Coordinator first)
+  const sortedPanitiaList = React.useMemo(() => {
+    const sectionOrder = [
+      'Inti',
+      'Acara',
+      'Perlengkapan & Dekorasi',
+      'Konsumsi',
+      'Humas & Dana',
+      'Keamanan & Kebersihan',
+      'Dokumentasi'
+    ];
+    return [...panitiaList].sort((a, b) => {
+      const idxA = sectionOrder.indexOf(a.seksi);
+      const idxB = sectionOrder.indexOf(b.seksi);
+      const rankA = idxA === -1 ? 99 : idxA;
+      const rankB = idxB === -1 ? 99 : idxB;
+      if (rankA !== rankB) return rankA - rankB;
+
+      if (a.seksi === 'Inti') {
+        const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
+        const rA = intiOrder.indexOf(a.jabatan);
+        const rB = intiOrder.indexOf(b.jabatan);
+        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
+      }
+
+      const isKoordA = a.jabatan.toLowerCase().includes('koordinator');
+      const isKoordB = b.jabatan.toLowerCase().includes('koordinator');
+      if (isKoordA && !isKoordB) return -1;
+      if (!isKoordA && isKoordB) return 1;
+
+      return a.nama.localeCompare(b.nama);
+    });
+  }, [panitiaList]);
+
   const [rundownList, setRundownList] = useState<any[]>([]);
   const [rabList, setRabList] = useState<any[]>([]);
   const [sponsorList, setSponsorList] = useState<any[]>([]);
@@ -199,7 +234,7 @@ export default function ProposalPrintPage() {
           <div className="space-y-6 page-break pt-8">
             <h3 className="text-lg font-bold border-b border-black pb-1 uppercase tracking-wider">IV. SUSUNAN PANITIA</h3>
             <div className="grid grid-cols-2 gap-4 text-xs">
-              {panitiaList.map((p, idx) => (
+              {sortedPanitiaList.map((p, idx) => (
                 <div key={idx} className="flex justify-between border-b border-slate-300 py-1">
                   <span className="font-bold">{p.nama}</span>
                   <span className="italic text-slate-650">{p.seksi} — {p.jabatan}</span>

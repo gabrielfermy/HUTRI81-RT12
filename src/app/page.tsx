@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -68,8 +68,43 @@ export default function PublicPortal() {
 
   // Database Data States
   const [panitiaList, setPanitiaList] = useState<any[]>([]);
-  const [rundownList, setRundownList] = useState<any[]>([]);
+
+  // Memoized custom sorting for committee members (Inti first, then Sections with Coordinator first)
+  const sortedPanitiaList = useMemo(() => {
+    const sectionOrder = [
+      'Inti',
+      'Acara',
+      'Perlengkapan & Dekorasi',
+      'Konsumsi',
+      'Humas & Dana',
+      'Keamanan & Kebersihan',
+      'Dokumentasi'
+    ];
+    return [...panitiaList].sort((a, b) => {
+      const idxA = sectionOrder.indexOf(a.seksi);
+      const idxB = sectionOrder.indexOf(b.seksi);
+      const rankA = idxA === -1 ? 99 : idxA;
+      const rankB = idxB === -1 ? 99 : idxB;
+      if (rankA !== rankB) return rankA - rankB;
+
+      if (a.seksi === 'Inti') {
+        const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
+        const rA = intiOrder.indexOf(a.jabatan);
+        const rB = intiOrder.indexOf(b.jabatan);
+        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
+      }
+
+      const isKoordA = a.jabatan.toLowerCase().includes('koordinator');
+      const isKoordB = b.jabatan.toLowerCase().includes('koordinator');
+      if (isKoordA && !isKoordB) return -1;
+      if (!isKoordA && isKoordB) return 1;
+
+      return a.nama.localeCompare(b.nama);
+    });
+  }, [panitiaList]);
+
   const [rabList, setRabList] = useState<any[]>([]);
+  const [rundownList, setRundownList] = useState<any[]>([]);
   const [wargaList, setWargaList] = useState<any[]>([]);
   const [sponsorList, setSponsorList] = useState<any[]>([]);
   const [rapatList, setRapatList] = useState<any[]>([]);
@@ -77,6 +112,9 @@ export default function PublicPortal() {
 
   // Expanded Notulen
   const [expandedRapatId, setExpandedRapatId] = useState<string | null>(null);
+
+  // Selected Rundown Date Tab
+  const [selectedRundownDate, setSelectedRundownDate] = useState<string>('');
 
   // Countdown timer logic to August 9, 2026
   useEffect(() => {
@@ -185,6 +223,11 @@ export default function PublicPortal() {
   };
 
   const categoryStats = getCategoryStats();
+
+  // Unique dates from rundown
+  const uniqueRundownDates = Array.from(new Set(rundownList.map((r: any) => r.tanggal))).sort();
+  const activeRundownDate = selectedRundownDate || (uniqueRundownDates.length > 0 ? uniqueRundownDates[0] : '');
+  const filteredRundownList = rundownList.filter((r: any) => r.tanggal === activeRundownDate);
 
   return (
     <div className="flex-grow flex flex-col justify-start">
@@ -342,8 +385,35 @@ export default function PublicPortal() {
             <p className="text-sm text-slate-400">Rangkaian kegiatan Pesta Rakyat warga RT 12 Pelem Kidul.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {rundownList.map((item, index) => (
+          {/* Date Tabs selector */}
+          {uniqueRundownDates.length > 1 && (
+            <div className="flex justify-center border-b border-slate-800 space-x-2 overflow-x-auto pb-px">
+              {uniqueRundownDates.map((dateStr) => {
+                const isActive = dateStr === activeRundownDate;
+                const formattedDate = new Date(dateStr).toLocaleDateString('id-ID', {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'short',
+                });
+                return (
+                  <button
+                    key={dateStr}
+                    onClick={() => setSelectedRundownDate(dateStr)}
+                    className={`px-5 py-3 text-xs sm:text-sm font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 ${
+                      isActive
+                        ? 'border-red-500 text-red-400 bg-slate-900/40'
+                        : 'border-transparent text-slate-450 hover:text-slate-200'
+                    }`}
+                  >
+                    {formattedDate}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+            {filteredRundownList.map((item, index) => (
               <div key={index} className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-6 space-y-4 hover:border-red-500/20 transition-all duration-300">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
@@ -372,6 +442,9 @@ export default function PublicPortal() {
                 )}
               </div>
             ))}
+            {filteredRundownList.length === 0 && (
+              <p className="text-xs text-slate-500 italic text-center py-6 col-span-2">Tidak ada kegiatan di tanggal ini.</p>
+            )}
           </div>
         </section>
 
@@ -533,7 +606,7 @@ export default function PublicPortal() {
               <span>Susunan Kepanitiaan RT 12</span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {panitiaList.map((p, index) => (
+              {sortedPanitiaList.map((p, index) => (
                 <div key={index} className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-3 flex flex-col justify-center">
                   <span className="text-xs font-bold text-red-400">{p.seksi}</span>
                   <span className="text-sm font-bold text-white">{p.nama}</span>

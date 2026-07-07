@@ -35,6 +35,40 @@ export default function KepanitiaanPanitia() {
   const [loading, setLoading] = useState(true);
   const [panitiaList, setPanitiaList] = useState<any[]>([]);
 
+  // Memoized custom sorting for committee members (Inti first, then Sections with Coordinator first)
+  const sortedPanitiaList = React.useMemo(() => {
+    const sectionOrder = [
+      'Inti',
+      'Acara',
+      'Perlengkapan & Dekorasi',
+      'Konsumsi',
+      'Humas & Dana',
+      'Keamanan & Kebersihan',
+      'Dokumentasi'
+    ];
+    return [...panitiaList].sort((a, b) => {
+      const idxA = sectionOrder.indexOf(a.seksi);
+      const idxB = sectionOrder.indexOf(b.seksi);
+      const rankA = idxA === -1 ? 99 : idxA;
+      const rankB = idxB === -1 ? 99 : idxB;
+      if (rankA !== rankB) return rankA - rankB;
+
+      if (a.seksi === 'Inti') {
+        const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
+        const rA = intiOrder.indexOf(a.jabatan);
+        const rB = intiOrder.indexOf(b.jabatan);
+        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
+      }
+
+      const isKoordA = a.jabatan.toLowerCase().includes('koordinator');
+      const isKoordB = b.jabatan.toLowerCase().includes('koordinator');
+      if (isKoordA && !isKoordB) return -1;
+      if (!isKoordA && isKoordB) return 1;
+
+      return a.nama.localeCompare(b.nama);
+    });
+  }, [panitiaList]);
+
   // Add Form States
   const [nama, setNama] = useState('');
   const [selectedPosIndex, setSelectedPosIndex] = useState('');
@@ -383,7 +417,7 @@ export default function KepanitiaanPanitia() {
           <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
             <h3 className="text-base font-bold text-white">Susunan & Akun Akses Panitia</h3>
             <div className="grid grid-cols-1 gap-4">
-              {panitiaList.map((p) => {
+              {sortedPanitiaList.map((p) => {
                 const isEditing = editingId === p.id;
                 return (
                   <div
