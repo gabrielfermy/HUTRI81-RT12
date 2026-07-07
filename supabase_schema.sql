@@ -243,3 +243,17 @@ BEGIN
         );
     END LOOP;
 END $$;
+
+
+-- ==========================================================
+-- Enable Realtime for all tables
+-- ==========================================================
+alter publication supabase_realtime add table public.panitia;
+alter publication supabase_realtime add table public.rundown;
+alter publication supabase_realtime add table public.rab;
+alter publication supabase_realtime add table public.warga;
+alter publication supabase_realtime add table public.rapat;
+alter publication supabase_realtime add table public.sponsorship;
+alter publication supabase_realtime add table public.pengeluaran;
+alter publication supabase_realtime add table public.audit_log;
+

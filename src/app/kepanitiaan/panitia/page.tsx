@@ -76,6 +76,17 @@ export default function KepanitiaanPanitia() {
       }
     }
     loadPanitia();
+
+    const channel = supabase
+      .channel('panitia-list-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        loadPanitia();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const logAudit = async (aksi: string, detail: string) => {

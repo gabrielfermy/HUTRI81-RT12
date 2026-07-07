@@ -115,6 +115,17 @@ export default function KepanitiaanDashboard() {
     }
 
     loadDashboardData();
+
+    const channel = supabase
+      .channel('kepanitiaan-dashboard-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleSeedData = async () => {

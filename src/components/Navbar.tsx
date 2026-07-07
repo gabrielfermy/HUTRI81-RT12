@@ -23,12 +23,12 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#1D3557]/95 backdrop-blur-md border-b border-red-500/20 text-white shadow-lg print:hidden">
+    <nav className="sticky top-0 z-50 bg-[#450A0A]/95 backdrop-blur-md border-b border-red-500/20 text-white shadow-lg print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Title */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative p-1.5 bg-red-600 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
+            <div className="relative p-1.5 bg-red-650 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
               <Flag className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">
@@ -40,7 +40,7 @@ export default function Navbar() {
               </span>
             </div>
           </Link>
-
+          
           {/* Desktop Nav Items */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
@@ -78,7 +78,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-[#1D3557] border-t border-red-500/10">
+        <div className="md:hidden bg-[#450A0A] border-t border-red-500/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => {
               const Icon = item.icon;

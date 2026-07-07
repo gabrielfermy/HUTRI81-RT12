@@ -135,6 +135,22 @@ export default function PublicPortal() {
       }
     }
     loadData();
+
+    // Subscribe to realtime database changes
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public' },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Financial calculations
@@ -173,7 +189,7 @@ export default function PublicPortal() {
   return (
     <div className="flex-grow flex flex-col justify-start">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-4 text-center bg-gradient-to-b from-[#1D3557] via-[#0F172A] to-[#0F172A] border-b border-red-500/10">
+      <section className="relative overflow-hidden py-24 px-4 text-center bg-gradient-to-b from-[#450A0A] via-[#070A13] to-[#070A13] border-b border-red-500/10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-600/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-4xl mx-auto space-y-6 relative z-10">
           <div className="inline-flex items-center space-x-2 bg-red-600/10 border border-red-500/30 px-4 py-2 rounded-full text-red-400 text-xs sm:text-sm font-semibold tracking-wider uppercase animate-pulse">

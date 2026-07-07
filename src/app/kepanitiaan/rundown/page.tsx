@@ -46,6 +46,17 @@ export default function KepanitiaanRundown() {
       }
     }
     loadRundown();
+
+    const channel = supabase
+      .channel('rundown-list-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        loadRundown();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const logAudit = async (aksi: string, detail: string) => {

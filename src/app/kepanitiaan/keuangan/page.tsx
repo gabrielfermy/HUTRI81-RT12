@@ -67,6 +67,17 @@ export default function KepanitiaanKeuangan() {
       }
     }
     loadData();
+
+    const channel = supabase
+      .channel('keuangan-data-changes')
+      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const logAudit = async (aksi: string, detail: string) => {
