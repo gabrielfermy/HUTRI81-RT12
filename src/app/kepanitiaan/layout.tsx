@@ -180,11 +180,13 @@ export default function KepanitiaanLayout({
     );
   }
 
+  const isInti = loggedInUser?.seksi === 'Inti';
+
   const menuItems = [
     { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard },
     { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar },
     { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign },
-    { name: 'Manajemen Panitia', href: '/kepanitiaan/panitia', icon: Users },
+    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: Users },
     { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert },
   ];
 

@@ -2,7 +2,32 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock } from 'lucide-react';
+import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles } from 'lucide-react';
+
+const seedRundown = [
+  { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.', seksi_pj: ['Acara', 'Konsumsi'], instruksi_internal: 'Instruktur senam harus standby jam 05:45. Sie Konsumsi menyiapkan air mineral gelas.', kategori: 'Utama' },
+  { tanggal: '2026-08-09', jam_mulai: '07:30', jam_selesai: '10:30', kegiatan: 'Lomba Rakyat (Sesi 1)', keterangan: 'Lomba paralel kategori anak-anak & dewasa.', seksi_pj: ['Acara', 'Perlengkapan'], instruksi_internal: 'Lomba Area 1 (Anak) dipandu Bu Agus. Lomba Area 2 (Dewasa) dipandu Pak Heribertus. Alat peraga disiapkan Sie Perkap.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '19:30', jam_selesai: '20:00', kegiatan: 'Kirab Kemerdekaan', keterangan: 'Pawai lampion & obor mengelilingi wilayah RT 12.', seksi_pj: ['Perlengkapan', 'Keamanan'], instruksi_internal: 'Menyiapkan obor & lampion minyak. Sie Keamanan menutup akses jalan sementara & memandu rute.', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '20:00', jam_selesai: '20:45', kegiatan: 'Tirakatan & Doa Syukuran', keterangan: 'Doa bersama keselamatan bangsa, pemotongan tumpeng, & soto prasmanan.', seksi_pj: ['Konsumsi', 'Acara'], instruksi_internal: 'Tumpeng utama diletakkan di panggung. Sie Konsumsi memandu pembagian Soto Ayam (200 Porsi).', kategori: 'Utama' },
+  { tanggal: '2026-08-16', jam_mulai: '20:45', jam_selesai: '22:30', kegiatan: 'Pentas Seni & Pembagian Hadiah', keterangan: 'Panggung gembira, penampilan warga, dan pembagian piala/hadiah.', seksi_pj: ['Acara', 'Dokumentasi'], instruksi_internal: 'MC memandu pembagian hadiah secara runtut. Sie Dokumentasi mengabadikan setiap foto pemenang di panggung.', kategori: 'Utama' }
+];
+
+const seedRab = [
+  { kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Anak-anak', kuantitas: 1, satuan: 'Paket', harga_satuan: 1500000, total_idr: 1500000 },
+  { kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Bapak-bapak', kuantitas: 1, satuan: 'Paket', harga_satuan: 700000, total_idr: 700000 },
+  { kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Ibu-ibu', kuantitas: 1, satuan: 'Paket', harga_satuan: 700000, total_idr: 700000 },
+  { kategori: 'Hadiah Lomba', item: 'Hadiah Lomba Pemuda', kuantitas: 1, satuan: 'Paket', harga_satuan: 600000, total_idr: 600000 },
+  { kategori: 'Konsumsi Puncak', item: 'Soto Ayam', kuantitas: 200, satuan: 'Pax', harga_satuan: 12000, total_idr: 2400000 },
+  { kategori: 'Perlengkapan', item: 'Sewa Panggung & Sound', kuantitas: 1, satuan: 'Paket', harga_satuan: 1500000, total_idr: 1500000 },
+  { kategori: 'Perlengkapan', item: 'Umbul-umbul & Bendera', kuantitas: 10, satuan: 'Set', harga_satuan: 60000, total_idr: 600000 },
+  { kategori: 'Perlengkapan', item: 'Spanduk Utama', kuantitas: 1, satuan: 'Pcs', harga_satuan: 200000, total_idr: 200000 },
+  { kategori: 'Perlengkapan', item: 'Sewa Tenda & Kursi', kuantitas: 1, satuan: 'Paket', harga_satuan: 500000, total_idr: 500000 },
+  { kategori: 'Perlengkapan', item: 'Cat Panggung', kuantitas: 2, satuan: 'Kaleng', harga_satuan: 100000, total_idr: 200000 },
+  { kategori: 'Gotong Royong', item: 'Konsumsi Gotong Royong 9 Agst', kuantitas: 20, satuan: 'Pax', harga_satuan: 20000, total_idr: 400000 },
+  { kategori: 'Gotong Royong', item: 'Konsumsi Gotong Royong 15 Agst', kuantitas: 20, satuan: 'Pax', harga_satuan: 20000, total_idr: 400000 },
+  { kategori: 'Gotong Royong', item: 'Paku & Kabel Tambahan', kuantitas: 1, satuan: 'Set', harga_satuan: 200000, total_idr: 200000 },
+  { kategori: 'Dana Cadangan', item: 'Biaya Tak Terduga', kuantitas: 1, satuan: 'Lumpsum', harga_satuan: 1900000, total_idr: 1900000 }
+];
 
 export default function KepanitiaanDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -13,6 +38,11 @@ export default function KepanitiaanDashboard() {
   const [totalCollected, setTotalCollected] = useState(12000000); // default
   const [totalSpent, setTotalSpent] = useState(0);
   const [lunasCount, setLunasCount] = useState(0);
+  
+  // Database Empty States
+  const [rabCount, setRabCount] = useState(-1);
+  const [rundownCount, setRundownCount] = useState(-1);
+  const [seeding, setSeeding] = useState(false);
   
   // Rapat states
   const [rapatList, setRapatList] = useState<any[]>([]);
@@ -62,6 +92,13 @@ export default function KepanitiaanDashboard() {
         const { data: rapat } = await supabase.from('rapat').select('*').order('tanggal', { ascending: false });
         if (rapat) setRapatList(rapat);
 
+        // Fetch RAB & Rundown count to see if we need to show the seeder button
+        const { count: rabC } = await supabase.from('rab').select('*', { count: 'exact', head: true });
+        if (rabC !== null) setRabCount(rabC);
+
+        const { count: rundownC } = await supabase.from('rundown').select('*', { count: 'exact', head: true });
+        if (rundownC !== null) setRundownCount(rundownC);
+
       } catch (err) {
         console.error('Error loading dashboard stats:', err);
       } finally {
@@ -71,6 +108,30 @@ export default function KepanitiaanDashboard() {
 
     loadDashboardData();
   }, []);
+
+  const handleSeedData = async () => {
+    setSeeding(true);
+    try {
+      // 1. Seed Rundown
+      const { error: rdErr } = await supabase.from('rundown').insert(seedRundown);
+      if (rdErr) throw rdErr;
+
+      // 2. Seed RAB
+      const { error: rabErr } = await supabase.from('rab').insert(seedRab);
+      if (rabErr) throw rabErr;
+
+      setRabCount(seedRab.length);
+      setRundownCount(seedRundown.length);
+      await logAudit('Menginisialisasi Data Awal', 'Mengisi basis data default dengan 5 Rundown & 14 Pos RAB');
+      alert('Inisialisasi Data Awal Berhasil! Halaman akan dimuat ulang.');
+      window.location.reload();
+    } catch (err) {
+      console.error('Seeding database failed:', err);
+      alert('Gagal menginisialisasi database: ' + JSON.stringify(err));
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
@@ -163,6 +224,28 @@ export default function KepanitiaanDashboard() {
           Akses: {currentUser?.jabatan || 'Anggota'}
         </div>
       </div>
+
+      {/* Database Empty Seeder Banner */}
+      {rabCount === 0 && rundownCount === 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="space-y-1">
+            <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
+              <Sparkles className="h-4.5 w-4.5 text-amber-450 animate-pulse" />
+              <span>Database Operasional Kosong</span>
+            </h4>
+            <p className="text-xs text-slate-400">
+              Apakah Anda ingin menginisialisasi database dengan data awal default (5 Acara & 14 Pos RAB)?
+            </p>
+          </div>
+          <button
+            onClick={handleSeedData}
+            disabled={seeding}
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shrink-0 disabled:opacity-50"
+          >
+            {seeding ? 'Sedang Memproses...' : 'Inisialisasi Data Awal'}
+          </button>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
