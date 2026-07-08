@@ -1,26 +1,139 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Global Light Theme Override */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  font-family: Inter, system-ui, -apple-system, sans-serif !important;
+}
+
+/* Background overrides */
+.bg-\[\#070A13\],
+.bg-slate-950 {
+  background-color: #F8FAFC !important;
+}
+
+.bg-slate-900,
+.bg-slate-900\/30,
+.bg-slate-900\/40,
+.bg-slate-900\/60,
+.bg-slate-950\/60,
+.bg-slate-950\/80 {
+  background-color: #FFFFFF !important;
+}
+
+/* Aside / Sidebar styles */
+aside.bg-slate-950 {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #E2E8F0 !important;
+}
+
+aside .bg-slate-900\/10 {
+  background-color: #F1F5F9 !important;
+}
+
+/* Border overrides */
+.border-slate-800,
+.border-slate-850,
+.border-slate-900 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Card Styling wrapper */
+.bg-slate-900\/30,
+.bg-slate-950\/60 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.03), 0 2px 4px -2px rgb(0 0 0 / 0.03) !important;
+}
+
+/* Input Fields and Dropdowns styling */
+select.bg-slate-950,
+input.bg-slate-950,
+textarea.bg-slate-950,
+.bg-slate-950.border-slate-800 {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+select.bg-slate-950:focus,
+input.bg-slate-950:focus,
+textarea.bg-slate-950:focus {
+  border-color: #DC2626 !important; /* red focus indicator */
+}
+
+/* Typography contrast styling */
+.text-white {
+  color: #0F172A !important;
+}
+
+.text-slate-100 {
+  color: #0F172A !important;
+}
+
+.text-slate-300,
+.text-slate-350,
+.text-slate-400 {
+  color: #334155 !important; /* dark slate body text */
+}
+
+.text-slate-450,
+.text-slate-500,
+.text-slate-550 {
+  color: #64748B !important; /* muted info text */
+}
+
+/* Exception mapping: Keep white text for primary colored buttons and status pills */
+button.text-white,
+a.text-white,
+.bg-red-600.text-white,
+.bg-red-650.text-white,
+.bg-emerald-600.text-white,
+.bg-indigo-600.text-white,
+.bg-blue-600.text-white,
+.text-emerald-450,
+.text-indigo-400,
+.text-amber-400,
+.text-red-400 {
+  color: inherit !important; /* Keep original colored text */
+}
+
+/* Explicit colors for solid buttons */
+.bg-red-600,
+.bg-red-650,
+.bg-emerald-600,
+.bg-indigo-600,
+.bg-blue-600 {
+  color: #FFFFFF !important;
+}
+
+.bg-red-600.text-white *,
+.bg-red-650.text-white *,
+.bg-emerald-600.text-white * {
+  color: #FFFFFF !important;
+}
+
+/* Hover effects */
+.hover\:text-white:hover {
+  color: #0F172A !important;
+}
+
+/* Active Sidebar navigation */
+.bg-red-600.text-white {
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
+/* Light portal layout gradient variables */
+.from-red-950\/20 {
+  --tw-gradient-from: rgba(220, 38, 38, 0.04) !important;
+}
+.via-\[\#070A13\] {
+  --tw-gradient-to: #F8FAFC !important;
 }

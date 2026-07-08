@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Trash2, DollarSign } from 'lucide-react';
+import { Trash2, DollarSign, Upload, Image as ImageIcon, Eye, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { compressImage } from '@/lib/imageCompression';
 
 interface ExpensesTabProps {
   rabList: any[];
   expensesList: any[];
   currentUser: any;
-  onAddExpense: (item: string, nominal: number, tanggal: string, seksi: string, rabId: string) => Promise<void>;
+  onAddExpense: (item: string, nominal: number, tanggal: string, seksi: string, rabId: string, buktiUrl?: string) => Promise<void>;
   onDeleteExpense: (id: string, item: string, nominal: number) => Promise<void>;
 }
 
@@ -21,21 +23,62 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
   const [expNominal, setExpNominal] = useState(0);
   const [expTanggal, setExpTanggal] = useState('');
   const [expSeksi, setExpSeksi] = useState(currentUser?.seksi !== 'Inti' ? currentUser?.seksi || 'Acara' : 'Acara');
+  
+  // File Upload states
+  const [buktiFile, setBuktiFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Lightbox Modal state
+  const [activePreviewUrl, setActivePreviewUrl] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!expItem || !expNominal || !expTanggal || submitting) return;
+    if (!expItem || !expNominal || !expTanggal || submitting || uploading) return;
 
     setSubmitting(true);
+    let uploadedUrl = '';
+
     try {
-      await onAddExpense(expItem, expNominal, expTanggal, expSeksi, expRabId);
+      if (buktiFile) {
+        setUploading(true);
+        // 1. Compress image to under 150KB
+        const compressedBlob = await compressImage(buktiFile, 1024, 0.7);
+        const compressedFile = new File([compressedBlob], `compressed_${buktiFile.name}`, { type: 'image/jpeg' });
+
+        // 2. Generate unique filename
+        const fileExt = 'jpg';
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+
+        // 3. Upload to public bucket 'bukti-transaksi'
+        const { error: uploadError } = await supabase.storage
+          .from('bukti-transaksi')
+          .upload(fileName, compressedFile);
+
+        if (uploadError) {
+          console.error('Upload error details:', uploadError);
+          alert('Bukti transfer gagal diunggah ke storage, tetapi transaksi akan tetap disimpan.');
+        } else {
+          // Get public URL
+          const { data } = supabase.storage.from('bukti-transaksi').getPublicUrl(fileName);
+          uploadedUrl = data.publicUrl;
+        }
+      }
+
+      await onAddExpense(expItem, expNominal, expTanggal, expSeksi, expRabId, uploadedUrl);
       setExpItem('');
       setExpNominal(0);
       setExpTanggal('');
+      setBuktiFile(null);
+      
+      // Reset file input element
+      const fileInput = document.getElementById('buktiFile') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+
     } catch (err) {
       console.error(err);
     } finally {
+      setUploading(false);
       setSubmitting(false);
     }
   };
@@ -74,7 +117,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
               value={expItem}
               onChange={(e) => setExpItem(e.target.value)}
               placeholder="e.g. Pembelian 15 piala & pita merah putih"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
             />
           </div>
 
@@ -96,7 +139,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                 required
                 value={expTanggal}
                 onChange={(e) => setExpTanggal(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
               />
             </div>
           </div>
@@ -106,7 +149,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <select
               value={expSeksi}
               onChange={(e) => setExpSeksi(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
             >
               <option value="Acara">Acara</option>
               <option value="Perlengkapan & Dekorasi">Perlengkapan & Dekorasi</option>
@@ -117,13 +160,44 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             </select>
           </div>
 
+          {/* Receipt Upload Input */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Unggah Bukti Nota / Struk</label>
+            <div className="flex items-center justify-center w-full">
+              <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-950 rounded-xl cursor-pointer transition-colors relative overflow-hidden group">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  {buktiFile ? (
+                    <div className="text-center space-y-1">
+                      <ImageIcon className="h-6 w-6 text-emerald-450 mx-auto" />
+                      <p className="text-[10px] font-bold text-white max-w-[200px] truncate">{buktiFile.name}</p>
+                      <p className="text-[8px] text-slate-500">{(buktiFile.size / 1024 / 1024).toFixed(2)} MB (Akan dikompresi)</p>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="h-5 w-5 text-slate-500 group-hover:text-slate-400 mx-auto mb-1 transition-colors" />
+                      <p className="text-[9px] text-slate-450 group-hover:text-slate-350 font-bold transition-colors">Pilih File Foto Bukti</p>
+                      <p className="text-[7px] text-slate-600 font-medium">JPEG, PNG maks 10MB (Auto kompresi)</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  id="buktiFile"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setBuktiFile(e.target.files?.[0] || null)}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          </div>
+
           <div className="pt-2">
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || uploading}
               className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
-              {submitting ? 'Menyimpan...' : 'Simpan Transaksi Belanja'}
+              {uploading ? 'Mengompres & Mengunggah Bukti...' : submitting ? 'Menyimpan...' : 'Simpan Transaksi Belanja'}
             </button>
           </div>
         </form>
@@ -147,16 +221,30 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
               {expensesList.map((e, idx) => (
                 <tr key={idx} className="border-b border-slate-900 hover:bg-slate-900/10">
                   <td className="py-3 px-4 text-white font-semibold">
-                    {e.item_pembelian}
-                    {e.rab_id && (
-                      <span className="block text-[10px] text-slate-500 mt-0.5">
-                        RAB: {rabList.find(r => r.id === e.rab_id)?.item || 'Terhubung'}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <div>
+                        {e.item_pembelian}
+                        {e.rab_id && (
+                          <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
+                            RAB: {rabList.find(r => r.id === e.rab_id)?.item || 'Terhubung'}
+                          </span>
+                        )}
+                      </div>
+                      {/* Show photo preview button if receipt url exists */}
+                      {e.bukti_nota_url && (
+                        <button
+                          onClick={() => setActivePreviewUrl(e.bukti_nota_url)}
+                          title="Lihat Bukti Kwitansi"
+                          className="p-1 text-red-400 bg-red-500/10 border border-red-500/10 hover:bg-red-500/25 rounded-md transition-colors"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3 px-4 text-center text-slate-350">
                     <span className="block text-xs font-semibold">{e.seksi_pj}</span>
-                    <span className="block text-[9px] text-slate-500">{e.pic}</span>
+                    <span className="block text-[9px] text-slate-550 font-medium">{e.pic}</span>
                   </td>
                   <td className="py-3 px-4 text-center text-slate-400">
                     {new Date(e.tanggal_pembelian).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
@@ -183,6 +271,33 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
           </table>
         </div>
       </div>
+
+      {/* Lightbox Receipt Modal */}
+      {activePreviewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                <ImageIcon className="h-4 w-4 text-red-500" />
+                <span>Bukti Kwitansi / Struk Pembelian</span>
+              </h4>
+              <button
+                onClick={() => setActivePreviewUrl(null)}
+                className="p-1 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex justify-center bg-slate-950 p-2.5 rounded-xl border border-slate-850 max-h-[70vh] overflow-y-auto">
+              <img
+                src={activePreviewUrl}
+                alt="Bukti Kwitansi Belanja"
+                className="max-w-full h-auto rounded-lg object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

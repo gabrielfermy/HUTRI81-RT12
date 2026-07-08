@@ -101,8 +101,7 @@ export default function KepanitiaanKeuangan() {
   // ACTION DISPATCHERS (Supabase API interactions)
   // ==========================================
 
-  // Tab 1: Expense Handlers
-  const handleAddExpense = async (item: string, nominal: number, tanggal: string, seksi: string, rabId: string) => {
+  const handleAddExpense = async (item: string, nominal: number, tanggal: string, seksi: string, rabId: string, buktiUrl?: string) => {
     const newExpense = {
       rab_id: rabId || null,
       item_pembelian: item,
@@ -110,6 +109,7 @@ export default function KepanitiaanKeuangan() {
       tanggal_pembelian: tanggal,
       seksi_pj: seksi,
       pic: currentUser?.nama || 'Anonim',
+      bukti_nota_url: buktiUrl || null,
     };
 
     try {
@@ -117,7 +117,7 @@ export default function KepanitiaanKeuangan() {
       if (data && !error) {
         setExpensesList([data[0], ...expensesList]);
         const rabMatch = rabList.find(r => r.id === rabId);
-        await logAudit('Mencatat Pengeluaran', `Membeli: "${item}" senilai Rp ${nominal.toLocaleString('id-ID')} (RAB: ${rabMatch?.item || 'Umum'})`);
+        await logAudit('Mencatat Pengeluaran', `Membeli: "${item}" senilai Rp ${nominal.toLocaleString('id-ID')} (RAB: ${rabMatch?.item || 'Umum'})${buktiUrl ? ' [Dengan Bukti Kwitansi]' : ''}`);
       } else {
         alert('Gagal menambahkan pengeluaran: ' + (error?.message || 'Unknown error'));
       }
