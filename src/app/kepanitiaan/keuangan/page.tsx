@@ -14,7 +14,7 @@ export default function KepanitiaanKeuangan() {
   const [loading, setLoading] = useState(true);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'expenses' | 'warga' | 'sponsorship' | 'rab'>('expenses');
+  const [activeTab, setActiveTab] = useState<'expenses' | 'warga' | 'sponsorship' | 'rab' | ''>('');
 
   // Database lists
   const [rabList, setRabList] = useState<any[]>([]);
@@ -29,8 +29,23 @@ export default function KepanitiaanKeuangan() {
   // Load user & pull databases
   useEffect(() => {
     const userSession = localStorage.getItem('session_panitia');
+    let sessionUser: any = null;
     if (userSession) {
-      setCurrentUser(JSON.parse(userSession));
+      sessionUser = JSON.parse(userSession);
+      setCurrentUser(sessionUser);
+
+      // Select first allowed tab as active
+      const userAccess = sessionUser?.akses_menu || '';
+      const allowed = [
+        { id: 'expenses', key: 'keuangan_pengeluaran' },
+        { id: 'warga', key: 'keuangan_iuran' },
+        { id: 'sponsorship', key: 'keuangan_sponsor' },
+        { id: 'rab', key: 'keuangan_rab' }
+      ].filter((t) => userAccess.includes(t.key));
+
+      if (allowed.length > 0) {
+        setActiveTab(allowed[0].id as any);
+      }
     }
 
     async function loadData() {
@@ -238,6 +253,16 @@ export default function KepanitiaanKeuangan() {
     );
   }
 
+  const allowedTabs = React.useMemo(() => {
+    const userAccess = currentUser?.akses_menu || '';
+    return [
+      { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign, key: 'keuangan_pengeluaran' },
+      { id: 'warga', label: '2. Iuran Warga', icon: Users, key: 'keuangan_iuran' },
+      { id: 'sponsorship', label: '3. Donatur & Sponsor', icon: Award, key: 'keuangan_sponsor' },
+      { id: 'rab', label: '4. Rencana Anggaran (RAB)', icon: ShieldAlert, key: 'keuangan_rab' }
+    ].filter((tab) => userAccess.includes(tab.key));
+  }, [currentUser]);
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -249,30 +274,27 @@ export default function KepanitiaanKeuangan() {
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex border-b border-slate-800 space-x-1 overflow-x-auto pb-px">
-        {[
-          { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign },
-          { id: 'warga', label: '2. Iuran Warga', icon: Users },
-          { id: 'sponsorship', label: '3. Donatur & Sponsor', icon: Award },
-          { id: 'rab', label: '4. Rencana Anggaran (RAB)', icon: ShieldAlert }
-        ].map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-t-2 ${
-                activeTab === tab.id
-                  ? 'bg-slate-900/40 border-red-500 text-red-400'
-                  : 'border-transparent text-slate-450 hover:text-slate-200'
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {allowedTabs.length > 1 && (
+        <div className="flex border-b border-slate-800 space-x-1 overflow-x-auto pb-px">
+          {allowedTabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-t-2 ${
+                  activeTab === tab.id
+                    ? 'bg-slate-900/40 border-red-500 text-red-400'
+                    : 'border-transparent text-slate-450 hover:text-slate-200'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Tab Panels */}
       {activeTab === 'expenses' && (
