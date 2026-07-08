@@ -182,8 +182,13 @@ export default function KepanitiaanDashboard() {
       await supabase.from('seksi').delete().neq('id', '00000000-0000-0000-0000-000000000000');
       await supabase.from('panitia_notes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
 
-      // 2. Clear panitia other than whoever holds 'Ketua Panitia'
-      await supabase.from('panitia').delete().neq('jabatan', 'Ketua Panitia');
+      // 2. Clear panitia other than Ketua Panitia, Sekretaris, and Bendahara
+      await supabase.from('panitia').delete()
+        .not('jabatan', 'in', '("Ketua Panitia","Sekretaris","Bendahara")');
+
+      // Reset Sekretaris and Bendahara names to placeholder and PINs to default 1212
+      await supabase.from('panitia').update({ nama: 'Belum Ditentukan', pin_akses: '1212' }).eq('jabatan', 'Sekretaris');
+      await supabase.from('panitia').update({ nama: 'Belum Ditentukan', pin_akses: '1212' }).eq('jabatan', 'Bendahara');
 
       // 3. Re-seed default sections
       await supabase.from('seksi').insert(seedSeksi);
