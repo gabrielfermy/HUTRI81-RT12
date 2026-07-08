@@ -283,6 +283,7 @@ CREATE TABLE IF NOT EXISTS public.seksi (
     mempunyai_sub_koordinator BOOLEAN NOT NULL DEFAULT false,
     kategori TEXT NOT NULL DEFAULT 'Seksi',
     is_unique BOOLEAN NOT NULL DEFAULT false,
+    akses_menu TEXT NOT NULL DEFAULT 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -294,25 +295,25 @@ CREATE POLICY "Allow all modifications for seksi" ON public.seksi FOR ALL USING 
 alter publication supabase_realtime add table public.seksi;
 
 -- Seed default sections (positions)
-INSERT INTO public.seksi (nama, deskripsi, mempunyai_sub_koordinator, kategori, is_unique) VALUES
-('Penanggung Jawab', 'Pengawas & Penanggung Jawab tingkat atas', false, 'BOD', false),
-('Pengawas', 'Pengawas pelaksanaan kegiatan panitia', false, 'BOD', false),
-('Ketua Panitia', 'Penanggung jawab utama seluruh operasional', false, 'Inti', true),
-('Sekretaris', 'Mengelola administrasi dan notulen rapat', false, 'Inti', true),
-('Bendahara', 'Mengelola keluar-masuk keuangan dan iuran', false, 'Inti', true),
-('Koordinator Acara', 'Mengatur jalannya acara utama dan berbagai lomba', false, 'Seksi', true),
-('Sub Koordinator Acara', 'Membantu koordinasi per sesi lomba', false, 'Seksi', false),
-('Anggota Acara', 'Pelaksana lapangan seksi acara', false, 'Seksi', false),
-('Koordinator Perlengkapan & Dekorasi', 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', false, 'Seksi', true),
-('Anggota Perlengkapan & Dekorasi', 'Membantu penyediaan dekorasi fisik panggung', false, 'Seksi', false),
-('Koordinator Konsumsi', 'Mengelola ketersediaan makanan & prasmanan warga', false, 'Seksi', true),
-('Anggota Konsumsi', 'Pelaksana konsumsi konsumsi di lapangan', false, 'Seksi', false),
-('Koordinator Keamanan & Kebersihan', 'Menjaga ketertiban lingkungan dan kebersihan lokasi', false, 'Seksi', true),
-('Anggota Keamanan & Kebersihan', 'Pelaksana ketertiban dan kebersihan', false, 'Seksi', false),
-('Koordinator Dokumentasi', 'Mengambil dokumentasi video & foto acara', false, 'Seksi', true),
-('Anggota Dokumentasi', 'Membantu perekaman dokumentasi di lapangan', false, 'Seksi', false),
-('Koordinator Humas & Dana', 'Menghubungi sponsor luar dan menyebarkan info warga', false, 'Seksi', true),
-('Anggota Humas & Dana', 'Membantu penyebaran undangan dan cari dana', false, 'Seksi', false)
+INSERT INTO public.seksi (nama, deskripsi, mempunyai_sub_koordinator, kategori, is_unique, akses_menu) VALUES
+('Penanggung Jawab', 'Pengawas & Penanggung Jawab tingkat atas', false, 'BOD', false, 'dashboard,logs,proposal,backdrop'),
+('Pengawas', 'Pengawas pelaksanaan kegiatan panitia', false, 'BOD', false, 'dashboard,logs,proposal,backdrop'),
+('Ketua Panitia', 'Penanggung jawab utama seluruh operasional', false, 'Inti', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop'),
+('Sekretaris', 'Mengelola administrasi dan notulen rapat', false, 'Inti', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop'),
+('Bendahara', 'Mengelola keluar-masuk keuangan dan iuran', false, 'Inti', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop'),
+('Koordinator Acara', 'Mengatur jalannya acara utama dan berbagai lomba', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Sub Koordinator Acara', 'Membantu koordinasi per sesi lomba', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Acara', 'Pelaksana lapangan seksi acara', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Koordinator Perlengkapan & Dekorasi', 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Perlengkapan & Dekorasi', 'Membantu penyediaan dekorasi fisik panggung', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Koordinator Konsumsi', 'Mengelola ketersediaan makanan & prasmanan warga', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Konsumsi', 'Pelaksana konsumsi konsumsi di lapangan', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Koordinator Keamanan & Kebersihan', 'Menjaga ketertiban lingkungan dan kebersihan lokasi', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Keamanan & Kebersihan', 'Pelaksana ketertiban dan kebersihan', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Koordinator Dokumentasi', 'Mengambil dokumentasi video & foto acara', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Dokumentasi', 'Membantu perekaman dokumentasi di lapangan', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Koordinator Humas & Dana', 'Menghubungi sponsor luar dan menyebarkan info warga', false, 'Seksi', true, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop'),
+('Anggota Humas & Dana', 'Membantu penyebaran undangan dan cari dana', false, 'Seksi', false, 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop')
 ON CONFLICT (nama) DO NOTHING;
 
 

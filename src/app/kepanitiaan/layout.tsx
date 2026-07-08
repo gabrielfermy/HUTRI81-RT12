@@ -51,6 +51,27 @@ export default function KepanitiaanLayout({
         const storedSession = localStorage.getItem('session_panitia');
         if (storedSession) {
           const user = JSON.parse(storedSession);
+
+          // Fetch dynamic permissions for user's position
+          const { data: sData } = await supabase
+            .from('seksi')
+            .select('akses_menu')
+            .eq('nama', user.jabatan)
+            .single();
+
+          if (sData) {
+            user.akses_menu = sData.akses_menu;
+          } else {
+            // Seeding fallback
+            if (user.seksi === 'BOD') {
+              user.akses_menu = 'dashboard,logs,proposal,backdrop';
+            } else if (user.jabatan === 'Ketua Panitia') {
+              user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+            } else {
+              user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop';
+            }
+          }
+
           setLoggedInUser(user);
           setIsLoggedIn(true);
         }
@@ -63,7 +84,28 @@ export default function KepanitiaanLayout({
     initAuth();
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Access control interceptor
+  useEffect(() => {
+    if (isLoggedIn && loggedInUser && !loading) {
+      const userAccess = loggedInUser.akses_menu || '';
+
+      let pathKey = '';
+      if (pathname === '/kepanitiaan') pathKey = 'dashboard';
+      else if (pathname.startsWith('/kepanitiaan/rundown')) pathKey = 'rundown';
+      else if (pathname.startsWith('/kepanitiaan/warga')) pathKey = 'warga';
+      else if (pathname.startsWith('/kepanitiaan/keuangan')) pathKey = 'keuangan';
+      else if (pathname.startsWith('/kepanitiaan/panitia')) pathKey = 'panitia';
+      else if (pathname.startsWith('/kepanitiaan/catatan')) pathKey = 'catatan';
+      else if (pathname.startsWith('/kepanitiaan/logs')) pathKey = 'logs';
+
+      if (pathKey && !userAccess.includes(pathKey)) {
+        alert('Akses Ditolak: Anda tidak memiliki izin untuk membuka halaman ini.');
+        router.push('/kepanitiaan');
+      }
+    }
+  }, [pathname, isLoggedIn, loggedInUser, loading, router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
 
@@ -74,12 +116,37 @@ export default function KepanitiaanLayout({
 
     const matched = panitiaList.find((p) => p.id === selectedPanitiaId);
     if (matched && matched.pin_akses === pin) {
-      const sessionData = {
+      const sessionData: any = {
         id: matched.id,
         nama: matched.nama,
         seksi: matched.seksi,
         jabatan: matched.jabatan,
       };
+
+      // Fetch dynamic permissions for matched position on login
+      try {
+        const { data: sData } = await supabase
+          .from('seksi')
+          .select('akses_menu')
+          .eq('nama', matched.jabatan)
+          .single();
+
+        if (sData) {
+          sessionData.akses_menu = sData.akses_menu;
+        } else {
+          // Seeding fallback
+          if (matched.seksi === 'BOD') {
+            sessionData.akses_menu = 'dashboard,logs,proposal,backdrop';
+          } else if (matched.jabatan === 'Ketua Panitia') {
+            sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+          } else {
+            sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop';
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load permissions during login:', err);
+      }
+
       localStorage.setItem('session_panitia', JSON.stringify(sessionData));
       setLoggedInUser(sessionData);
       setIsLoggedIn(true);
@@ -181,16 +248,17 @@ export default function KepanitiaanLayout({
   }
 
   const isInti = loggedInUser?.seksi === 'Inti';
+  const userAccess = loggedInUser?.akses_menu || '';
 
   const menuItems = [
-    { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard },
-    { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar },
-    { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users },
-    { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign },
-    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: UserCheck },
-    { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText },
-    { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert },
-  ];
+    { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard, key: 'dashboard' },
+    { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
+    { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
+    { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
+    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
+    { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText, key: 'catatan' },
+    { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
+  ].filter((item) => userAccess.includes(item.key));
 
   return (
     <div className="flex-grow flex flex-col md:flex-row min-h-[85vh] bg-[#070A13] text-slate-100">
@@ -226,22 +294,26 @@ export default function KepanitiaanLayout({
           })}
 
           <div className="pt-6 border-t border-slate-900/60 my-4 space-y-1">
-            <Link
-              href="/proposal/print"
-              target="_blank"
-              className="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
-            >
-              <FileText className="h-4.5 w-4.5 text-slate-500" />
-              <span>Cetak Proposal PDF</span>
-            </Link>
-            <Link
-              href="/backdrop"
-              target="_blank"
-              className="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
-            >
-              <MonitorPlay className="h-4.5 w-4.5 text-slate-500" />
-              <span>Buka Layar Backdrop</span>
-            </Link>
+            {userAccess.includes('proposal') && (
+              <Link
+                href="/proposal/print"
+                target="_blank"
+                className="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
+              >
+                <FileText className="h-4.5 w-4.5 text-slate-500" />
+                <span>Cetak Proposal PDF</span>
+              </Link>
+            )}
+            {userAccess.includes('backdrop') && (
+              <Link
+                href="/backdrop"
+                target="_blank"
+                className="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-colors"
+              >
+                <MonitorPlay className="h-4.5 w-4.5 text-slate-500" />
+                <span>Buka Layar Backdrop</span>
+              </Link>
+            )}
           </div>
         </nav>
 
@@ -308,24 +380,28 @@ export default function KepanitiaanLayout({
             })}
 
             <div className="pt-6 border-t border-slate-900 my-4 space-y-2">
-              <Link
-                href="/proposal/print"
-                target="_blank"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold text-slate-450 hover:bg-slate-900"
-              >
-                <FileText className="h-5 w-5" />
-                <span>Cetak Proposal PDF</span>
-              </Link>
-              <Link
-                href="/backdrop"
-                target="_blank"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold text-slate-450 hover:bg-slate-900"
-              >
-                <MonitorPlay className="h-5 w-5" />
-                <span>Buka Layar Backdrop</span>
-              </Link>
+              {userAccess.includes('proposal') && (
+                <Link
+                  href="/proposal/print"
+                  target="_blank"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold text-slate-450 hover:bg-slate-900"
+                >
+                  <FileText className="h-5 w-5" />
+                  <span>Cetak Proposal PDF</span>
+                </Link>
+              )}
+              {userAccess.includes('backdrop') && (
+                <Link
+                  href="/backdrop"
+                  target="_blank"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold text-slate-450 hover:bg-slate-900"
+                >
+                  <MonitorPlay className="h-5 w-5" />
+                  <span>Buka Layar Backdrop</span>
+                </Link>
+              )}
             </div>
           </nav>
 

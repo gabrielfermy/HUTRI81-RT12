@@ -151,12 +151,13 @@ export default function KepanitiaanPanitia() {
   // DISPATCHERS FOR DYNAMIC SECTIONS
   // ==========================================
 
-  const handleAddSeksi = async (nama: string, deskripsi: string, isUnique: boolean, kategori: string) => {
+  const handleAddSeksi = async (nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => {
     const newSeksi = {
       nama,
       deskripsi,
       is_unique: isUnique,
-      kategori
+      kategori,
+      akses_menu: aksesMenu
     };
 
     const { data, error } = await supabase.from('seksi').insert([newSeksi]).select();
@@ -168,14 +169,20 @@ export default function KepanitiaanPanitia() {
     }
   };
 
-  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string) => {
+  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => {
+    // Get old seksi name to propagate changes to panitia table
+    const { data: oldSeksi } = await supabase.from('seksi').select('nama').eq('id', id).single();
+
     const { error } = await supabase
       .from('seksi')
-      .update({ nama, deskripsi, is_unique: isUnique, kategori })
+      .update({ nama, deskripsi, is_unique: isUnique, kategori, akses_menu: aksesMenu })
       .eq('id', id);
 
     if (!error) {
-      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, is_unique: isUnique, kategori } : s)));
+      if (oldSeksi && oldSeksi.nama !== nama) {
+        await supabase.from('panitia').update({ jabatan: nama }).eq('jabatan', oldSeksi.nama);
+      }
+      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, is_unique: isUnique, kategori, akses_menu: aksesMenu } : s)));
       await logAudit('Mengubah Data Jabatan', `Mengedit jabatan: "${nama}" (Kategori: ${kategori}, Unik: ${isUnique ? 'Ya' : 'Tidak'})`);
     } else {
       alert('Gagal menyimpan perubahan jabatan: ' + error.message);

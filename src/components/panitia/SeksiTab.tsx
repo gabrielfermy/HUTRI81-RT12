@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Trash2, Check, X, Layers, Filter } from 'lucide-react';
+import { Plus, Trash2, Check, X, Layers, Filter, Shield } from 'lucide-react';
 
 interface Seksi {
   id: string;
@@ -7,14 +7,27 @@ interface Seksi {
   deskripsi: string;
   is_unique: boolean;
   kategori: string;
+  akses_menu: string;
 }
 
 interface SeksiTabProps {
   seksiList: Seksi[];
-  onAddSeksi: (nama: string, deskripsi: string, isUnique: boolean, kategori: string) => Promise<void>;
-  onEditSeksi: (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string) => Promise<void>;
+  onAddSeksi: (nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => Promise<void>;
+  onEditSeksi: (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => Promise<void>;
   onDeleteSeksi: (id: string, nama: string) => Promise<void>;
 }
+
+const AVAILABLE_PAGES = [
+  { key: 'dashboard', label: 'Dasbor Utama' },
+  { key: 'rundown', label: 'Rundown & Lomba' },
+  { key: 'warga', label: 'Manajemen Warga & Iuran' },
+  { key: 'keuangan', label: 'Keuangan & Sponsor' },
+  { key: 'panitia', label: 'Manajemen / Profil Panitia' },
+  { key: 'catatan', label: 'Catatan Penting' },
+  { key: 'logs', label: 'Audit Log Aktivitas' },
+  { key: 'proposal', label: 'Cetak Proposal PDF' },
+  { key: 'backdrop', label: 'Layar Backdrop' },
+];
 
 export const SeksiTab: React.FC<SeksiTabProps> = ({
   seksiList,
@@ -26,6 +39,9 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const [deskripsi, setDeskripsi] = useState('');
   const [isUnique, setIsUnique] = useState(false);
   const [kategori, setKategori] = useState('Seksi');
+  const [allowedMenus, setAllowedMenus] = useState<string[]>([
+    'dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'proposal', 'backdrop'
+  ]);
   const [submitting, setSubmitting] = useState(false);
 
   // Edit inline states
@@ -34,6 +50,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const [editDeskripsi, setEditDeskripsi] = useState('');
   const [editIsUnique, setEditIsUnique] = useState(false);
   const [editKategori, setEditKategori] = useState('Seksi');
+  const [editAllowedMenus, setEditAllowedMenus] = useState<string[]>([]);
 
   // Filtering & Pagination States
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -44,6 +61,17 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   useEffect(() => {
     setCurrentPage(1);
   }, [categoryFilter]);
+
+  // Adjust default checked menus when adding based on category
+  useEffect(() => {
+    if (kategori === 'BOD') {
+      setAllowedMenus(['dashboard', 'logs', 'proposal', 'backdrop']);
+    } else if (kategori === 'Inti') {
+      setAllowedMenus(['dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'logs', 'proposal', 'backdrop']);
+    } else {
+      setAllowedMenus(['dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'proposal', 'backdrop']);
+    }
+  }, [kategori]);
 
   // Filter and Sort Positions
   const filteredAndSortedList = useMemo(() => {
@@ -75,11 +103,13 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
 
     setSubmitting(true);
     try {
-      await onAddSeksi(nama.trim(), deskripsi.trim(), isUnique, kategori);
+      const menuString = allowedMenus.join(',');
+      await onAddSeksi(nama.trim(), deskripsi.trim(), isUnique, kategori, menuString);
       setNama('');
       setDeskripsi('');
       setIsUnique(false);
       setKategori('Seksi');
+      setAllowedMenus(['dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'proposal', 'backdrop']);
     } catch (err) {
       console.error(err);
     } finally {
@@ -93,12 +123,18 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
     setEditDeskripsi(s.deskripsi || '');
     setEditIsUnique(s.is_unique);
     setEditKategori(s.kategori || 'Seksi');
+    setEditAllowedMenus(s.akses_menu ? s.akses_menu.split(',') : []);
   };
 
   const handleSaveEdit = async (id: string) => {
     if (!editNama.trim()) return;
     try {
-      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), editIsUnique, editKategori);
+      // Force Ketua Panitia to always have full permissions
+      const finalMenus = editNama === 'Ketua Panitia'
+        ? 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop'
+        : editAllowedMenus.join(',');
+
+      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), editIsUnique, editKategori, finalMenus);
       setEditingId(null);
     } catch (err) {
       console.error(err);
@@ -171,6 +207,30 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
             </label>
           </div>
 
+          {/* Menu Permissions selection */}
+          <div className="space-y-2 border-t border-slate-800 pt-4">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block">Izin Akses Menu / Halaman</label>
+            <div className="grid grid-cols-2 gap-2 p-3 bg-slate-950 rounded-xl border border-slate-850">
+              {AVAILABLE_PAGES.map((page) => (
+                <label key={page.key} className="flex items-center space-x-2 text-[10px] text-slate-350 font-semibold cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={allowedMenus.includes(page.key)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setAllowedMenus([...allowedMenus, page.key]);
+                      } else {
+                        setAllowedMenus(allowedMenus.filter((k) => k !== page.key));
+                      }
+                    }}
+                    className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
+                  />
+                  <span>{page.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={submitting}
@@ -223,7 +283,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                             required
                             value={editNama}
                             onChange={(e) => setEditNama(e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-550 font-semibold"
+                            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-555 font-semibold"
                           />
                         </div>
                         <div className="sm:col-span-2">
@@ -232,7 +292,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                             type="text"
                             value={editDeskripsi}
                             onChange={(e) => setEditDeskripsi(e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-550"
+                            className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-555"
                           />
                         </div>
                       </div>
@@ -262,6 +322,37 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                             Hanya Boleh Dijabat 1 Orang
                           </label>
                         </div>
+                      </div>
+
+                      {/* Menu Permissions selection (Edit Mode) */}
+                      <div className="space-y-2 border-t border-slate-900 pt-3">
+                        <label className="text-[9px] text-slate-550 font-bold uppercase block">Izin Akses Menu / Halaman</label>
+                        {editNama === 'Ketua Panitia' ? (
+                          <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-semibold bg-red-655/5 p-2.5 rounded-lg border border-red-500/10 w-fit">
+                            <Shield className="h-4 w-4 text-red-500" />
+                            <span>Ketua Panitia selalu memiliki akses penuh ke seluruh fitur dan menu.</span>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                            {AVAILABLE_PAGES.map((page) => (
+                              <label key={page.key} className="flex items-center space-x-2 text-[10px] text-slate-350 font-semibold cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={editAllowedMenus.includes(page.key)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setEditAllowedMenus([...editAllowedMenus, page.key]);
+                                    } else {
+                                      setEditAllowedMenus(editAllowedMenus.filter((k) => k !== page.key));
+                                    }
+                                  }}
+                                  className="rounded border-slate-800 bg-slate-950 text-red-500 focus:ring-0"
+                                />
+                                <span>{page.label}</span>
+                              </label>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex justify-end space-x-2 pt-2 border-t border-slate-900">
@@ -316,6 +407,27 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                           )}
                         </div>
                         <p className="text-xs text-slate-400 leading-relaxed">{s.deskripsi || 'Tidak ada deskripsi tugas.'}</p>
+                        
+                        {/* Display Allowed Pages summary */}
+                        <div className="flex flex-wrap gap-1 items-center pt-1.5">
+                          <span className="text-[8px] text-slate-550 font-bold uppercase tracking-wider mr-1">Izin Akses:</span>
+                          {s.nama === 'Ketua Panitia' ? (
+                            <span className="text-[8px] bg-slate-900 text-slate-400 border border-slate-850 px-1.5 py-0.5 rounded font-mono">Semua Menu</span>
+                          ) : (
+                            s.akses_menu ? (
+                              s.akses_menu.split(',').map((menuKey) => {
+                                const matchedPage = AVAILABLE_PAGES.find((p) => p.key === menuKey);
+                                return matchedPage ? (
+                                  <span key={menuKey} className="text-[8px] bg-slate-900/60 text-slate-450 border border-slate-850/60 px-1.5 py-0.5 rounded">
+                                    {matchedPage.label}
+                                  </span>
+                                ) : null;
+                              })
+                            ) : (
+                              <span className="text-[8px] text-slate-600 italic">Tidak ada izin akses</span>
+                            )
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex items-center space-x-1.5 shrink-0">
