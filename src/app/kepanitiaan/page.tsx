@@ -38,14 +38,24 @@ const seedRab = [
 ];
 
 const seedSeksi = [
-  { nama: 'BOD', deskripsi: 'Pengawas & Penanggung Jawab', mempunyai_sub_koordinator: false, kategori: 'BOD' },
-  { nama: 'Inti', deskripsi: 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', mempunyai_sub_koordinator: false, kategori: 'Inti' },
-  { nama: 'Acara', deskripsi: 'Mengatur jalannya acara utama dan berbagai lomba', mempunyai_sub_koordinator: true, kategori: 'Seksi' },
-  { nama: 'Perlengkapan & Dekorasi', deskripsi: 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
-  { nama: 'Konsumsi', deskripsi: 'Mengelola ketersediaan makanan & prasmanan warga', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
-  { nama: 'Keamanan & Kebersihan', deskripsi: 'Menjaga ketertiban lingkungan dan kebersihan lokasi', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
-  { nama: 'Dokumentasi', deskripsi: 'Mengambil dokumentasi video & foto acara', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
-  { nama: 'Humas & Dana', deskripsi: 'Menghubungi sponsor luar dan menyebarkan info warga', mempunyai_sub_koordinator: false, kategori: 'Seksi' }
+  { nama: 'Penanggung Jawab', deskripsi: 'Pengawas & Penanggung Jawab tingkat atas', mempunyai_sub_koordinator: false, kategori: 'BOD', is_unique: false },
+  { nama: 'Pengawas', deskripsi: 'Pengawas pelaksanaan kegiatan panitia', mempunyai_sub_koordinator: false, kategori: 'BOD', is_unique: false },
+  { nama: 'Ketua Panitia', deskripsi: 'Penanggung jawab utama seluruh operasional', mempunyai_sub_koordinator: false, kategori: 'Inti', is_unique: true },
+  { nama: 'Sekretaris', deskripsi: 'Mengelola administrasi dan notulen rapat', mempunyai_sub_koordinator: false, kategori: 'Inti', is_unique: true },
+  { nama: 'Bendahara', deskripsi: 'Mengelola keluar-masuk keuangan dan iuran', mempunyai_sub_koordinator: false, kategori: 'Inti', is_unique: true },
+  { nama: 'Koordinator Acara', deskripsi: 'Mengatur jalannya acara utama dan berbagai lomba', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Sub Koordinator Acara', deskripsi: 'Membantu koordinasi per sesi lomba', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Anggota Acara', deskripsi: 'Pelaksana lapangan seksi acara', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Koordinator Perlengkapan & Dekorasi', deskripsi: 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Anggota Perlengkapan & Dekorasi', deskripsi: 'Membantu penyediaan dekorasi fisik panggung', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Koordinator Konsumsi', deskripsi: 'Mengelola ketersediaan makanan & prasmanan warga', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Anggota Konsumsi', deskripsi: 'Pelaksana konsumsi konsumsi di lapangan', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Koordinator Keamanan & Kebersihan', deskripsi: 'Menjaga ketertiban lingkungan dan kebersihan lokasi', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Anggota Keamanan & Kebersihan', deskripsi: 'Pelaksana ketertiban dan kebersihan', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Koordinator Dokumentasi', deskripsi: 'Mengambil dokumentasi video & foto acara', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Anggota Dokumentasi', deskripsi: 'Membantu perekaman dokumentasi di lapangan', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false },
+  { nama: 'Koordinator Humas & Dana', deskripsi: 'Menghubungi sponsor luar dan menyebarkan info warga', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: true },
+  { nama: 'Anggota Humas & Dana', deskripsi: 'Membantu penyebaran undangan dan cari dana', mempunyai_sub_koordinator: false, kategori: 'Seksi', is_unique: false }
 ];
 
 export default function KepanitiaanDashboard() {

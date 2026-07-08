@@ -44,76 +44,28 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     }
   }, [currentUser]);
 
-  // Dynamically build predefined positions from loaded sections
+  // Dynamically build predefined positions from loaded sections (positions)
   const dynamicPositions = React.useMemo(() => {
-    const list: Array<{ seksi: string; jabatan: string; isUnique: boolean }> = [];
-    seksiList.forEach((s) => {
-      if (s.kategori === 'BOD') {
-        if (s.nama === 'BOD') {
-          list.push({ seksi: 'BOD', jabatan: 'Penanggung Jawab', isUnique: false });
-          list.push({ seksi: 'BOD', jabatan: 'Pengawas', isUnique: false });
-        } else {
-          list.push({ seksi: s.nama, jabatan: s.nama, isUnique: false });
-        }
-      } else if (s.kategori === 'Inti') {
-        if (s.nama === 'Inti') {
-          list.push({ seksi: 'Inti', jabatan: 'Ketua Panitia', isUnique: true });
-          list.push({ seksi: 'Inti', jabatan: 'Sekretaris', isUnique: true });
-          list.push({ seksi: 'Inti', jabatan: 'Bendahara', isUnique: true });
-        } else {
-          list.push({ seksi: s.nama, jabatan: s.nama, isUnique: true });
-        }
-      } else {
-        list.push({ seksi: s.nama, jabatan: `Koordinator ${s.nama}`, isUnique: true });
-        if (s.mempunyai_sub_koordinator) {
-          list.push({ seksi: s.nama, jabatan: `Sub Koordinator ${s.nama}`, isUnique: false });
-        }
-        list.push({ seksi: s.nama, jabatan: `Anggota ${s.nama}`, isUnique: false });
-      }
-    });
-    return list;
+    return seksiList.map((s) => ({
+      seksi: s.kategori,
+      jabatan: s.nama,
+      isUnique: s.is_unique
+    }));
   }, [seksiList]);
 
-  // Dynamic sorting for committee list based on dynamic sections
+  // Dynamic sorting for committee list based on dynamic categories and position names
   const sortedPanitiaList = React.useMemo(() => {
     return [...panitiaList].sort((a, b) => {
-      const secA = seksiList.find(s => s.nama === a.seksi);
-      const secB = seksiList.find(s => s.nama === b.seksi);
-
       const catRank: Record<string, number> = { 'BOD': 1, 'Inti': 2, 'Seksi': 3 };
-      const rankA = secA ? (catRank[secA.kategori] || 99) : 99;
-      const rankB = secB ? (catRank[secB.kategori] || 99) : 99;
+      const rankA = catRank[a.seksi] || 99;
+      const rankB = catRank[b.seksi] || 99;
 
       if (rankA !== rankB) return rankA - rankB;
 
-      // Same category, sort by section order
-      const sectionOrder = seksiList.map(s => s.nama);
-      const sIdxA = sectionOrder.indexOf(a.seksi);
-      const sIdxB = sectionOrder.indexOf(b.seksi);
-      if (sIdxA !== sIdxB) return sIdxA - sIdxB;
-
-      // Same section, sort by jabatan priority
-      if (a.seksi === 'Inti') {
-        const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
-        const rA = intiOrder.indexOf(a.jabatan);
-        const rB = intiOrder.indexOf(b.jabatan);
-        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
-      }
-      if (a.seksi === 'BOD') {
-        const bodOrder = ['Penanggung Jawab', 'Pengawas'];
-        const rA = bodOrder.indexOf(a.jabatan);
-        const rB = bodOrder.indexOf(b.jabatan);
-        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
-      }
-
-      const isKoordA = a.jabatan.toLowerCase().includes('koordinator');
-      const isKoordB = b.jabatan.toLowerCase().includes('koordinator');
-      if (isKoordA && !isKoordB) return -1;
-      if (!isKoordA && isKoordB) return 1;
-
-      return a.nama.localeCompare(b.nama);
+      // Same category, sort by position name
+      return a.jabatan.localeCompare(b.jabatan);
     });
-  }, [panitiaList, seksiList]);
+  }, [panitiaList]);
 
   const getOccupantName = (pos: any, excludeId?: string) => {
     const match = panitiaList.find(

@@ -151,34 +151,34 @@ export default function KepanitiaanPanitia() {
   // DISPATCHERS FOR DYNAMIC SECTIONS
   // ==========================================
 
-  const handleAddSeksi = async (nama: string, deskripsi: string, mempunyaiSub: boolean, kategori: string) => {
+  const handleAddSeksi = async (nama: string, deskripsi: string, isUnique: boolean, kategori: string) => {
     const newSeksi = {
       nama,
       deskripsi,
-      mempunyai_sub_koordinator: mempunyaiSub,
+      is_unique: isUnique,
       kategori
     };
 
     const { data, error } = await supabase.from('seksi').insert([newSeksi]).select();
     if (data && !error) {
       setSeksiList([...seksiList, data[0]]);
-      await logAudit('Menambah Seksi Baru', `Membuat seksi baru "${nama}" (Kategori: ${kategori}, Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
+      await logAudit('Menambah Jabatan Baru', `Membuat jabatan baru "${nama}" (Kategori: ${kategori}, Unik: ${isUnique ? 'Ya' : 'Tidak'})`);
     } else {
-      alert('Gagal membuat seksi baru: ' + (error?.message || 'Database error'));
+      alert('Gagal membuat jabatan baru: ' + (error?.message || 'Database error'));
     }
   };
 
-  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, mempunyaiSub: boolean, kategori: string) => {
+  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string) => {
     const { error } = await supabase
       .from('seksi')
-      .update({ nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub, kategori })
+      .update({ nama, deskripsi, is_unique: isUnique, kategori })
       .eq('id', id);
 
     if (!error) {
-      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub, kategori } : s)));
-      await logAudit('Mengubah Data Seksi', `Mengedit bidang seksi: "${nama}" (Kategori: ${kategori}, Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
+      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, is_unique: isUnique, kategori } : s)));
+      await logAudit('Mengubah Data Jabatan', `Mengedit jabatan: "${nama}" (Kategori: ${kategori}, Unik: ${isUnique ? 'Ya' : 'Tidak'})`);
     } else {
-      alert('Gagal menyimpan perubahan seksi: ' + error.message);
+      alert('Gagal menyimpan perubahan jabatan: ' + error.message);
     }
   };
 
