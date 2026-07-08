@@ -49,17 +49,19 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     const list: Array<{ seksi: string; jabatan: string; isUnique: boolean }> = [];
     seksiList.forEach((s) => {
       if (s.kategori === 'BOD') {
-        list.push({ seksi: s.nama, jabatan: 'Penanggung Jawab', isUnique: true });
-        list.push({ seksi: s.nama, jabatan: 'Pengawas', isUnique: true });
+        if (s.nama === 'BOD') {
+          list.push({ seksi: 'BOD', jabatan: 'Penanggung Jawab', isUnique: false });
+          list.push({ seksi: 'BOD', jabatan: 'Pengawas', isUnique: false });
+        } else {
+          list.push({ seksi: s.nama, jabatan: s.nama, isUnique: false });
+        }
       } else if (s.kategori === 'Inti') {
         if (s.nama === 'Inti') {
           list.push({ seksi: 'Inti', jabatan: 'Ketua Panitia', isUnique: true });
           list.push({ seksi: 'Inti', jabatan: 'Sekretaris', isUnique: true });
           list.push({ seksi: 'Inti', jabatan: 'Bendahara', isUnique: true });
         } else {
-          list.push({ seksi: s.nama, jabatan: `Ketua ${s.nama}`, isUnique: true });
-          list.push({ seksi: s.nama, jabatan: `Sekretaris ${s.nama}`, isUnique: true });
-          list.push({ seksi: s.nama, jabatan: `Bendahara ${s.nama}`, isUnique: true });
+          list.push({ seksi: s.nama, jabatan: s.nama, isUnique: true });
         }
       } else {
         list.push({ seksi: s.nama, jabatan: `Koordinator ${s.nama}`, isUnique: true });

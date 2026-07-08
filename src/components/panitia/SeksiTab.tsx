@@ -25,6 +25,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const [nama, setNama] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [mempunyaiSub, setMempunyaiSub] = useState(false);
+  const [kategori, setKategori] = useState('Seksi');
   const [submitting, setSubmitting] = useState(false);
 
   // Edit inline states
@@ -40,11 +41,12 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
 
     setSubmitting(true);
     try {
-      // Custom added structures are always 'Seksi' (Pengurus Harian)
-      await onAddSeksi(nama.trim(), deskripsi.trim(), mempunyaiSub, 'Seksi');
+      const subVal = kategori === 'Seksi' ? mempunyaiSub : false;
+      await onAddSeksi(nama.trim(), deskripsi.trim(), subVal, kategori);
       setNama('');
       setDeskripsi('');
       setMempunyaiSub(false);
+      setKategori('Seksi');
     } catch (err) {
       console.error(err);
     } finally {
@@ -63,7 +65,8 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const handleSaveEdit = async (id: string) => {
     if (!editNama.trim()) return;
     try {
-      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), editMempunyaiSub, editKategori);
+      const subVal = editKategori === 'Seksi' ? editMempunyaiSub : false;
+      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), subVal, editKategori);
       setEditingId(null);
     } catch (err) {
       console.error(err);
@@ -77,12 +80,25 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
         <div className="space-y-1">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
             <Plus className="h-4.5 w-4.5 text-red-500" />
-            <span>Tambah Seksi Baru</span>
+            <span>Tambah Struktur Baru</span>
           </h3>
-          <p className="text-[10px] text-slate-500">Mendaftarkan bidang / divisi baru ke dalam kepanitiaan.</p>
+          <p className="text-[10px] text-slate-500">Mendaftarkan bidang / divisi baru ke dalam struktur organisasi.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kategori Struktur</label>
+            <select
+              value={kategori}
+              onChange={(e) => setKategori(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
+            >
+              <option value="Seksi">Pengurus Harian (Seksi-seksi)</option>
+              <option value="BOD">Board of Directors (Pengawas & PJ)</option>
+              <option value="Inti">Panitia Inti (Ketua, Sekretaris, Bendahara)</option>
+            </select>
+          </div>
+
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nama Bidang / Divisi</label>
             <input
@@ -106,22 +122,24 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
             />
           </div>
 
-          {/* Option: has sub-coordinators */}
-          <div className="flex items-center space-x-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-850 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              id="mempunyaiSub"
-              checked={mempunyaiSub}
-              onChange={(e) => setMempunyaiSub(e.target.checked)}
-              className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
-            />
-            <label htmlFor="mempunyaiSub" className="text-[11px] text-slate-350 font-bold cursor-pointer leading-tight">
-              Mempunyai Sub Koordinator
-              <span className="block text-[9px] text-slate-550 font-medium mt-0.5 font-sans leading-relaxed">
-                Centang jika seksi memiliki sub-divisi/koordinator sesi (contoh: Sie Acara Pagi & Sore).
-              </span>
-            </label>
-          </div>
+          {/* Option: has sub-coordinators (Seksi only) */}
+          {kategori === 'Seksi' && (
+            <div className="flex items-center space-x-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-850 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="mempunyaiSub"
+                checked={mempunyaiSub}
+                onChange={(e) => setMempunyaiSub(e.target.checked)}
+                className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
+              />
+              <label htmlFor="mempunyaiSub" className="text-[11px] text-slate-350 font-bold cursor-pointer leading-tight">
+                Mempunyai Sub Koordinator
+                <span className="block text-[9px] text-slate-550 font-medium mt-0.5 font-sans leading-relaxed">
+                  Centang jika seksi memiliki sub-divisi/koordinator sesi (contoh: Sie Acara Pagi & Sore).
+                </span>
+              </label>
+            </div>
+          )}
 
           <button
             type="submit"
