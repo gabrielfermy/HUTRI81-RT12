@@ -93,7 +93,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     const match = panitiaList.find(
       (p) => p.seksi === pos.seksi && p.jabatan === pos.jabatan && p.id !== excludeId
     );
-    return match ? match.nama : null;
+    return match ? (match.nama || '(Belum Ada)') : null;
   };
 
   const handleAddSubmit = async (e: React.FormEvent) => {
@@ -414,7 +414,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         {p.seksi}
                       </div>
                       <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-                        {p.nama}
+                        {p.nama || <span className="text-slate-500 italic font-medium">(Belum Ada Penjabat)</span>}
                         {p.id === currentUser?.id && (
                           <span className="text-[8px] bg-red-650 text-white px-1.5 py-0.5 rounded-full font-black uppercase">Anda</span>
                         )}

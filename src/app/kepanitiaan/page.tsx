@@ -186,7 +186,7 @@ export default function KepanitiaanDashboard() {
 
       // 2. Clear panitia other than Ketua Panitia, Sekretaris, and Bendahara
       await supabase.from('panitia').delete()
-        .not('jabatan', 'in', '("Ketua Panitia","Sekretaris","Bendahara")');
+        .not('jabatan', 'in', ['Ketua Panitia', 'Sekretaris', 'Bendahara']);
 
       // Reset Sekretaris and Bendahara names to empty string and PINs to default 1212
       await supabase.from('panitia').update({ nama: '', pin_akses: '1212' }).eq('jabatan', 'Sekretaris');
