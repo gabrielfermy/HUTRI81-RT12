@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react';
 
 export default function KepanitiaanLayout({
   children,
@@ -185,8 +185,10 @@ export default function KepanitiaanLayout({
   const menuItems = [
     { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard },
     { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar },
+    { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users },
     { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign },
-    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: Users },
+    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: UserCheck },
+    { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText },
     { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert },
   ];
 

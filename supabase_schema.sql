@@ -257,3 +257,67 @@ alter publication supabase_realtime add table public.sponsorship;
 alter publication supabase_realtime add table public.pengeluaran;
 alter publication supabase_realtime add table public.audit_log;
 
+-- 9. Table: Rundown Tasks (Task Management)
+CREATE TABLE IF NOT EXISTS public.rundown_tasks (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    rundown_id UUID NOT NULL REFERENCES public.rundown(id) ON DELETE CASCADE,
+    deskripsi TEXT NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT false,
+    pic TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Rundown Tasks
+ALTER TABLE public.rundown_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for rundown_tasks" ON public.rundown_tasks FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for rundown_tasks" ON public.rundown_tasks FOR ALL USING (true) WITH CHECK (true);
+
+alter publication supabase_realtime add table public.rundown_tasks;
+
+
+-- 10. Table: Seksi (Section Management)
+CREATE TABLE IF NOT EXISTS public.seksi (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    nama TEXT NOT NULL UNIQUE,
+    deskripsi TEXT,
+    mempunyai_sub_koordinator BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Seksi
+ALTER TABLE public.seksi ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for seksi" ON public.seksi FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for seksi" ON public.seksi FOR ALL USING (true) WITH CHECK (true);
+
+alter publication supabase_realtime add table public.seksi;
+
+-- Seed default sections
+INSERT INTO public.seksi (nama, deskripsi, mempunyai_sub_koordinator) VALUES
+('Inti', 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', false),
+('Acara', 'Mengatur jalannya acara utama dan berbagai lomba', true),
+('Perlengkapan & Dekorasi', 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', false),
+('Konsumsi', 'Mengelola ketersediaan makanan & prasmanan warga', false),
+('Keamanan & Kebersihan', 'Menjaga ketertiban lingkungan dan kebersihan lokasi', false),
+('Dokumentasi', 'Mengambil dokumentasi video & foto acara', false),
+('Humas & Dana', 'Menghubungi sponsor luar dan menyebarkan info warga', false)
+ON CONFLICT (nama) DO NOTHING;
+
+
+-- 11. Table: Panitia Notes (Notepad / Catatan Penting)
+CREATE TABLE IF NOT EXISTS public.panitia_notes (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    panitia_id UUID NOT NULL REFERENCES public.panitia(id) ON DELETE CASCADE,
+    nama_panitia TEXT NOT NULL,
+    judul TEXT NOT NULL,
+    konten TEXT, -- markdown compatible content
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for Panitia Notes
+ALTER TABLE public.panitia_notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access for panitia_notes" ON public.panitia_notes FOR SELECT USING (true);
+CREATE POLICY "Allow all modifications for panitia_notes" ON public.panitia_notes FOR ALL USING (true) WITH CHECK (true);
+
+alter publication supabase_realtime add table public.panitia_notes;
+

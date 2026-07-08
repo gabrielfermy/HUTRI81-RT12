@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Calendar, Plus, Trash2, Clock, MapPin, AlignLeft, Users } from 'lucide-react';
+import { RundownTaskList } from '@/components/rundown/RundownTaskList';
 
-const sections = ['Acara', 'Perlengkapan', 'Konsumsi', 'Keamanan', 'Dokumentasi', 'Humas & Dana'];
+
 
 export default function KepanitiaanRundown() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -21,6 +22,9 @@ export default function KepanitiaanRundown() {
   const [kategori, setKategori] = useState('Utama');
   const [seksiPj, setSeksiPj] = useState<string[]>([]);
   const [instruksiInternal, setInstruksiInternal] = useState('');
+
+  // Database lists
+  const [seksiList, setSeksiList] = useState<any[]>([]);
 
   useEffect(() => {
     const userSession = localStorage.getItem('session_panitia');
@@ -38,6 +42,15 @@ export default function KepanitiaanRundown() {
 
         if (data && !error) {
           setRundownList(data);
+        }
+
+        const { data: sData } = await supabase
+          .from('seksi')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (sData) {
+          setSeksiList(sData);
         }
       } catch (err) {
         console.error('Error loading rundown:', err);
@@ -168,14 +181,18 @@ export default function KepanitiaanRundown() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tanggal</label>
-              <input
-                type="date"
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tanggal Acara</label>
+              <select
                 required
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
-              />
+              >
+                <option value="">-- Pilih Tanggal --</option>
+                <option value="2026-08-09">9 Agustus 2026 (Senam & Lomba)</option>
+                <option value="2026-08-15">15 Agustus 2026 (Gotong Royong & Perkap)</option>
+                <option value="2026-08-16">16 Agustus 2026 (Malam Tirakatan)</option>
+              </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -230,15 +247,15 @@ export default function KepanitiaanRundown() {
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Seksi Penanggung Jawab (PJ)</label>
               <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                {sections.map((sec) => (
-                  <label key={sec} className="flex items-center space-x-2 text-[10px] text-slate-300 font-semibold cursor-pointer">
+                {seksiList.map((sec) => (
+                  <label key={sec.id} className="flex items-center space-x-2 text-[10px] text-slate-300 font-semibold cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={seksiPj.includes(sec)}
-                      onChange={() => handleCheckboxChange(sec)}
+                      checked={seksiPj.includes(sec.nama)}
+                      onChange={() => handleCheckboxChange(sec.nama)}
                       className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
                     />
-                    <span>{sec}</span>
+                    <span>{sec.nama}</span>
                   </label>
                 ))}
               </div>
@@ -331,6 +348,9 @@ export default function KepanitiaanRundown() {
                       ))}
                     </div>
                   )}
+
+                  {/* Task list manager for this event */}
+                  <RundownTaskList rundownId={r.id} eventName={r.kegiatan} seksiPj={r.seksi_pj} />
                 </div>
               </div>
             ))}

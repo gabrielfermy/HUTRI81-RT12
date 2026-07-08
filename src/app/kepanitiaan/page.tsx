@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles } from 'lucide-react';
+import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles, ShieldAlert } from 'lucide-react';
 
 const seedRundown = [
   { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.', seksi_pj: ['Acara', 'Konsumsi'], instruksi_internal: 'Instruktur senam harus standby jam 05:45. Sie Konsumsi menyiapkan air mineral gelas.', kategori: 'Utama' },
@@ -37,6 +37,16 @@ const seedRab = [
   { kategori: 'Dana Cadangan', item: 'Biaya Tak Terduga', kuantitas: 1, satuan: 'Lumpsum', harga_satuan: 1900000, total_idr: 1900000 }
 ];
 
+const seedSeksi = [
+  { nama: 'Inti', deskripsi: 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', mempunyai_sub_koordinator: false },
+  { nama: 'Acara', deskripsi: 'Mengatur jalannya acara utama dan berbagai lomba', mempunyai_sub_koordinator: true },
+  { nama: 'Perlengkapan & Dekorasi', deskripsi: 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', mempunyai_sub_koordinator: false },
+  { nama: 'Konsumsi', deskripsi: 'Mengelola ketersediaan makanan & prasmanan warga', mempunyai_sub_koordinator: false },
+  { nama: 'Keamanan & Kebersihan', deskripsi: 'Menjaga ketertiban lingkungan dan kebersihan lokasi', mempunyai_sub_koordinator: false },
+  { nama: 'Dokumentasi', deskripsi: 'Mengambil dokumentasi video & foto acara', mempunyai_sub_koordinator: false },
+  { nama: 'Humas & Dana', deskripsi: 'Menghubungi sponsor luar dan menyebarkan info warga', mempunyai_sub_koordinator: false }
+];
+
 export default function KepanitiaanDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -51,6 +61,7 @@ export default function KepanitiaanDashboard() {
   const [rabCount, setRabCount] = useState(-1);
   const [rundownCount, setRundownCount] = useState(-1);
   const [seeding, setSeeding] = useState(false);
+  const [resetting, setResetting] = useState(false);
   
   // Rapat states
   const [rapatList, setRapatList] = useState<any[]>([]);
@@ -149,6 +160,44 @@ export default function KepanitiaanDashboard() {
       alert('Gagal menginisialisasi database: ' + JSON.stringify(err));
     } finally {
       setSeeding(false);
+    }
+  };
+
+  const handleResetDatabase = async () => {
+    if (!confirm('PERINGATAN KERAS! Anda akan menghapus SELURUH data transaksi, iuran, rapat, rundown, rab, audit log, dan panitia lainnya. Hanya akun dengan jabatan Ketua Panitia yang akan dipertahankan. Apakah Anda yakin?')) {
+      return;
+    }
+
+    setResetting(true);
+    try {
+      // 1. Delete dependent tables
+      await supabase.from('pengeluaran').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('sponsorship').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('rapat').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('rundown').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('rab').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('warga').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('audit_log').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('rundown_tasks').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('seksi').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('panitia_notes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+      // 2. Clear panitia other than whoever holds 'Ketua Panitia'
+      await supabase.from('panitia').delete().neq('jabatan', 'Ketua Panitia');
+
+      // 3. Re-seed default sections
+      await supabase.from('seksi').insert(seedSeksi);
+
+      // Log the audit
+      await logAudit('Mereset Seluruh Database', 'Melakukan reset database penuh dan menyisakan hanya akun Ketua Panitia.');
+
+      alert('Database berhasil direset penuh! Halaman akan dimuat ulang.');
+      window.location.reload();
+    } catch (err) {
+      console.error('Reset database failed:', err);
+      alert('Gagal mereset database: ' + JSON.stringify(err));
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -453,6 +502,28 @@ export default function KepanitiaanDashboard() {
           )}
         </div>
       </div>
+
+      {/* Danger Zone for Ketua Panitia */}
+      {currentUser?.jabatan === 'Ketua Panitia' && (
+        <div className="bg-red-950/15 border border-red-900/30 rounded-2xl p-6 space-y-4">
+          <div className="space-y-1">
+            <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
+              <ShieldAlert className="h-4.5 w-4.5 text-red-500" />
+              <span>Zona Bahaya (Ketua Panitia)</span>
+            </h4>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Menu ini bersifat destruktif. Menghapus seluruh data dinamis di database (Warga, Pengeluaran, Sponsor, Rapat, Rundown, RAB, Audit Log, dan Akun Panitia lainnya) dan mereset panitia menjadi hanya menyisakan Anda (Ketua Panitia) sebagai super admin.
+            </p>
+          </div>
+          <button
+            onClick={handleResetDatabase}
+            disabled={resetting}
+            className="px-4 py-2.5 bg-red-650 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
+          >
+            {resetting ? 'Sedang Mereset...' : 'Reset Seluruh Database'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
