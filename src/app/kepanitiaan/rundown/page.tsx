@@ -247,7 +247,7 @@ export default function KepanitiaanRundown() {
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Seksi Penanggung Jawab (PJ)</label>
               <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                {seksiList.map((sec) => (
+                {seksiList.filter((sec) => sec.kategori !== 'BOD' && sec.kategori !== 'Inti').map((sec) => (
                   <label key={sec.id} className="flex items-center space-x-2 text-[10px] text-slate-300 font-semibold cursor-pointer">
                     <input
                       type="checkbox"
