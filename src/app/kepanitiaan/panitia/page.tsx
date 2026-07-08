@@ -151,31 +151,32 @@ export default function KepanitiaanPanitia() {
   // DISPATCHERS FOR DYNAMIC SECTIONS
   // ==========================================
 
-  const handleAddSeksi = async (nama: string, deskripsi: string, mempunyaiSub: boolean) => {
+  const handleAddSeksi = async (nama: string, deskripsi: string, mempunyaiSub: boolean, kategori: string) => {
     const newSeksi = {
       nama,
       deskripsi,
-      mempunyai_sub_koordinator: mempunyaiSub
+      mempunyai_sub_koordinator: mempunyaiSub,
+      kategori
     };
 
     const { data, error } = await supabase.from('seksi').insert([newSeksi]).select();
     if (data && !error) {
       setSeksiList([...seksiList, data[0]]);
-      await logAudit('Menambah Seksi Baru', `Membuat seksi baru "${nama}" (Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
+      await logAudit('Menambah Seksi Baru', `Membuat seksi baru "${nama}" (Kategori: ${kategori}, Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
     } else {
       alert('Gagal membuat seksi baru: ' + (error?.message || 'Database error'));
     }
   };
 
-  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, mempunyaiSub: boolean) => {
+  const handleEditSeksi = async (id: string, nama: string, deskripsi: string, mempunyaiSub: boolean, kategori: string) => {
     const { error } = await supabase
       .from('seksi')
-      .update({ nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub })
+      .update({ nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub, kategori })
       .eq('id', id);
 
     if (!error) {
-      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub } : s)));
-      await logAudit('Mengubah Data Seksi', `Mengedit bidang seksi: "${nama}" (Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
+      setSeksiList(seksiList.map((s) => (s.id === id ? { ...s, nama, deskripsi, mempunyai_sub_koordinator: mempunyaiSub, kategori } : s)));
+      await logAudit('Mengubah Data Seksi', `Mengedit bidang seksi: "${nama}" (Kategori: ${kategori}, Sub-Koordinator: ${mempunyaiSub ? 'Ya' : 'Tidak'})`);
     } else {
       alert('Gagal menyimpan perubahan seksi: ' + error.message);
     }
@@ -232,7 +233,7 @@ export default function KepanitiaanPanitia() {
             }`}
           >
             <Layers className="h-4 w-4" />
-            <span>1. Manajemen Bidang Seksi</span>
+            <span>1. Manajemen Struktur Organisasi</span>
           </button>
           <button
             onClick={() => setActiveTab('panitia')}

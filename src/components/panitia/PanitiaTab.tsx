@@ -48,10 +48,19 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
   const dynamicPositions = React.useMemo(() => {
     const list: Array<{ seksi: string; jabatan: string; isUnique: boolean }> = [];
     seksiList.forEach((s) => {
-      if (s.nama === 'Inti') {
-        list.push({ seksi: 'Inti', jabatan: 'Ketua Panitia', isUnique: true });
-        list.push({ seksi: 'Inti', jabatan: 'Sekretaris', isUnique: true });
-        list.push({ seksi: 'Inti', jabatan: 'Bendahara', isUnique: true });
+      if (s.kategori === 'BOD') {
+        list.push({ seksi: s.nama, jabatan: 'Penanggung Jawab', isUnique: true });
+        list.push({ seksi: s.nama, jabatan: 'Pengawas', isUnique: true });
+      } else if (s.kategori === 'Inti') {
+        if (s.nama === 'Inti') {
+          list.push({ seksi: 'Inti', jabatan: 'Ketua Panitia', isUnique: true });
+          list.push({ seksi: 'Inti', jabatan: 'Sekretaris', isUnique: true });
+          list.push({ seksi: 'Inti', jabatan: 'Bendahara', isUnique: true });
+        } else {
+          list.push({ seksi: s.nama, jabatan: `Ketua ${s.nama}`, isUnique: true });
+          list.push({ seksi: s.nama, jabatan: `Sekretaris ${s.nama}`, isUnique: true });
+          list.push({ seksi: s.nama, jabatan: `Bendahara ${s.nama}`, isUnique: true });
+        }
       } else {
         list.push({ seksi: s.nama, jabatan: `Koordinator ${s.nama}`, isUnique: true });
         if (s.mempunyai_sub_koordinator) {
@@ -65,18 +74,33 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
 
   // Dynamic sorting for committee list based on dynamic sections
   const sortedPanitiaList = React.useMemo(() => {
-    const sectionOrder = seksiList.map(s => s.nama);
     return [...panitiaList].sort((a, b) => {
-      const idxA = sectionOrder.indexOf(a.seksi);
-      const idxB = sectionOrder.indexOf(b.seksi);
-      const rankA = idxA === -1 ? 99 : idxA;
-      const rankB = idxB === -1 ? 99 : idxB;
+      const secA = seksiList.find(s => s.nama === a.seksi);
+      const secB = seksiList.find(s => s.nama === b.seksi);
+
+      const catRank: Record<string, number> = { 'BOD': 1, 'Inti': 2, 'Seksi': 3 };
+      const rankA = secA ? (catRank[secA.kategori] || 99) : 99;
+      const rankB = secB ? (catRank[secB.kategori] || 99) : 99;
+
       if (rankA !== rankB) return rankA - rankB;
 
+      // Same category, sort by section order
+      const sectionOrder = seksiList.map(s => s.nama);
+      const sIdxA = sectionOrder.indexOf(a.seksi);
+      const sIdxB = sectionOrder.indexOf(b.seksi);
+      if (sIdxA !== sIdxB) return sIdxA - sIdxB;
+
+      // Same section, sort by jabatan priority
       if (a.seksi === 'Inti') {
         const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
         const rA = intiOrder.indexOf(a.jabatan);
         const rB = intiOrder.indexOf(b.jabatan);
+        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
+      }
+      if (a.seksi === 'BOD') {
+        const bodOrder = ['Penanggung Jawab', 'Pengawas'];
+        const rA = bodOrder.indexOf(a.jabatan);
+        const rB = bodOrder.indexOf(b.jabatan);
         return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
       }
 
@@ -103,7 +127,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     const pos = dynamicPositions[Number(selectedPosIndex)];
     if (pos.isUnique) {
       const occupant = getOccupantName(pos);
-      if (occupant) {
+      if (occupant && occupant !== '(Belum Ada)') {
         alert(`Gagal: Posisi "${pos.jabatan}" sudah ditempati oleh ${occupant}.`);
         return;
       }
@@ -128,12 +152,12 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
   };
 
   const handleSaveEditSubmit = async (id: string) => {
-    if (!editNama.trim() || editPosIndex === '') return;
+    if (editNama.trim() === '' && editingId !== id) return; // Keep blank support for vacant roles
     const pos = dynamicPositions[Number(editPosIndex)];
 
     if (pos.isUnique) {
       const occupant = getOccupantName(pos, id);
-      if (occupant) {
+      if (occupant && occupant !== '(Belum Ada)') {
         alert(`Gagal: Posisi "${pos.jabatan}" sudah ditempati oleh ${occupant}.`);
         return;
       }
@@ -356,6 +380,9 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         <div className="grid grid-cols-1 gap-4">
           {sortedPanitiaList.map((p) => {
             const isEditing = editingId === p.id;
+            const matchSeksi = seksiList.find(s => s.nama === p.seksi);
+            const categoryLabel = matchSeksi ? matchSeksi.kategori : 'Seksi';
+
             return (
               <div
                 key={p.id}
@@ -369,6 +396,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         type="text"
                         value={editNama}
                         onChange={(e) => setEditNama(e.target.value)}
+                        placeholder="Nama Penjabat"
                         className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white"
                       />
                       <select
@@ -383,7 +411,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                               key={idx}
                               value={idx}
                               disabled={!!occupant}
-                              className={occupant ? 'text-slate-600 bg-slate-900/40' : 'text-white'}
+                              className={occupant ? 'text-slate-650 bg-slate-900/50' : 'text-white'}
                             >
                               [{pos.seksi}] {pos.jabatan} {occupant ? `[Terisi: ${occupant}]` : ''}
                             </option>
@@ -410,8 +438,16 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                   /* Normal Row Details */
                   <>
                     <div className="space-y-1">
-                      <div className="text-[9px] font-black text-red-400 bg-red-650/10 border border-red-500/20 px-2 py-0.5 rounded-full w-fit uppercase tracking-wider">
-                        {p.seksi}
+                      <div className="flex items-center gap-2">
+                        <div className="text-[9px] font-black text-red-405 bg-red-650/10 border border-red-500/20 px-2 py-0.5 rounded-full w-fit uppercase tracking-wider">
+                          {p.seksi}
+                        </div>
+                        {categoryLabel === 'BOD' && (
+                          <span className="text-[8px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded-md font-black uppercase">BOD</span>
+                        )}
+                        {categoryLabel === 'Inti' && (
+                          <span className="text-[8px] bg-red-500/10 text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded-md font-black uppercase">Inti</span>
+                        )}
                       </div>
                       <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
                         {p.nama || <span className="text-slate-500 italic font-medium">(Belum Ada Penjabat)</span>}

@@ -281,6 +281,7 @@ CREATE TABLE IF NOT EXISTS public.seksi (
     nama TEXT NOT NULL UNIQUE,
     deskripsi TEXT,
     mempunyai_sub_koordinator BOOLEAN NOT NULL DEFAULT false,
+    kategori TEXT NOT NULL DEFAULT 'Seksi',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -292,14 +293,15 @@ CREATE POLICY "Allow all modifications for seksi" ON public.seksi FOR ALL USING 
 alter publication supabase_realtime add table public.seksi;
 
 -- Seed default sections
-INSERT INTO public.seksi (nama, deskripsi, mempunyai_sub_koordinator) VALUES
-('Inti', 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', false),
-('Acara', 'Mengatur jalannya acara utama dan berbagai lomba', true),
-('Perlengkapan & Dekorasi', 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', false),
-('Konsumsi', 'Mengelola ketersediaan makanan & prasmanan warga', false),
-('Keamanan & Kebersihan', 'Menjaga ketertiban lingkungan dan kebersihan lokasi', false),
-('Dokumentasi', 'Mengambil dokumentasi video & foto acara', false),
-('Humas & Dana', 'Menghubungi sponsor luar dan menyebarkan info warga', false)
+INSERT INTO public.seksi (nama, deskripsi, mempunyai_sub_koordinator, kategori) VALUES
+('BOD', 'Pengawas & Penanggung Jawab', false, 'BOD'),
+('Inti', 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', false, 'Inti'),
+('Acara', 'Mengatur jalannya acara utama dan berbagai lomba', true, 'Seksi'),
+('Perlengkapan & Dekorasi', 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', false, 'Seksi'),
+('Konsumsi', 'Mengelola ketersediaan makanan & prasmanan warga', false, 'Seksi'),
+('Keamanan & Kebersihan', 'Menjaga ketertiban lingkungan dan kebersihan lokasi', false, 'Seksi'),
+('Dokumentasi', 'Mengambil dokumentasi video & foto acara', false, 'Seksi'),
+('Humas & Dana', 'Menghubungi sponsor luar dan menyebarkan info warga', false, 'Seksi')
 ON CONFLICT (nama) DO NOTHING;
 
 

@@ -38,13 +38,14 @@ const seedRab = [
 ];
 
 const seedSeksi = [
-  { nama: 'Inti', deskripsi: 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', mempunyai_sub_koordinator: false },
-  { nama: 'Acara', deskripsi: 'Mengatur jalannya acara utama dan berbagai lomba', mempunyai_sub_koordinator: true },
-  { nama: 'Perlengkapan & Dekorasi', deskripsi: 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', mempunyai_sub_koordinator: false },
-  { nama: 'Konsumsi', deskripsi: 'Mengelola ketersediaan makanan & prasmanan warga', mempunyai_sub_koordinator: false },
-  { nama: 'Keamanan & Kebersihan', deskripsi: 'Menjaga ketertiban lingkungan dan kebersihan lokasi', mempunyai_sub_koordinator: false },
-  { nama: 'Dokumentasi', deskripsi: 'Mengambil dokumentasi video & foto acara', mempunyai_sub_koordinator: false },
-  { nama: 'Humas & Dana', deskripsi: 'Menghubungi sponsor luar dan menyebarkan info warga', mempunyai_sub_koordinator: false }
+  { nama: 'BOD', deskripsi: 'Pengawas & Penanggung Jawab', mempunyai_sub_koordinator: false, kategori: 'BOD' },
+  { nama: 'Inti', deskripsi: 'Panitia inti pengarah (Ketua, Sekretaris, Bendahara)', mempunyai_sub_koordinator: false, kategori: 'Inti' },
+  { nama: 'Acara', deskripsi: 'Mengatur jalannya acara utama dan berbagai lomba', mempunyai_sub_koordinator: true, kategori: 'Seksi' },
+  { nama: 'Perlengkapan & Dekorasi', deskripsi: 'Menyediakan dan menata kebutuhan alat/dekorasi fisik', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
+  { nama: 'Konsumsi', deskripsi: 'Mengelola ketersediaan makanan & prasmanan warga', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
+  { nama: 'Keamanan & Kebersihan', deskripsi: 'Menjaga ketertiban lingkungan dan kebersihan lokasi', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
+  { nama: 'Dokumentasi', deskripsi: 'Mengambil dokumentasi video & foto acara', mempunyai_sub_koordinator: false, kategori: 'Seksi' },
+  { nama: 'Humas & Dana', deskripsi: 'Menghubungi sponsor luar dan menyebarkan info warga', mempunyai_sub_koordinator: false, kategori: 'Seksi' }
 ];
 
 export default function KepanitiaanDashboard() {
@@ -186,12 +187,6 @@ export default function KepanitiaanDashboard() {
 
       // 2. Clear panitia other than Ketua Panitia
       await supabase.from('panitia').delete().neq('jabatan', 'Ketua Panitia');
-
-      // Insert fresh vacant slots for Sekretaris and Bendahara
-      await supabase.from('panitia').insert([
-        { nama: '', jabatan: 'Sekretaris', seksi: 'Inti', pin_akses: '1212' },
-        { nama: '', jabatan: 'Bendahara', seksi: 'Inti', pin_akses: '1212' }
-      ]);
 
       // 3. Re-seed default sections
       await supabase.from('seksi').insert(seedSeksi);
