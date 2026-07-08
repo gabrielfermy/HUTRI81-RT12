@@ -252,7 +252,7 @@ export default function KepanitiaanKeuangan() {
       <div className="flex border-b border-slate-800 space-x-1 overflow-x-auto pb-px">
         {[
           { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign },
-          { id: 'warga', label: '2. Iuran Warga (80 KK)', icon: Users },
+          { id: 'warga', label: '2. Iuran Warga', icon: Users },
           { id: 'sponsorship', label: '3. Donatur & Sponsor', icon: Award },
           { id: 'rab', label: '4. Rencana Anggaran (RAB)', icon: ShieldAlert }
         ].map((tab) => {

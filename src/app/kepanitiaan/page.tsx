@@ -56,6 +56,7 @@ export default function KepanitiaanDashboard() {
   const [totalCollected, setTotalCollected] = useState(2000000); // default is initial RT Kas
   const [totalSpent, setTotalSpent] = useState(0);
   const [lunasCount, setLunasCount] = useState(0);
+  const [totalWarga, setTotalWarga] = useState(0);
   
   // Database Empty States
   const [rabCount, setRabCount] = useState(-1);
@@ -90,6 +91,7 @@ export default function KepanitiaanDashboard() {
         // Fetch warga stats
         const { data: warga } = await supabase.from('warga').select('nominal_iuran, is_paid');
         if (warga) {
+          setTotalWarga(warga.length);
           const lunas = warga.filter((w: any) => w.is_paid);
           setLunasCount(lunas.length);
           const iuranSum = lunas.reduce((sum: number, w: any) => sum + Number(w.nominal_iuran), 0);
@@ -345,7 +347,7 @@ export default function KepanitiaanDashboard() {
             <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Iuran Warga</span>
             <CheckCircle className="h-4.5 w-4.5 text-emerald-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">{lunasCount} / 80 KK</div>
+          <div className="text-xl sm:text-2xl font-black text-white">{lunasCount} / {totalWarga} KK</div>
           <div className="text-[10px] text-slate-500 font-semibold">Tingkat pelunasan iuran wajib warga</div>
         </div>
 
