@@ -12,23 +12,8 @@ body {
   font-family: Inter, system-ui, -apple-system, sans-serif !important;
 }
 
-/* Background overrides */
-.bg-\[\#070A13\],
-.bg-slate-950 {
-  background-color: #F8FAFC !important;
-}
-
-.bg-slate-900,
-.bg-slate-900\/30,
-.bg-slate-900\/40,
-.bg-slate-900\/60,
-.bg-slate-950\/60,
-.bg-slate-950\/80 {
-  background-color: #FFFFFF !important;
-}
-
-/* Aside / Sidebar styles */
-aside.bg-slate-950 {
+/* Aside / Sidebar styles (white sidebar for admin) */
+aside {
   background-color: #FFFFFF !important;
   border-right: 1px solid #E2E8F0 !important;
 }
@@ -37,71 +22,220 @@ aside .bg-slate-900\/10 {
   background-color: #F1F5F9 !important;
 }
 
-/* Border overrides */
+/* Make all dark slate backgrounds white in light mode */
+.bg-slate-950,
+.bg-slate-900,
+.bg-slate-900\/30,
+.bg-slate-900\/40,
+.bg-slate-900\/60,
+.bg-slate-950\/60,
+.bg-slate-950\/80,
+.bg-slate-950\/20 {
+  background-color: #FFFFFF !important;
+}
+
+/* Inputs and Selects styling */
+select, input, textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+select:focus, input:focus, textarea:focus {
+  border-color: #DC2626 !important;
+}
+
+/* Borders in light mode */
 .border-slate-800,
 .border-slate-850,
 .border-slate-900 {
   border-color: #E2E8F0 !important;
 }
 
-/* Card Styling wrapper */
-.bg-slate-900\/30,
-.bg-slate-950\/60 {
-  background-color: #FFFFFF !important;
-  border: 1px solid #E2E8F0 !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.03), 0 2px 4px -2px rgb(0 0 0 / 0.03) !important;
-}
-
-/* Input Fields and Dropdowns styling */
-select.bg-slate-950,
-input.bg-slate-950,
-textarea.bg-slate-950,
-.bg-slate-950.border-slate-800 {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
-  border-color: #CBD5E1 !important;
-}
-
-select.bg-slate-950:focus,
-input.bg-slate-950:focus,
-textarea.bg-slate-950:focus {
-  border-color: #DC2626 !important; /* red focus indicator */
-}
-
-/* Typography contrast styling */
+/* Default text mapping for light mode */
 .text-white {
   color: #0F172A !important;
 }
-
 .text-slate-100 {
   color: #0F172A !important;
 }
-
 .text-slate-300,
 .text-slate-350,
 .text-slate-400 {
-  color: #334155 !important; /* dark slate body text */
+  color: #334155 !important;
 }
-
 .text-slate-450,
 .text-slate-500,
 .text-slate-550 {
-  color: #64748B !important; /* muted info text */
+  color: #64748B !important;
 }
 
-/* Exception mapping: Keep white text for primary colored buttons and status pills */
+/* ======================================================== */
+/* HERO SECTION & NAVBAR & COUNTDOWN CONTRAST PROTECTION     */
+/* (These must remain dark with white text)                */
+/* ======================================================== */
+
+/* 1. Navbar */
+nav.bg-\[\#450A0A\]\/95 {
+  background-color: #7F1D1D !important; /* Premium deep red */
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2) !important;
+}
+nav.bg-\[\#450A0A\]\/95 *, 
+nav.bg-\[\#450A0A\]\/95 a, 
+nav.bg-\[\#450A0A\]\/95 span {
+  color: #FFFFFF !important;
+}
+nav.bg-\[\#450A0A\]\/95 .text-red-300 {
+  color: #FCA5A5 !important; /* light red */
+}
+
+/* 2. Hero Section */
+section.bg-gradient-to-b {
+  background: linear-gradient(to bottom, #7F1D1D, #991B1B, #450A0A) !important; /* Deep red gradient */
+  border-bottom: 1px solid rgba(220, 38, 38, 0.2) !important;
+}
+section.bg-gradient-to-b * {
+  color: #FFFFFF !important;
+}
+section.bg-gradient-to-b h1 {
+  color: #FFFFFF !important;
+}
+section.bg-gradient-to-b p {
+  color: #F8FAFC !important;
+}
+section.bg-gradient-to-b .text-red-450,
+section.bg-gradient-to-b .text-red-400 {
+  color: #FECACA !important; /* light red */
+}
+section.bg-gradient-to-b .bg-red-600\/10 {
+  background-color: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+/* 3. Countdown Box */
+section.-mt-10 .max-w-3xl {
+  background-color: #1E293B !important; /* Slate-800 */
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+section.-mt-10 .max-w-3xl * {
+  color: #FFFFFF !important;
+}
+section.-mt-10 .max-w-3xl .text-red-400 {
+  color: #F87171 !important;
+}
+section.-mt-10 .max-w-3xl .bg-slate-950\/80 {
+  background-color: #0F172A !important; /* Slate-900 digits box */
+  border-color: #334155 !important;
+}
+section.-mt-10 .max-w-3xl .bg-slate-950\/80 span {
+  color: #FFFFFF !important;
+  background: none !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+section.-mt-10 .max-w-3xl .text-slate-500 {
+  color: #94A3B8 !important; /* light slate labels */
+}
+
+/* ======================================================== */
+/* RUNDOWN & STATS CARDS ENHANCEMENTS                      */
+/* ======================================================== */
+
+/* Rundown Cards */
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20:hover {
+  border-color: #EF4444 !important; /* Red hover border */
+  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.05) !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 h3 {
+  color: #0F172A !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 p {
+  color: #475569 !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 .text-red-400 {
+  color: #DC2626 !important; /* Red badge text */
+  background-color: #FEF2F2 !important; /* light red badge */
+  border-color: #FEE2E2 !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 .bg-slate-900 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 .bg-slate-900 * {
+  color: #475569 !important;
+}
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 .text-slate-350,
+.grid.grid-cols-1.md\:grid-cols-2 .bg-slate-900\/20 .text-slate-300 {
+  color: #475569 !important;
+}
+
+/* Main Section Containers at the bottom (Panitia List & Warga Status) */
+section.grid-cols-1.lg\:grid-cols-2 > .bg-slate-900\/20 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Inner Panitia Cards (standing out against the white container) */
+section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 {
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+}
+section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 * {
+  color: #0F172A !important;
+}
+section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 .text-red-400 {
+  color: #DC2626 !important;
+}
+
+/* Warga List Scroll Area & Items */
+.overflow-y-auto {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+}
+.overflow-y-auto .bg-slate-900\/20 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+.overflow-y-auto .bg-slate-900\/20 * {
+  color: #334155 !important;
+}
+.overflow-y-auto .bg-emerald-500\/5 {
+  background-color: #ECFDF5 !important; /* bright light green for paid */
+  border-color: #A7F3D0 !important;
+}
+.overflow-y-auto .bg-emerald-500\/5 * {
+  color: #047857 !important;
+}
+
+/* Stats Cards in Dashboard */
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03) !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 * {
+  color: #0F172A !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 .text-slate-400 {
+  color: #64748B !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+/* Keep original text white for primary colored buttons and status pills */
 button.text-white,
 a.text-white,
-.bg-red-600.text-white,
 .bg-red-650.text-white,
+.bg-red-600.text-white,
 .bg-emerald-600.text-white,
 .bg-indigo-600.text-white,
-.bg-blue-600.text-white,
-.text-emerald-450,
-.text-indigo-400,
-.text-amber-400,
-.text-red-400 {
-  color: inherit !important; /* Keep original colored text */
+.bg-blue-600.text-white {
+  color: #FFFFFF !important;
 }
 
 /* Explicit colors for solid buttons */
@@ -111,17 +245,6 @@ a.text-white,
 .bg-indigo-600,
 .bg-blue-600 {
   color: #FFFFFF !important;
-}
-
-.bg-red-600.text-white *,
-.bg-red-650.text-white *,
-.bg-emerald-600.text-white * {
-  color: #FFFFFF !important;
-}
-
-/* Hover effects */
-.hover\:text-white:hover {
-  color: #0F172A !important;
 }
 
 /* Active Sidebar navigation */
