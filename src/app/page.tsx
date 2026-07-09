@@ -69,38 +69,39 @@ export default function PublicPortal() {
   // Database Data States
   const [panitiaList, setPanitiaList] = useState<any[]>([]);
 
-  // Memoized custom sorting for committee members (Inti first, then Sections with Coordinator first)
-  const sortedPanitiaList = useMemo(() => {
-    const sectionOrder = [
-      'Inti',
-      'Acara',
-      'Perlengkapan & Dekorasi',
-      'Konsumsi',
-      'Humas & Dana',
-      'Keamanan & Kebersihan',
-      'Dokumentasi'
-    ];
-    return [...panitiaList].sort((a, b) => {
-      const idxA = sectionOrder.indexOf(a.seksi);
-      const idxB = sectionOrder.indexOf(b.seksi);
-      const rankA = idxA === -1 ? 99 : idxA;
-      const rankB = idxB === -1 ? 99 : idxB;
-      if (rankA !== rankB) return rankA - rankB;
+  // Build hierarchical groups for committee display
+  const panitiaGroups = useMemo(() => {
+    const pelindung = panitiaList.filter(p => p.seksi === 'Pelindung' || p.level === 'Pelindung');
+    const penasihat = panitiaList.filter(p => p.seksi === 'Penasihat' || p.level === 'Penasihat');
+    const inti = panitiaList.filter(p => p.seksi === 'Inti');
+    const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
+    inti.sort((a, b) => (intiOrder.indexOf(a.jabatan) === -1 ? 99 : intiOrder.indexOf(a.jabatan)) - (intiOrder.indexOf(b.jabatan) === -1 ? 99 : intiOrder.indexOf(b.jabatan)));
 
-      if (a.seksi === 'Inti') {
-        const intiOrder = ['Ketua Panitia', 'Sekretaris', 'Bendahara'];
-        const rA = intiOrder.indexOf(a.jabatan);
-        const rB = intiOrder.indexOf(b.jabatan);
-        return (rA === -1 ? 99 : rA) - (rB === -1 ? 99 : rB);
-      }
+    const harianAll = panitiaList.filter(p => !['Pelindung', 'Penasihat', 'Inti'].includes(p.seksi) && !['Pelindung', 'Penasihat'].includes(p.level));
+    const harianSeksiNames = [...new Set(harianAll.map(p => p.seksi))].filter(Boolean);
 
-      const isKoordA = a.jabatan.toLowerCase().includes('koordinator');
-      const isKoordB = b.jabatan.toLowerCase().includes('koordinator');
-      if (isKoordA && !isKoordB) return -1;
-      if (!isKoordA && isKoordB) return 1;
-
-      return a.nama.localeCompare(b.nama);
+    const harian = harianSeksiNames.map(seksiNama => {
+      const members = harianAll.filter(p => p.seksi === seksiNama);
+      const koordinators = members.filter(p => p.level === 'Koordinator');
+      return {
+        seksiNama,
+        koordinators: koordinators.map(koord => ({
+          ...koord,
+          subKoords: members.filter(p => p.level === 'Sub-Koordinator' && p.parent_id === koord.id).map(sk => ({
+            ...sk,
+            anggota: members.filter(p => p.level === 'Anggota' && p.parent_id === sk.id)
+          })),
+          anggota: members.filter(p => p.level === 'Anggota' && p.parent_id === koord.id)
+        }))
+      };
     });
+
+    return { pelindung, penasihat, inti, harian };
+  }, [panitiaList]);
+
+  // Legacy flat sorted list for fallback/other uses
+  const sortedPanitiaList = useMemo(() => {
+    return [...panitiaList].sort((a, b) => a.nama?.localeCompare(b.nama || '') || 0);
   }, [panitiaList]);
 
   const [rabList, setRabList] = useState<any[]>([]);
@@ -599,20 +600,102 @@ export default function PublicPortal() {
         {/* Section 5: Panitia & Warga Payment checklist */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* Panitia List */}
+          {/* Panitia List - Hierarchical */}
           <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
             <h3 className="text-xl font-bold text-white flex items-center space-x-2">
               <Users className="text-red-500" />
               <span>Susunan Kepanitiaan RT 12</span>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {sortedPanitiaList.map((p, index) => (
-                <div key={index} className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-3 flex flex-col justify-center">
-                  <span className="text-xs font-bold text-red-400">{p.seksi}</span>
-                  <span className="text-sm font-bold text-white">{p.nama}</span>
-                  <span className="text-[10px] text-slate-500 mt-0.5">{p.jabatan}</span>
+
+            <div className="space-y-4 text-sm">
+
+              {/* Pelindung */}
+              {panitiaGroups.pelindung.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-purple-400">Pelindung / Pembina</p>
+                  {panitiaGroups.pelindung.map((p, i) => (
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
+                      <span className="font-bold text-white">{p.nama}</span>
+                      <span className="text-xs text-purple-400">{p.jabatan !== 'Pelindung' ? p.jabatan : ''}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              {/* Penasihat */}
+              {panitiaGroups.penasihat.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Penasihat</p>
+                  {panitiaGroups.penasihat.map((p, i) => (
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
+                      <span className="font-bold text-white">{p.nama}</span>
+                      <span className="text-xs text-blue-400">{p.jabatan !== 'Penasihat' ? p.jabatan : ''}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Panitia Inti */}
+              {panitiaGroups.inti.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-red-400">Panitia Inti</p>
+                  {panitiaGroups.inti.map((p, i) => (
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
+                      <div>
+                        <span className="font-bold text-white">{p.nama}</span>
+                      </div>
+                      <span className="text-xs text-red-400 font-semibold">{p.jabatan}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Panitia Harian */}
+              {panitiaGroups.harian.length > 0 && (
+                <div className="space-y-4 pt-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Panitia Harian</p>
+                  {panitiaGroups.harian.map((seksi, si) => (
+                    <div key={si} className="space-y-2">
+                      <p className="text-xs font-black text-amber-400 uppercase tracking-wide">Seksi {seksi.seksiNama}</p>
+                      {seksi.koordinators.map((koord, ki) => (
+                        <div key={ki} className="space-y-1.5 pl-2">
+                          {/* Koordinator */}
+                          <div className="flex justify-between items-center py-1.5 border-b border-amber-900/30">
+                            <span className="font-bold text-white">{koord.nama}</span>
+                            <span className="text-xs text-amber-400 font-semibold">{koord.jabatan || 'Koordinator'}</span>
+                          </div>
+                          {/* Sub-Koordinators */}
+                          {koord.subKoords?.map((sk: any, ski: number) => (
+                            <div key={ski} className="pl-4 space-y-1">
+                              <div className="flex justify-between items-center py-1 border-b border-emerald-900/30">
+                                <span className="font-semibold text-white/90 text-xs">└ {sk.nama}</span>
+                                <span className="text-[10px] text-emerald-400 font-semibold">{sk.jabatan || 'Sub-Koordinator'}</span>
+                              </div>
+                              {sk.anggota?.map((a: any, ai: number) => (
+                                <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
+                                  <span className="text-xs text-slate-300">└ {a.nama}</span>
+                                  <span className="text-[10px] text-slate-500">Anggota</span>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                          {/* Direct Anggota (no sub-koord) */}
+                          {koord.anggota?.map((a: any, ai: number) => (
+                            <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
+                              <span className="text-xs text-slate-300">└ {a.nama}</span>
+                              <span className="text-[10px] text-slate-500">Anggota</span>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {panitiaList.length === 0 && (
+                <p className="text-xs text-slate-500 italic py-4 text-center">Memuat data kepanitiaan...</p>
+              )}
             </div>
           </div>
 

@@ -12,8 +12,8 @@ interface Seksi {
 
 interface SeksiTabProps {
   seksiList: Seksi[];
-  onAddSeksi: (nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => Promise<void>;
-  onEditSeksi: (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string) => Promise<void>;
+  onAddSeksi: (nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string, mempunyaiSubKoordinator: boolean) => Promise<void>;
+  onEditSeksi: (id: string, nama: string, deskripsi: string, isUnique: boolean, kategori: string, aksesMenu: string, mempunyaiSubKoordinator: boolean) => Promise<void>;
   onDeleteSeksi: (id: string, nama: string) => Promise<void>;
 }
 
@@ -39,6 +39,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const [deskripsi, setDeskripsi] = useState('');
   const [isUnique, setIsUnique] = useState(false);
   const [kategori, setKategori] = useState('Seksi');
+  const [mempunyaiSubKoordinator, setMempunyaiSubKoordinator] = useState(false);
   const [allowedMenus, setAllowedMenus] = useState<string[]>([
     'dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'proposal', 'backdrop'
   ]);
@@ -50,6 +51,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
   const [editDeskripsi, setEditDeskripsi] = useState('');
   const [editIsUnique, setEditIsUnique] = useState(false);
   const [editKategori, setEditKategori] = useState('Seksi');
+  const [editMempunyaiSubKoordinator, setEditMempunyaiSubKoordinator] = useState(false);
   const [editAllowedMenus, setEditAllowedMenus] = useState<string[]>([]);
 
   // Filtering & Pagination States
@@ -104,11 +106,12 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
     setSubmitting(true);
     try {
       const menuString = allowedMenus.join(',');
-      await onAddSeksi(nama.trim(), deskripsi.trim(), isUnique, kategori, menuString);
+      await onAddSeksi(nama.trim(), deskripsi.trim(), isUnique, kategori, menuString, mempunyaiSubKoordinator);
       setNama('');
       setDeskripsi('');
       setIsUnique(false);
       setKategori('Seksi');
+      setMempunyaiSubKoordinator(false);
       setAllowedMenus(['dashboard', 'rundown', 'warga', 'keuangan', 'panitia', 'catatan', 'proposal', 'backdrop']);
     } catch (err) {
       console.error(err);
@@ -123,18 +126,15 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
     setEditDeskripsi(s.deskripsi || '');
     setEditIsUnique(s.is_unique);
     setEditKategori(s.kategori || 'Seksi');
+    setEditMempunyaiSubKoordinator((s as any).mempunyai_sub_koordinator ?? false);
     setEditAllowedMenus(s.akses_menu ? s.akses_menu.split(',') : []);
   };
 
   const handleSaveEdit = async (id: string) => {
     if (!editNama.trim()) return;
     try {
-      // Force Ketua Panitia to always have full permissions
-      const finalMenus = editNama === 'Ketua Panitia'
-        ? 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop'
-        : editAllowedMenus.join(',');
-
-      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), editIsUnique, editKategori, finalMenus);
+      const finalMenus = editAllowedMenus.join(',');
+      await onEditSeksi(id, editNama.trim(), editDeskripsi.trim(), editIsUnique, editKategori, finalMenus, editMempunyaiSubKoordinator);
       setEditingId(null);
     } catch (err) {
       console.error(err);
@@ -190,22 +190,24 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
             />
           </div>
 
-          {/* Option: unique role (1 person max) */}
-          <div className="flex items-center space-x-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-850 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              id="isUnique"
-              checked={isUnique}
-              onChange={(e) => setIsUnique(e.target.checked)}
-              className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
-            />
-            <label htmlFor="isUnique" className="text-[11px] text-slate-350 font-bold cursor-pointer leading-tight">
-              Hanya Boleh Dijabat 1 Orang
-              <span className="block text-[9px] text-slate-550 font-medium mt-0.5 font-sans leading-relaxed">
-                Centang jika posisi ini bersifat unik (contoh: Ketua, Bendahara, Koordinator).
-              </span>
-            </label>
-          </div>
+          {/* Option: has sub-koordinator (only for Seksi) */}
+          {kategori === 'Seksi' && (
+            <div className="flex items-center space-x-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-850 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="mempunyaiSubKoordinator"
+                checked={mempunyaiSubKoordinator}
+                onChange={(e) => setMempunyaiSubKoordinator(e.target.checked)}
+                className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
+              />
+              <label htmlFor="mempunyaiSubKoordinator" className="text-[11px] text-slate-350 font-bold cursor-pointer leading-tight">
+                Seksi Memiliki Sub-Koordinator
+                <span className="block text-[9px] text-slate-550 font-medium mt-0.5 font-sans leading-relaxed">
+                  Aktifkan jika Koordinator tidak membawahi Anggota langsung, melainkan melalui Sub-Koordinator.
+                </span>
+              </label>
+            </div>
+          )}
 
           {/* Menu Permissions selection */}
           <div className="space-y-2 border-t border-slate-800 pt-4">
