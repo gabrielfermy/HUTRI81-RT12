@@ -117,6 +117,9 @@ export default function PublicPortal() {
   // Selected Rundown Date Tab
   const [selectedRundownDate, setSelectedRundownDate] = useState<string>('');
 
+  // Tab Navigation State
+  const [activeTab, setActiveTab] = useState<'keuangan' | 'jadwal' | 'panitia' | 'notulen'>('keuangan');
+
   // Countdown timer logic to August 9, 2026
   useEffect(() => {
     const targetDate = new Date('2026-08-09T06:00:00+07:00').getTime();
@@ -280,11 +283,36 @@ export default function PublicPortal() {
         </div>
       </section>
 
+      {/* Navigation Tabs */}
+      <div className="max-w-5xl mx-auto px-4 mt-8 w-full z-20 relative">
+        <div className="flex justify-start sm:justify-center overflow-x-auto pb-4 space-x-2 sm:space-x-4 scrollbar-hide">
+          <button onClick={() => setActiveTab('keuangan')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+            <DollarSign className="h-4.5 w-4.5" />
+            <span>Keuangan & Donasi</span>
+          </button>
+          <button onClick={() => setActiveTab('jadwal')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+            <Calendar className="h-4.5 w-4.5" />
+            <span>Jadwal Acara</span>
+          </button>
+          <button onClick={() => setActiveTab('panitia')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+            <Users className="h-4.5 w-4.5" />
+            <span>Susunan Panitia</span>
+          </button>
+          <button onClick={() => setActiveTab('notulen')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+            <FileText className="h-4.5 w-4.5" />
+            <span>Notulen Rapat</span>
+          </button>
+        </div>
+      </div>
+
       {/* Main Grid Content */}
-      <div className="max-w-7xl mx-auto px-4 py-16 w-full space-y-16">
+      <div className="max-w-7xl mx-auto px-4 py-8 w-full space-y-12">
         
-        {/* Section 1: Dashboard Keuangan & Realisasi Belanja */}
-        <section className="space-y-8">
+        {/* TAB: KEUANGAN & DONASI */}
+        {activeTab === 'keuangan' && (
+          <div className="space-y-12 animate-fadeIn">
+            {/* Section 1: Dashboard Keuangan & Realisasi Belanja */}
+            <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
               <DollarSign className="text-red-500" />
@@ -375,9 +403,14 @@ export default function PublicPortal() {
             </div>
           </div>
         </section>
+          </div>
+        )}
 
-        {/* Section 2: Jadwal Acara & Rundown */}
-        <section className="space-y-8">
+        {/* TAB: JADWAL */}
+        {activeTab === 'jadwal' && (
+          <div className="space-y-8 animate-fadeIn">
+            {/* Section 2: Jadwal Acara & Rundown */}
+            <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
               <Calendar className="text-red-500" />
@@ -448,9 +481,14 @@ export default function PublicPortal() {
             )}
           </div>
         </section>
+          </div>
+        )}
 
-        {/* Section 3: Notulensi Rapat Panitia */}
-        <section className="space-y-8">
+        {/* TAB: NOTULEN */}
+        {activeTab === 'notulen' && (
+          <div className="space-y-8 animate-fadeIn">
+            {/* Section 3: Notulensi Rapat Panitia */}
+            <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
               <FileText className="text-red-500" />
@@ -496,9 +534,14 @@ export default function PublicPortal() {
             })}
           </div>
         </section>
+          </div>
+        )}
 
-        {/* Section 4: Sponsor & Donatur */}
-        <section className="space-y-8">
+        {/* TAB: KEUANGAN (Lanjutan Sponsor) */}
+        {activeTab === 'keuangan' && (
+          <div className="space-y-12 animate-fadeIn">
+            {/* Section 4: Sponsor & Donatur */}
+            <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
               <Heart className="text-red-500" />
@@ -596,12 +639,14 @@ export default function PublicPortal() {
             </div>
           </div>
         </section>
+          </div>
+        )}
 
-        {/* Section 5: Panitia & Warga Payment checklist */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Panitia List - Hierarchical */}
-          <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+        {/* TAB: PANITIA */}
+        {activeTab === 'panitia' && (
+          <div className="space-y-8 animate-fadeIn max-w-4xl mx-auto w-full">
+            {/* Panitia List - Hierarchical */}
+            <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
             <h3 className="text-xl font-bold text-white flex items-center space-x-2">
               <Users className="text-red-500" />
               <span>Susunan Kepanitiaan RT 12</span>
@@ -698,9 +743,14 @@ export default function PublicPortal() {
               )}
             </div>
           </div>
+        </div>
+        )}
 
-          {/* Payment Status (Public Read Only Checklist) */}
-          <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col">
+        {/* TAB: KEUANGAN (Lanjutan Status Iuran) */}
+        {activeTab === 'keuangan' && (
+          <div className="space-y-12 animate-fadeIn max-w-3xl mx-auto w-full">
+            {/* Payment Status (Public Read Only Checklist) */}
+            <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col h-[500px]">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold text-white flex items-center space-x-2">
                 <CheckCircle2 className="text-red-500" />
@@ -742,8 +792,9 @@ export default function PublicPortal() {
             <p className="text-[10px] text-slate-500 italic mt-auto">
               *Pembaruan status pembayaran dilakukan oleh Bendahara melalui panel Akses Panitia secara resmi.
             </p>
+            </div>
           </div>
-        </section>
+        )}
 
       </div>
     </div>
