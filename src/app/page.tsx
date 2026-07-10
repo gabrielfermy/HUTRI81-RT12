@@ -668,12 +668,12 @@ export default function PublicPortal() {
                           {koord.subKoords?.map((sk: any, ski: number) => (
                             <div key={ski} className="pl-4 space-y-1">
                               <div className="flex justify-between items-center py-1 border-b border-emerald-900/30">
-                                <span className="font-semibold text-white/90 text-xs">└ {sk.nama}</span>
+                                <span className="font-semibold text-white opacity-90 text-xs">└ {sk.nama}</span>
                                 <span className="text-[10px] text-emerald-400 font-semibold">{sk.jabatan || 'Sub-Koordinator'}</span>
                               </div>
                               {sk.anggota?.map((a: any, ai: number) => (
                                 <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                                  <span className="text-xs text-slate-300">└ {a.nama}</span>
+                                  <span className="text-xs text-white opacity-80">└ {a.nama}</span>
                                   <span className="text-[10px] text-slate-500">Anggota</span>
                                 </div>
                               ))}
@@ -682,7 +682,7 @@ export default function PublicPortal() {
                           {/* Direct Anggota (no sub-koord) */}
                           {koord.anggota?.map((a: any, ai: number) => (
                             <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                              <span className="text-xs text-slate-300">└ {a.nama}</span>
+                              <span className="text-xs text-white opacity-80">└ {a.nama}</span>
                               <span className="text-[10px] text-slate-500">Anggota</span>
                             </div>
                           ))}
@@ -711,7 +711,7 @@ export default function PublicPortal() {
               </span>
             </div>
 
-            <div className="overflow-y-auto max-h-72 border border-slate-800/60 rounded-xl p-2 bg-slate-950/20 space-y-2">
+            <div className="overflow-y-auto flex-grow border border-slate-800/60 rounded-xl p-2 bg-slate-950/20 space-y-2">
               {wargaList.map((w) => (
                 <div
                   key={w.id}
@@ -724,7 +724,9 @@ export default function PublicPortal() {
                     <span className="text-xs text-slate-500">({w.blok})</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-semibold text-slate-400">Rp {Number(w.nominal_iuran).toLocaleString('id-ID')}</span>
+                    <span className={`text-xs font-bold ${w.is_paid ? 'text-emerald-500' : 'text-slate-500'}`}>
+                      {w.is_paid ? 'LUNAS' : 'BELUM LUNAS'}
+                    </span>
                     {w.is_paid ? (
                       <CheckCircle2 className="h-5 w-5 text-emerald-500" />
                     ) : (

@@ -60,7 +60,7 @@ export default function KepanitiaanLayout({
             .single();
 
           if (user.seksi === 'Inti') {
-            user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+            user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat';
           } else if (user.level === 'Anggota') {
             // Anggota hanya bisa membuka dashboard dan catatan
             user.akses_menu = 'dashboard,catatan';
@@ -96,6 +96,7 @@ export default function KepanitiaanLayout({
       else if (pathname.startsWith('/kepanitiaan/panitia')) pathKey = 'panitia';
       else if (pathname.startsWith('/kepanitiaan/catatan')) pathKey = 'catatan';
       else if (pathname.startsWith('/kepanitiaan/logs')) pathKey = 'logs';
+      else if (pathname.startsWith('/kepanitiaan/rapat')) pathKey = 'rapat';
 
       if (pathKey && !userAccess.includes(pathKey)) {
         alert('Akses Ditolak: Anda tidak memiliki izin untuk membuka halaman ini.');
@@ -132,7 +133,7 @@ export default function KepanitiaanLayout({
           .single();
 
         if (matched.seksi === 'Inti') {
-          sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+          sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat';
         } else if (matched.level === 'Anggota') {
           // Anggota hanya bisa membuka dashboard dan catatan
           sessionData.akses_menu = 'dashboard,catatan';
@@ -255,6 +256,7 @@ export default function KepanitiaanLayout({
     { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
     { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
     { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText, key: 'catatan' },
+    { name: 'Notulen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
     { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
   ].filter((item) => userAccess.includes(item.key));
 
