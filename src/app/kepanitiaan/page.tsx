@@ -476,7 +476,7 @@ export default function KepanitiaanDashboard() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
             >
               Simpan Jadwal Rapat
             </button>
@@ -581,7 +581,7 @@ export default function KepanitiaanDashboard() {
 
       {/* Danger Zone for Ketua Panitia */}
       {currentUser?.jabatan === 'Ketua Panitia' && (
-        <div className="bg-red-950/15 border border-red-900/30 rounded-2xl p-6 space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 space-y-4">
           <div className="space-y-1">
             <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
               <ShieldAlert className="h-4.5 w-4.5 text-red-500" />
@@ -594,7 +594,7 @@ export default function KepanitiaanDashboard() {
           <button
             onClick={handleResetDatabase}
             disabled={resetting}
-            className="px-4 py-2.5 bg-red-600 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
+            className="px-4 py-2.5 bg-red-600 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
           >
             {resetting ? 'Sedang Mereset...' : 'Reset Seluruh Database'}
           </button>
