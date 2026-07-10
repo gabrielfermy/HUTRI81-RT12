@@ -246,13 +246,13 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <span>Portal Informasi Warga RT 12 Pelem Kidul</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
             Pesta Rakyat HUT RI Ke-81
           </h1>
           <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-white">
             "Guyub Rukun Membangun Negeri"
           </p>
-          <p className="max-w-2xl mx-auto text-slate-500 text-sm sm:text-base leading-relaxed">
+          <p className="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed">
             Portal transparansi publik resmi. Memuat jadwal acara teraktual, susunan kepanitiaan, hingga pelaporan kas masuk dan realisasi belanja aktual secara real-time.
           </p>
         </div>
