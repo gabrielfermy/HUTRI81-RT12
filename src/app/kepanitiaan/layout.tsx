@@ -198,19 +198,32 @@ export default function KepanitiaanLayout({
                 className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-red-500 transition-colors"
               >
                 <option value="">-- Pilih Anggota --</option>
+
                 {Object.keys(panitiaList.reduce((acc: any, p: any) => {
                   if (!acc[p.seksi]) acc[p.seksi] = [];
                   acc[p.seksi].push(p);
                   return acc;
-                }, {})).sort().map(seksi => {
+                }, {})).sort((a: string, b: string) => {
+                  const orderMap: Record<string, number> = { 'Pelindung': 1, 'Pembina': 1, 'Penasihat': 2, 'Inti': 3 };
+                  const orderA = orderMap[a] || 99;
+                  const orderB = orderMap[b] || 99;
+                  if (orderA !== orderB) return orderA - orderB;
+                  return a.localeCompare(b);
+                }).map(seksi => {
                   const grouped = panitiaList.reduce((acc: any, p: any) => {
                     if (!acc[p.seksi]) acc[p.seksi] = [];
                     acc[p.seksi].push(p);
                     return acc;
                   }, {});
                   const members = grouped[seksi].sort((a: any, b: any) => a.nama.localeCompare(b.nama));
+                  
+                  let label = `Seksi ${seksi}`;
+                  if (seksi === 'Inti') label = 'Panitia Inti';
+                  if (seksi === 'Penasihat') label = 'Kelompok Penasihat';
+                  if (seksi === 'Pelindung' || seksi === 'Pembina') label = 'Pembina / Pelindung';
+
                   return (
-                    <optgroup key={seksi} label={`Seksi: ${seksi}`}>
+                    <optgroup key={seksi} label={label}>
                       {members.map((p: any) => (
                         <option key={p.id} value={p.id}>
                           {p.nama}
