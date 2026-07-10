@@ -647,6 +647,17 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             const koordinators = seksiMembers.filter(p => p.level === 'Koordinator');
             const isExpanded = expandedSeksi.has('all') || expandedSeksi.has(seksiNama);
 
+            // Find orphaned members (those whose parent_id doesn't link to a valid rendered koord/subkoord)
+            const validKoordIds = new Set(koordinators.map(k => k.id));
+            const validSubKoordIds = new Set(seksiMembers.filter(p => p.level === 'Sub-Koordinator' && validKoordIds.has(p.parent_id)).map(sk => sk.id));
+            
+            const orphanedMembers = seksiMembers.filter(p => {
+              if (p.level === 'Koordinator') return false;
+              if (p.level === 'Sub-Koordinator') return !validKoordIds.has(p.parent_id);
+              if (p.level === 'Anggota') return !validKoordIds.has(p.parent_id) && !validSubKoordIds.has(p.parent_id);
+              return true;
+            });
+
             return (
               <div key={seksiNama} className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 {/* Seksi header */}
@@ -782,6 +793,31 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         </div>
                       );
                     })}
+
+                    {/* Orphaned Members (No valid parent) */}
+                    {orphanedMembers.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-red-100 space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>Anggota Tanpa Atasan ({orphanedMembers.length})</span>
+                          <span className="text-[10px] font-normal text-red-400 ml-auto">(Silakan Edit untuk memilih atasan)</span>
+                        </div>
+                        <div className="space-y-1.5">
+                          {orphanedMembers.map(orphan => (
+                            <div key={orphan.id}>
+                              {editingId === orphan.id ? (
+                                <EditInlineRow p={orphan} editNama={editNama} setEditNama={setEditNama}
+                                  editJabatan={editJabatan} setEditJabatan={setEditJabatan}
+                                  onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
+                              ) : (
+                                <MemberRow p={orphan} currentUser={currentUser} isInti={isInti}
+                                  onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
