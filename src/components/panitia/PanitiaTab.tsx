@@ -63,7 +63,7 @@ const MemberRow = ({
       </div>
     </div>
     {isInti && (
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 shrink-0">
         <button onClick={() => onEdit(p)} title="Edit" className="p-1 text-slate-400 hover:text-blue-500 rounded-lg transition-colors">
           <Edit2 className="h-3 w-3" />
         </button>
@@ -583,7 +583,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                   <LevelBadge level="Koordinator" />
                                 </div>
                                 {isInti && (
-                                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <div className="flex gap-1 shrink-0">
                                     <button onClick={() => handleStartEdit(koord)} className="p-1 text-amber-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
                                     <button onClick={() => onResetPin(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-amber-600 rounded"><Key className="h-3 w-3" /></button>
                                     {koord.id !== currentUser?.id && (
@@ -616,7 +616,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                         <span className="ml-1.5 text-[8px] bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded-md font-black uppercase">Sub-Koord</span>
                                       </div>
                                       {isInti && (
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex gap-1 shrink-0">
                                           <button onClick={() => handleStartEdit(sk)} className="p-1 text-emerald-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
                                           <button onClick={() => onResetPin(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-amber-500 rounded"><Key className="h-3 w-3" /></button>
                                           {sk.id !== currentUser?.id && (
