@@ -296,10 +296,10 @@ export default function KepanitiaanDashboard() {
   return (
     <div className="space-y-10">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/40 border border-slate-800 rounded-2xl p-6 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/40 border border-slate-200 rounded-2xl p-6 gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-white">Selamat Datang, {currentUser?.nama || 'Panitia'}!</h1>
-          <p className="text-xs text-slate-400 mt-1">Dasbor koordinasi terpusat HUT RI Ke-81 RT 12 Pelem Kidul.</p>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">Selamat Datang, {currentUser?.nama || 'Panitia'}!</h1>
+          <p className="text-xs text-slate-600 mt-1">Dasbor koordinasi terpusat HUT RI Ke-81 RT 12 Pelem Kidul.</p>
         </div>
         <div className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">
           Akses: {currentUser?.jabatan || 'Anggota'}
@@ -314,14 +314,14 @@ export default function KepanitiaanDashboard() {
               <Sparkles className="h-4.5 w-4.5 text-amber-450 animate-pulse" />
               <span>Database Operasional Kosong</span>
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600">
               Apakah Anda ingin menginisialisasi database dengan data awal default (5 Acara & 14 Pos RAB)?
             </p>
           </div>
           <button
             onClick={handleSeedData}
             disabled={seeding}
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shrink-0 disabled:opacity-50"
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-slate-900 text-xs font-bold rounded-xl transition-all shadow-md shrink-0 disabled:opacity-50"
           >
             {seeding ? 'Sedang Memproses...' : 'Inisialisasi Data Awal'}
           </button>
@@ -330,39 +330,39 @@ export default function KepanitiaanDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+        <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Kas Terkumpul</span>
+            <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Kas Terkumpul</span>
             <DollarSign className="h-4.5 w-4.5 text-emerald-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">Rp {totalCollected.toLocaleString('id-ID')}</div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900">Rp {totalCollected.toLocaleString('id-ID')}</div>
           <div className="text-[10px] text-slate-500 font-semibold">Target: Rp 12.000.000 | RT Kas + Iuran + Sponsor</div>
         </div>
 
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+        <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Realisasi Belanja</span>
+            <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Realisasi Belanja</span>
             <DollarSign className="h-4.5 w-4.5 text-indigo-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">Rp {totalSpent.toLocaleString('id-ID')}</div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900">Rp {totalSpent.toLocaleString('id-ID')}</div>
           <div className="text-[10px] text-slate-500 font-semibold">Belanja riil terpakai panitia</div>
         </div>
 
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+        <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Iuran Warga</span>
+            <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Iuran Warga</span>
             <CheckCircle className="h-4.5 w-4.5 text-emerald-400" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">{lunasCount} / {totalWarga} KK</div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900">{lunasCount} / {totalWarga} KK</div>
           <div className="text-[10px] text-slate-500 font-semibold">Tingkat pelunasan iuran wajib warga</div>
         </div>
 
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-4">
+        <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Agenda Rapat</span>
+            <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Agenda Rapat</span>
             <Calendar className="h-4.5 w-4.5 text-red-500" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-white">{rapatList.length} Kali</div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900">{rapatList.length} Kali</div>
           <div className="text-[10px] text-slate-500 font-semibold">Total rapat evaluasi kepanitiaan</div>
         </div>
       </div>
@@ -371,9 +371,9 @@ export default function KepanitiaanDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Add Meeting Form */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-6 h-fit">
+        <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Plus className="h-5 w-5 text-red-500" />
               <span>Jadwalkan Rapat</span>
             </h3>
@@ -382,57 +382,57 @@ export default function KepanitiaanDashboard() {
 
           <form onSubmit={handleAddRapat} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Agenda Rapat</label>
+              <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Agenda Rapat</label>
               <input
                 type="text"
                 required
                 value={agenda}
                 onChange={(e) => setAgenda(e.target.value)}
                 placeholder="Contoh: Rapat Pleno 2 Hadiah Lomba"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tanggal</label>
+                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Tanggal</label>
                 <input
                   type="date"
                   required
                   value={tanggal}
                   onChange={(e) => setTanggal(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Waktu</label>
+                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Waktu</label>
                 <input
                   type="text"
                   required
                   value={waktu}
                   onChange={(e) => setWaktu(e.target.value)}
                   placeholder="Contoh: 19:30 - selesai"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tempat Pertemuan</label>
+              <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Tempat Pertemuan</label>
               <input
                 type="text"
                 required
                 value={tempat}
                 onChange={(e) => setTempat(e.target.value)}
                 placeholder="Contoh: Rumah Pak RT 12"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all"
             >
               Simpan Jadwal Rapat
             </button>
@@ -440,9 +440,9 @@ export default function KepanitiaanDashboard() {
         </div>
 
         {/* Meeting Minutes Editor & List */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <FileText className="h-5 w-5 text-red-500" />
               <span>Notulen Rapat Resmi</span>
             </h3>
@@ -451,7 +451,7 @@ export default function KepanitiaanDashboard() {
 
           {activeRapatId ? (
             /* Markdown Editor view */
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-bold text-red-400">Menyunting Notulen</span>
                 <span className="text-[10px] text-slate-500">Format teks bebas (mendukung Markdown)</span>
@@ -461,7 +461,7 @@ export default function KepanitiaanDashboard() {
                 value={notulenContent}
                 onChange={(e) => setNotulenContent(e.target.value)}
                 placeholder="Tulis keputusan di sini (e.g. ## Kesepakatan:\n1. Beli soto ayam 200 porsi...)"
-                className="w-full bg-slate-900 border border-slate-850 rounded-lg p-3 text-xs text-slate-200 focus:outline-none focus:border-red-500 font-mono"
+                className="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-mono"
               />
               <div className="flex justify-end space-x-2">
                 <button
@@ -469,13 +469,13 @@ export default function KepanitiaanDashboard() {
                     setActiveRapatId(null);
                     setNotulenContent('');
                   }}
-                  className="px-4 py-2 border border-slate-800 hover:bg-slate-900 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all"
+                  className="px-4 py-2 border border-slate-200 hover:bg-white text-slate-600 hover:text-slate-900 rounded-lg text-xs font-bold transition-all"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleSaveNotulen}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 rounded-lg text-xs font-bold transition-all"
                 >
                   Simpan Notulen
                 </button>
@@ -485,24 +485,24 @@ export default function KepanitiaanDashboard() {
             /* Meeting List View */
             <div className="space-y-4">
               {rapatList.map((r, index) => (
-                <div key={index} className="bg-slate-950/40 border border-slate-850 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-red-500/10 transition-colors">
+                <div key={index} className="bg-slate-50/40 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-red-500/10 transition-colors">
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2">
                       <Clock className="h-3.5 w-3.5 text-slate-500" />
-                      <span className="text-xs text-slate-400 font-semibold">
+                      <span className="text-xs text-slate-600 font-semibold">
                         {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </span>
-                      <span className="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-[9px] bg-slate-200 text-slate-600 border border-slate-300 px-2 py-0.5 rounded-full font-bold">
                         {r.waktu}
                       </span>
                     </div>
-                    <h4 className="text-sm font-bold text-white">{r.agenda}</h4>
-                    <p className="text-xs text-slate-500">Tempat: <span className="text-slate-400 font-medium">{r.tempat}</span></p>
+                    <h4 className="text-sm font-bold text-slate-900">{r.agenda}</h4>
+                    <p className="text-xs text-slate-500">Tempat: <span className="text-slate-600 font-medium">{r.tempat}</span></p>
                   </div>
 
                   <button
                     onClick={() => handleOpenNotulenEditor(r)}
-                    className="px-3.5 py-2 bg-red-600/10 hover:bg-red-650 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
+                    className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-slate-900 text-xs font-bold rounded-xl transition-all"
                   >
                     {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
                   </button>
@@ -524,14 +524,14 @@ export default function KepanitiaanDashboard() {
               <ShieldAlert className="h-4.5 w-4.5 text-red-500" />
               <span>Zona Bahaya (Ketua Panitia)</span>
             </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Menu ini bersifat destruktif. Menghapus seluruh data dinamis di database (Warga, Pengeluaran, Sponsor, Rapat, Rundown, RAB, Audit Log, dan Akun Panitia lainnya) dan mereset panitia menjadi hanya menyisakan Anda (Ketua Panitia) sebagai super admin.
             </p>
           </div>
           <button
             onClick={handleResetDatabase}
             disabled={resetting}
-            className="px-4 py-2.5 bg-red-650 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
+            className="px-4 py-2.5 bg-red-600 hover:bg-red-600 text-slate-900 text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
           >
             {resetting ? 'Sedang Mereset...' : 'Reset Seluruh Database'}
           </button>
@@ -540,3 +540,4 @@ export default function KepanitiaanDashboard() {
     </div>
   );
 }
+

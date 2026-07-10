@@ -260,7 +260,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
       {/* Countdown Timer Section */}
       <section className="-mt-10 px-4 relative z-20">
-        <div className="max-w-3xl mx-auto bg-slate-900/90 backdrop-blur-md border border-red-500/30 rounded-2xl shadow-xl shadow-red-600/5 p-6 sm:p-8">
+        <div className="max-w-3xl mx-auto bg-slate-100/90 backdrop-blur-md border border-red-500/30 rounded-2xl shadow-xl shadow-red-600/5 p-6 sm:p-8">
           <div className="flex items-center justify-center space-x-2 text-red-400 font-semibold mb-6">
             <Clock className="h-5 w-5 animate-spin-slow" />
             <span className="tracking-widest uppercase text-xs sm:text-sm">Menuju Kegiatan Sesi 1 (9 Agustus 2026)</span>
@@ -272,7 +272,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
               { label: 'Menit', value: timeLeft.minutes },
               { label: 'Detik', value: timeLeft.seconds },
             ].map((t) => (
-              <div key={t.label} className="bg-slate-950/80 border border-slate-200 rounded-xl p-3 sm:p-5">
+              <div key={t.label} className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-5">
                 <span className="text-2xl sm:text-5xl font-extrabold text-slate-900 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
                   {String(t.value).padStart(2, '0')}
                 </span>
@@ -288,19 +288,19 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
       {/* Navigation Tabs */}
       <div className="max-w-5xl mx-auto px-4 mt-8 w-full z-20 relative">
         <div className="flex justify-start sm:justify-center overflow-x-auto pb-4 space-x-2 sm:space-x-4 scrollbar-hide">
-          <button onClick={() => { setActiveTab('keuangan'); router.push('/keuangan-donasi', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('keuangan'); router.push('/keuangan-donasi', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <DollarSign className="h-4.5 w-4.5" />
             <span>Keuangan & Donasi</span>
           </button>
-          <button onClick={() => { setActiveTab('jadwal'); router.push('/jadwal-acara', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('jadwal'); router.push('/jadwal-acara', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Calendar className="h-4.5 w-4.5" />
             <span>Jadwal Acara</span>
           </button>
-          <button onClick={() => { setActiveTab('panitia'); router.push('/susunan-panitia', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('panitia'); router.push('/susunan-panitia', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Users className="h-4.5 w-4.5" />
             <span>Susunan Panitia</span>
           </button>
-          <button onClick={() => { setActiveTab('notulen'); router.push('/jadwal-rapat', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('notulen'); router.push('/jadwal-rapat', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <FileText className="h-4.5 w-4.5" />
             <span>Jadwal Rapat</span>
           </button>
@@ -325,7 +325,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Box 1: Pendanaan Progress */}
-            <div className="bg-slate-900/30 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+            <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between space-y-6">
               <div>
                 <h3 className="text-base font-bold text-slate-900 mb-1">Status Penggalangan Dana</h3>
                 <p className="text-xs text-slate-500">Target anggaran ideal Rp {totalTarget.toLocaleString('id-ID')}</p>
@@ -338,7 +338,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   </span>
                   <span className="text-xs text-slate-500 font-semibold">{progressPercentage}% Terkumpul</span>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-3 p-0.5 border border-slate-700">
+                <div className="w-full bg-slate-200 rounded-full h-3 p-0.5 border border-slate-300">
                   <div
                     className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-1000"
                     style={{ width: `${progressPercentage}%` }}
@@ -363,7 +363,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             </div>
 
             {/* Box 2: Realisasi Anggaran (RAB vs Aktual) */}
-            <div className="bg-slate-900/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+            <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
               <div>
                 <h3 className="text-base font-bold text-slate-900 mb-1">Realisasi Anggaran Per Kategori</h3>
                 <p className="text-xs text-slate-500">Perbandingan antara Rencana Belanja (RAB) dengan realisasi pengeluaran riil.</p>
@@ -376,13 +376,13 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                     return (
                       <div key={index} className="space-y-1">
                         <div className="flex justify-between text-xs font-semibold">
-                          <span className="text-slate-300">{item.category}</span>
+                          <span className="text-slate-600">{item.category}</span>
                           <span className="text-slate-500">
                             <span className="text-slate-900 font-bold">Rp {item.actual.toLocaleString('id-ID')}</span>
                             <span> / Rp {item.planned.toLocaleString('id-ID')}</span>
                           </span>
                         </div>
-                        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full ${ratio > 100 ? 'bg-red-500' : 'bg-red-600'}`}
                             style={{ width: `${Math.min(ratio, 100)}%` }}
@@ -437,8 +437,8 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                     onClick={() => setSelectedRundownDate(dateStr)}
                     className={`px-5 py-3 text-xs sm:text-sm font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 ${
                       isActive
-                        ? 'border-red-500 text-red-400 bg-slate-900/40'
-                        : 'border-transparent text-slate-450 hover:text-slate-200'
+                        ? 'border-red-500 text-red-400 bg-slate-100/40'
+                        : 'border-transparent text-slate-450 hover:text-slate-700'
                     }`}
                   >
                     {formattedDate}
@@ -455,7 +455,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   <span className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
                     {new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </span>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold bg-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg">
+                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
                     <Clock className="h-3.5 w-3.5 text-red-500" />
                     <span>{item.jam_mulai} - {item.jam_selesai} WIB</span>
                   </div>
@@ -470,7 +470,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   <div className="pt-3 border-t border-slate-200/50 flex flex-wrap gap-1.5 items-center">
                     <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mr-1">Penanggung Jawab:</span>
                     {item.seksi_pj.map((pj: string, i: number) => (
-                      <span key={i} className="text-[10px] font-semibold text-slate-300 bg-slate-100 border border-slate-700 px-2 py-0.5 rounded-md">
+                      <span key={i} className="text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-md">
                         {pj}
                       </span>
                     ))}
@@ -503,17 +503,17 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             {rapatList.map((r, index) => {
               const isExpanded = expandedRapatId === r.id;
               return (
-                <div key={index} className="bg-slate-900/30 border border-slate-200 rounded-xl overflow-hidden transition-all duration-300">
+                <div key={index} className="bg-slate-100/30 border border-slate-200 rounded-xl overflow-hidden transition-all duration-300">
                   <div
                     onClick={() => setExpandedRapatId(isExpanded ? null : r.id)}
-                    className="p-5 flex justify-between items-center cursor-pointer hover:bg-slate-900/60 transition-colors"
+                    className="p-5 flex justify-between items-center cursor-pointer hover:bg-slate-100/60 transition-colors"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2.5">
                         <span className="text-xs text-slate-500 font-semibold">
                           {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </span>
-                        <span className="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-full font-bold">
+                        <span className="text-[10px] bg-slate-200 text-slate-600 border border-slate-300 px-2 py-0.5 rounded-full font-bold">
                           {r.waktu}
                         </span>
                       </div>
@@ -527,7 +527,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   </div>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-slate-950/20 text-slate-300 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
+                    <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-white shadow-sm/20 text-slate-600 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
                       {r.notulen || 'Notulen rapat belum dimasukkan.'}
                     </div>
                   )}
@@ -577,14 +577,14 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             {/* Gold Card */}
             <div className="bg-slate-300/5 border border-slate-400/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
               <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-slate-300 uppercase bg-slate-300/10 border border-slate-300/20 px-2.5 py-1 rounded-full w-fit block">
+                <span className="text-[10px] font-black tracking-widest text-slate-600 uppercase bg-slate-300/10 border border-slate-300/20 px-2.5 py-1 rounded-full w-fit block">
                   Gold Sponsor
                 </span>
                 <div className="space-y-1">
                   {sponsorList.filter(s => s.tipe === 'Gold').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-slate-700/50">
+                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-slate-300/50">
                       <span>{s.nama}</span>
-                      <span className="text-xs text-slate-300">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                      <span className="text-xs text-slate-600">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
                     </div>
                   ))}
                   {sponsorList.filter(s => s.tipe === 'Gold').length === 0 && (
@@ -812,12 +812,12 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
               </span>
             </div>
 
-            <div className="overflow-y-auto flex-grow border border-slate-200/60 rounded-xl p-2 bg-slate-950/20 space-y-2">
+            <div className="overflow-y-auto flex-grow border border-slate-200/60 rounded-xl p-2 bg-white shadow-sm/20 space-y-2">
               {wargaList.map((w) => (
                 <div
                   key={w.id}
                   className={`flex items-center justify-between p-3 rounded-lg border text-sm transition-all ${
-                    w.is_paid ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-slate-900/20 border-slate-200'
+                    w.is_paid ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-slate-50 border-slate-200'
                   }`}
                 >
                   <div className="flex items-center space-x-2.5">
@@ -851,5 +851,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
     </div>
   );
 }
+
 
 
