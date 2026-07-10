@@ -2,12 +2,12 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight } from 'lucide-react';
+import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 // Static Fallback Data
 const fallbackPanitia = [
-  { nama: 'Gabriel Fermy Aswinta', seksi: 'Inti', jabatan: 'Ketua Panitia' },
+  { nama: 'Gabriel Fermy Aswinta', seksi: 'Inti', jabatan: 'Ketua Panitia', no_wa: '081234567890' },
   { nama: 'Mas Ikhsan', seksi: 'Inti', jabatan: 'Sekretaris' },
   { nama: 'Pak Tri', seksi: 'Inti', jabatan: 'Bendahara' }
 ];
@@ -300,7 +300,7 @@ export default function PublicPortal() {
           </button>
           <button onClick={() => setActiveTab('notulen')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
             <FileText className="h-4.5 w-4.5" />
-            <span>Notulen Rapat</span>
+            <span>Jadwal Rapat</span>
           </button>
         </div>
       </div>
@@ -492,9 +492,9 @@ export default function PublicPortal() {
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
               <FileText className="text-red-500" />
-              <span>Notulen Rapat Panitia</span>
+              <span>Jadwal Rapat Panitia</span>
             </h2>
-            <p className="text-sm text-slate-400">Transparansi jalannya rapat, koordinasi, dan keputusan yang diambil.</p>
+            <p className="text-sm text-slate-400">Jadwal rapat/kegiatan panitia. Hasil/notulen rapat dapat dilihat jika kegiatan telah terlaksana.</p>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-4">
@@ -519,7 +519,7 @@ export default function PublicPortal() {
                       <p className="text-xs text-slate-500">Tempat: <strong className="text-slate-400">{r.tempat}</strong></p>
                     </div>
                     <span className="text-xs font-bold text-red-400 hover:text-red-300 flex items-center">
-                      {isExpanded ? 'Tutup Notulen' : 'Baca Hasil Rapat'}
+                      {isExpanded ? 'Tutup Detail' : 'Lihat Detail / Notulen'}
                       <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
                     </span>
                   </div>
@@ -660,7 +660,14 @@ export default function PublicPortal() {
                   <p className="text-[10px] font-black uppercase tracking-widest text-purple-400">Pelindung / Pembina</p>
                   {panitiaGroups.pelindung.map((p, i) => (
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
-                      <span className="font-bold text-white">{p.nama}</span>
+                      <span className="font-bold text-white flex items-center">
+                        {p.nama}
+                        {p.no_wa && (
+                          <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
+                            <MessageCircle className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </span>
                       <span className="text-xs text-purple-400">{p.jabatan !== 'Pelindung' ? p.jabatan : ''}</span>
                     </div>
                   ))}
@@ -673,7 +680,14 @@ export default function PublicPortal() {
                   <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Penasihat</p>
                   {panitiaGroups.penasihat.map((p, i) => (
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
-                      <span className="font-bold text-white">{p.nama}</span>
+                      <span className="font-bold text-white flex items-center">
+                        {p.nama}
+                        {p.no_wa && (
+                          <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
+                            <MessageCircle className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </span>
                       <span className="text-xs text-blue-400">{p.jabatan !== 'Penasihat' ? p.jabatan : ''}</span>
                     </div>
                   ))}
@@ -687,7 +701,14 @@ export default function PublicPortal() {
                   {panitiaGroups.inti.map((p, i) => (
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
                       <div>
-                        <span className="font-bold text-white">{p.nama}</span>
+                        <span className="font-bold text-white flex items-center">
+                          {p.nama}
+                          {p.no_wa && (
+                            <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
+                              <MessageCircle className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                        </span>
                       </div>
                       <span className="text-xs text-red-400 font-semibold">{p.jabatan}</span>
                     </div>
@@ -706,19 +727,40 @@ export default function PublicPortal() {
                         <div key={ki} className="space-y-1.5 pl-2">
                           {/* Koordinator */}
                           <div className="flex justify-between items-center py-1.5 border-b border-amber-900/30">
-                            <span className="font-bold text-white">{koord.nama}</span>
+                            <span className="font-bold text-white flex items-center">
+                              {koord.nama}
+                              {koord.no_wa && (
+                                <a href={`https://wa.me/${koord.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${koord.nama}`}>
+                                  <MessageCircle className="h-3.5 w-3.5" />
+                                </a>
+                              )}
+                            </span>
                             <span className="text-xs text-amber-400 font-semibold">{koord.jabatan || 'Koordinator'}</span>
                           </div>
                           {/* Sub-Koordinators */}
                           {koord.subKoords?.map((sk: any, ski: number) => (
                             <div key={ski} className="pl-4 space-y-1">
                               <div className="flex justify-between items-center py-1 border-b border-emerald-900/30">
-                                <span className="font-semibold text-white opacity-90 text-xs">└ {sk.nama}</span>
+                                <span className="font-semibold text-white opacity-90 text-xs flex items-center">
+                                  └ {sk.nama}
+                                  {sk.no_wa && (
+                                    <a href={`https://wa.me/${sk.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${sk.nama}`}>
+                                      <MessageCircle className="h-3 w-3" />
+                                    </a>
+                                  )}
+                                </span>
                                 <span className="text-[10px] text-emerald-400 font-semibold">{sk.jabatan || 'Sub-Koordinator'}</span>
                               </div>
                               {sk.anggota?.map((a: any, ai: number) => (
                                 <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                                  <span className="text-xs text-white opacity-80">└ {a.nama}</span>
+                                  <span className="text-xs text-white opacity-80 flex items-center">
+                                    └ {a.nama}
+                                    {a.no_wa && (
+                                      <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
+                                        <MessageCircle className="h-3 w-3" />
+                                      </a>
+                                    )}
+                                  </span>
                                   <span className="text-[10px] text-slate-500">Anggota</span>
                                 </div>
                               ))}
@@ -727,7 +769,14 @@ export default function PublicPortal() {
                           {/* Direct Anggota (no sub-koord) */}
                           {koord.anggota?.map((a: any, ai: number) => (
                             <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                              <span className="text-xs text-white opacity-80">└ {a.nama}</span>
+                              <span className="text-xs text-white opacity-80 flex items-center">
+                                └ {a.nama}
+                                {a.no_wa && (
+                                  <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
+                                    <MessageCircle className="h-3 w-3" />
+                                  </a>
+                                )}
+                              </span>
                               <span className="text-[10px] text-slate-500">Anggota</span>
                             </div>
                           ))}
