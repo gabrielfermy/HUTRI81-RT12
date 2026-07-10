@@ -296,7 +296,7 @@ export default function KepanitiaanPanitia() {
       <div className="flex-grow flex items-center justify-center min-h-[50vh]">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
-          <p className="text-xs text-slate-400">Memuat Data Kepanitiaan...</p>
+          <p className="text-xs text-slate-500">Memuat Data Kepanitiaan...</p>
         </div>
       </div>
     );

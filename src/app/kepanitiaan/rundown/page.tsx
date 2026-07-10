@@ -151,16 +151,16 @@ export default function KepanitiaanRundown() {
   return (
     <div className="space-y-10">
       <div className="border-b border-slate-900 pb-4">
-        <h1 className="text-xl sm:text-2xl font-black text-white">Manajer Rundown & Kegiatan</h1>
-        <p className="text-xs text-slate-400 mt-1">Mengelola poin susunan acara secara dinamis dan mendetail untuk panitia.</p>
+        <h1 className="text-xl sm:text-2xl font-black text-slate-900">Manajer Rundown & Kegiatan</h1>
+        <p className="text-xs text-slate-500 mt-1">Mengelola poin susunan acara secara dinamis dan mendetail untuk panitia.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Form Add Rundown */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-6 h-fit">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
               <Plus className="h-4.5 w-4.5 text-red-500" />
               <span>Tambah Acara Baru</span>
             </h3>
@@ -169,24 +169,24 @@ export default function KepanitiaanRundown() {
 
           <form onSubmit={handleAddRundown} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nama Kegiatan</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nama Kegiatan</label>
               <input
                 type="text"
                 required
                 value={kegiatan}
                 onChange={(e) => setKegiatan(e.target.value)}
                 placeholder="e.g. Makan Malam Soto Prasmanan"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tanggal Acara</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tanggal Acara</label>
               <select
                 required
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               >
                 <option value="">-- Pilih Tanggal --</option>
                 <option value="2026-08-09">9 Agustus 2026 (Senam & Lomba)</option>
@@ -197,35 +197,35 @@ export default function KepanitiaanRundown() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Jam Mulai</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Jam Mulai</label>
                 <input
                   type="text"
                   required
                   placeholder="06:00"
                   value={jamMulai}
                   onChange={(e) => setJamMulai(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 text-center"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Jam Selesai</label>
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Jam Selesai</label>
                 <input
                   type="text"
                   required
                   placeholder="07:30"
                   value={jamSelesai}
                   onChange={(e) => setJamSelesai(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 text-center"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kategori</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kategori</label>
               <select
                 value={kategori}
                 onChange={(e) => setKategori(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               >
                 <option value="Utama">Utama (Umum)</option>
                 <option value="Lomba Anak">Lomba Anak-Anak</option>
@@ -234,26 +234,26 @@ export default function KepanitiaanRundown() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Keterangan Umum (Warga)</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Keterangan Umum (Warga)</label>
               <textarea
                 rows={2}
                 value={keterangan}
                 onChange={(e) => setKeterangan(e.target.value)}
                 placeholder="Informasi acara yang bisa dibaca oleh warga umum..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Seksi Penanggung Jawab (PJ)</label>
-              <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Seksi Penanggung Jawab (PJ)</label>
+              <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 {seksiList.filter((sec) => sec.kategori !== 'BOD' && sec.kategori !== 'Inti').map((sec) => (
-                  <label key={sec.id} className="flex items-center space-x-2 text-[10px] text-slate-300 font-semibold cursor-pointer">
+                  <label key={sec.id} className="flex items-center space-x-2 text-[10px] text-slate-600 font-semibold cursor-pointer">
                     <input
                       type="checkbox"
                       checked={seksiPj.includes(sec.nama)}
                       onChange={() => handleCheckboxChange(sec.nama)}
-                      className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
+                      className="rounded border-slate-200 bg-slate-900 text-red-500 focus:ring-0"
                     />
                     <span>{sec.nama}</span>
                   </label>
@@ -262,19 +262,19 @@ export default function KepanitiaanRundown() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Instruksi Internal Panitia (Rahasia)</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Instruksi Internal Panitia (Rahasia)</label>
               <textarea
                 rows={3}
                 value={instruksiInternal}
                 onChange={(e) => setInstruksiInternal(e.target.value)}
                 placeholder="Catatan persiapan panitia (e.g. Sie Perkap wajib membawa obor minyak H-1 jam...)"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all"
             >
               Simpan Rundown Acara
             </button>
@@ -282,10 +282,10 @@ export default function KepanitiaanRundown() {
         </div>
 
         {/* Rundown List View */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
           <div className="flex justify-between items-center">
             <div className="space-y-1">
-              <h3 className="text-base font-bold text-white">Daftar Rundown Terjadwal</h3>
+              <h3 className="text-base font-bold text-slate-900">Daftar Rundown Terjadwal</h3>
               <p className="text-xs text-slate-500">Mencakup instruksi internal dan opsi hapus.</p>
             </div>
             {/* Open Printable Rundown Link */}
@@ -300,26 +300,26 @@ export default function KepanitiaanRundown() {
 
           <div className="space-y-6">
             {rundownList.map((r, index) => (
-              <div key={index} className="bg-slate-950 border border-slate-850 rounded-2xl p-5 space-y-4 hover:border-red-500/15 transition-all">
+              <div key={index} className="bg-slate-50 border border-slate-850 rounded-2xl p-5 space-y-4 hover:border-red-500/15 transition-all">
                 <div className="flex justify-between items-start">
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2">
                       <span className="text-[10px] font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                         {new Date(r.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })}
                       </span>
-                      <span className="text-[9px] bg-slate-900 text-slate-400 border border-slate-800 px-2 py-0.5 rounded-md font-bold">
+                      <span className="text-[9px] bg-slate-900 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-bold">
                         {r.jam_mulai} - {r.jam_selesai} WIB
                       </span>
-                      <span className="text-[9px] bg-slate-900 text-slate-400 border border-slate-800 px-2 py-0.5 rounded-md font-bold">
+                      <span className="text-[9px] bg-slate-900 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-bold">
                         Kat: {r.kategori}
                       </span>
                     </div>
-                    <h4 className="text-base font-bold text-white">{r.kegiatan}</h4>
+                    <h4 className="text-base font-bold text-slate-900">{r.kegiatan}</h4>
                   </div>
                   
                   <button
                     onClick={() => handleDeleteRundown(r.id, r.kegiatan)}
-                    className="p-2 border border-slate-800 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
+                    className="p-2 border border-slate-200 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
                   >
                     <Trash2 className="h-4.5 w-4.5" />
                   </button>
@@ -328,7 +328,7 @@ export default function KepanitiaanRundown() {
                 <div className="text-xs space-y-2 border-t border-slate-900 pt-3">
                   <div>
                     <span className="text-slate-500 font-bold uppercase text-[9px] tracking-wider block mb-0.5">Keterangan Umum:</span>
-                    <p className="text-slate-300 leading-relaxed">{r.keterangan || 'Tidak ada keterangan umum.'}</p>
+                    <p className="text-slate-600 leading-relaxed">{r.keterangan || 'Tidak ada keterangan umum.'}</p>
                   </div>
 
                   {r.instruksi_internal && (
@@ -342,7 +342,7 @@ export default function KepanitiaanRundown() {
                     <div className="flex flex-wrap gap-1.5 items-center pt-2">
                       <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mr-1">PJ Seksi:</span>
                       {r.seksi_pj.map((pj: string, i: number) => (
-                        <span key={i} className="text-[9px] font-bold text-slate-300 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">
+                        <span key={i} className="text-[9px] font-bold text-slate-600 bg-slate-900 border border-slate-200 px-2 py-0.5 rounded">
                           {pj}
                         </span>
                       ))}

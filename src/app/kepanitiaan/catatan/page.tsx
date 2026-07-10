@@ -181,21 +181,21 @@ export default function KepanitiaanCatatan() {
       .replace(/>/g, "&gt;");
 
     // Headers
-    html = html.replace(/^### (.*$)/gim, '<h4 class="text-sm font-bold text-white mt-4 mb-2">$1</h4>');
-    html = html.replace(/^## (.*$)/gim, '<h3 class="text-base font-bold text-white mt-4 mb-2">$1</h3>');
-    html = html.replace(/^# (.*$)/gim, '<h2 class="text-lg font-black text-white mt-4 mb-2 border-b border-slate-900 pb-1">$1</h2>');
+    html = html.replace(/^### (.*$)/gim, '<h4 class="text-sm font-bold text-slate-900 mt-4 mb-2">$1</h4>');
+    html = html.replace(/^## (.*$)/gim, '<h3 class="text-base font-bold text-slate-900 mt-4 mb-2">$1</h3>');
+    html = html.replace(/^# (.*$)/gim, '<h2 class="text-lg font-black text-slate-900 mt-4 mb-2 border-b border-slate-900 pb-1">$1</h2>');
 
     // Bold
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>');
 
     // Italics
     html = html.replace(/\*(.*?)\*/g, '<em class="italic text-slate-350">$1</em>');
 
     // Code
-    html = html.replace(/`(.*?)`/g, '<code class="bg-slate-950 px-1.5 py-0.5 rounded text-red-400 font-mono text-[10px]">$1</code>');
+    html = html.replace(/`(.*?)`/g, '<code class="bg-slate-50 px-1.5 py-0.5 rounded text-red-400 font-mono text-[10px]">$1</code>');
 
     // Lists
-    html = html.replace(/^\-\s(.*$)/gim, '<li class="list-disc list-inside text-slate-300 ml-4 my-1">$1</li>');
+    html = html.replace(/^\-\s(.*$)/gim, '<li class="list-disc list-inside text-slate-600 ml-4 my-1">$1</li>');
 
     // Line breaks
     html = html.replace(/\n/g, '<br/>');
@@ -218,10 +218,10 @@ export default function KepanitiaanCatatan() {
 
   if (loading) {
     return (
-      <div className="flex-grow flex items-center justify-center bg-slate-950 text-white min-h-[50vh]">
+      <div className="flex-grow flex items-center justify-center bg-slate-50 text-slate-900 min-h-[50vh]">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
-          <p className="text-xs text-slate-400">Memuat Catatan Panitia...</p>
+          <p className="text-xs text-slate-500">Memuat Catatan Panitia...</p>
         </div>
       </div>
     );
@@ -232,11 +232,11 @@ export default function KepanitiaanCatatan() {
       {/* Header */}
       <div className="border-b border-slate-900 pb-4 flex justify-between items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
             <FileText className="h-5 w-5 text-red-500" />
             <span>Catatan & Agenda Penting</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             {isSuperAdmin
               ? 'Panel Super Admin: Anda dapat memantau dan mengelola catatan pribadi seluruh panitia.'
               : 'Gunakan notepad pribadi ini untuk mencatat todo, nomor penting, atau rancangan teks acara.'}
@@ -245,7 +245,7 @@ export default function KepanitiaanCatatan() {
 
         <button
           onClick={handleCreateNote}
-          className="flex items-center space-x-2 px-4 py-2 bg-red-650 hover:bg-red-600 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
+          className="flex items-center space-x-2 px-4 py-2 bg-red-650 hover:bg-red-600 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg"
         >
           <Plus className="h-4 w-4" />
           <span>Buat Catatan Baru</span>
@@ -255,10 +255,10 @@ export default function KepanitiaanCatatan() {
       {/* Main Grid Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Sidebar Notes Directory */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-4 space-y-4 lg:col-span-1 h-fit">
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-4 lg:col-span-1 h-fit">
           <div className="space-y-1">
             <span className="block text-[10px] text-slate-500 font-extrabold uppercase tracking-wide">Direktori Catatan</span>
-            <span className="text-xs text-slate-300 font-bold">Daftar Notepad</span>
+            <span className="text-xs text-slate-600 font-bold">Daftar Notepad</span>
           </div>
 
           <div className="space-y-2">
@@ -268,7 +268,7 @@ export default function KepanitiaanCatatan() {
               placeholder="Cari kata kunci..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-850 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-600 focus:outline-none focus:border-red-500"
             />
 
             {/* Author filter (Admin Only) */}
@@ -276,7 +276,7 @@ export default function KepanitiaanCatatan() {
               <select
                 value={selectedUserFilter}
                 onChange={(e) => setSelectedUserFilter(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-600 focus:outline-none focus:border-red-500"
               >
                 <option value="ALL">Semua Panitia</option>
                 {uniqueAuthors.map(auth => (
@@ -295,11 +295,11 @@ export default function KepanitiaanCatatan() {
                 className={`p-3 rounded-xl border cursor-pointer select-none transition-all flex flex-col justify-between ${
                   activeNote?.id === n.id
                     ? 'bg-red-500/5 border-red-500/20 text-red-400'
-                    : 'bg-slate-950/40 border-slate-900 text-slate-450 hover:border-slate-800'
+                    : 'bg-slate-50/40 border-slate-900 text-slate-450 hover:border-slate-200'
                 }`}
               >
                 <div>
-                  <span className="block text-[11px] font-bold text-white truncate">{n.judul}</span>
+                  <span className="block text-[11px] font-bold text-slate-900 truncate">{n.judul}</span>
                   {isSuperAdmin && (
                     <span className="inline-flex items-center text-[9px] text-slate-550 font-bold mt-1">
                       <User className="h-2.5 w-2.5 mr-0.5 text-slate-650" />
@@ -328,7 +328,7 @@ export default function KepanitiaanCatatan() {
         </div>
 
         {/* Note Editor Area */}
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-3 space-y-4 relative min-h-[550px] flex flex-col">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-3 space-y-4 relative min-h-[550px] flex flex-col">
           {/* Toast Notification */}
           <div
             id="save-toast"
@@ -350,19 +350,19 @@ export default function KepanitiaanCatatan() {
                     type="text"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
-                    className="bg-transparent text-base font-bold text-white focus:outline-none border-b border-transparent focus:border-slate-800 w-full max-w-lg"
+                    className="bg-transparent text-base font-bold text-slate-900 focus:outline-none border-b border-transparent focus:border-slate-200 w-full max-w-lg"
                   />
                 </div>
 
                 <div className="flex items-center space-x-2 shrink-0">
                   {/* Editor Mode Swappers */}
-                  <div className="flex bg-slate-950 p-1 border border-slate-850 rounded-xl">
+                  <div className="flex bg-slate-50 p-1 border border-slate-850 rounded-xl">
                     <button
                       onClick={() => setEditorMode('edit')}
                       className={`px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center space-x-1.5 transition-all ${
                         editorMode === 'edit'
-                          ? 'bg-slate-900 text-white shadow'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-slate-900 text-slate-900 shadow'
+                          : 'text-slate-500 hover:text-slate-700'
                       }`}
                     >
                       <Edit3 className="h-3.5 w-3.5" />
@@ -372,8 +372,8 @@ export default function KepanitiaanCatatan() {
                       onClick={() => setEditorMode('preview')}
                       className={`px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center space-x-1.5 transition-all ${
                         editorMode === 'preview'
-                          ? 'bg-slate-900 text-white shadow'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-slate-900 text-slate-900 shadow'
+                          : 'text-slate-500 hover:text-slate-700'
                       }`}
                     >
                       <Eye className="h-3.5 w-3.5" />
@@ -384,7 +384,7 @@ export default function KepanitiaanCatatan() {
                   {/* Save button */}
                   <button
                     onClick={handleSaveNote}
-                    className="flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
+                    className="flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg"
                   >
                     <Save className="h-3.5 w-3.5" />
                     <span>Simpan</span>
@@ -399,12 +399,12 @@ export default function KepanitiaanCatatan() {
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                     placeholder="Tulis konten catatan dengan format Markdown di sini... (e.g. # Judul, **teks tebal**, - list)"
-                    className="w-full flex-grow bg-slate-950/40 border border-slate-900 rounded-xl p-4 text-xs text-slate-200 font-medium font-sans leading-relaxed focus:outline-none focus:border-red-500/20 resize-none min-h-[350px]"
+                    className="w-full flex-grow bg-slate-50/40 border border-slate-900 rounded-xl p-4 text-xs text-slate-700 font-medium font-sans leading-relaxed focus:outline-none focus:border-red-500/20 resize-none min-h-[350px]"
                   />
                 ) : (
                   <div 
                     dangerouslySetInnerHTML={{ __html: renderMarkdown(editContent) }}
-                    className="w-full flex-grow bg-slate-950/20 border border-transparent rounded-xl p-4 text-xs text-slate-300 font-sans leading-relaxed overflow-y-auto min-h-[350px]"
+                    className="w-full flex-grow bg-slate-50/20 border border-transparent rounded-xl p-4 text-xs text-slate-600 font-sans leading-relaxed overflow-y-auto min-h-[350px]"
                   />
                 )}
               </div>

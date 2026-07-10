@@ -35,15 +35,15 @@ export default function KepanitiaanLogs() {
       {/* Page Header */}
       <div className="border-b border-slate-900 pb-4 flex justify-between items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
             <ShieldAlert className="text-red-500" />
             <span>Audit Log Aktivitas Panitia</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">Daftar rekaman perubahan data penting di dalam sistem secara real-time.</p>
+          <p className="text-xs text-slate-500 mt-1">Daftar rekaman perubahan data penting di dalam sistem secara real-time.</p>
         </div>
         <button
           onClick={loadLogs}
-          className="flex items-center space-x-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 px-3.5 py-2 rounded-xl transition-all"
+          className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-slate-900 bg-slate-900 border border-slate-200 hover:border-slate-700 px-3.5 py-2 rounded-xl transition-all"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Segarkan Log</span>
@@ -57,7 +57,7 @@ export default function KepanitiaanLogs() {
           {logs.map((log) => (
             <div
               key={log.id}
-              className="bg-slate-950 border border-slate-850 rounded-xl p-5 hover:border-red-500/10 transition-colors"
+              className="bg-slate-50 border border-slate-850 rounded-xl p-5 hover:border-red-500/10 transition-colors"
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div className="space-y-1">
@@ -65,14 +65,14 @@ export default function KepanitiaanLogs() {
                     <span className="text-[10px] font-black text-red-400 bg-red-600/10 border border-red-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
                       {log.aksi}
                     </span>
-                    <span className="text-xs font-extrabold text-white">
+                    <span className="text-xs font-extrabold text-slate-900">
                       {log.nama_panitia}
                     </span>
                   </div>
                   <p className="text-xs text-slate-350 leading-relaxed font-medium">{log.detail}</p>
                 </div>
 
-                <div className="flex items-center space-x-1.5 text-[10px] text-slate-500 font-semibold bg-slate-900/40 border border-slate-900 px-2.5 py-1 rounded-lg shrink-0">
+                <div className="flex items-center space-x-1.5 text-[10px] text-slate-500 font-semibold bg-slate-50 border border-slate-900 px-2.5 py-1 rounded-lg shrink-0">
                   <Clock className="h-3.5 w-3.5 text-slate-500" />
                   <span>
                     {new Date(log.created_at).toLocaleDateString('id-ID', {
