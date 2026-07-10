@@ -36,27 +36,27 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-6 relative">
+      <div className="bg-slate-100 border border-slate-200 rounded-2xl w-full max-w-md p-6 space-y-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white"
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-900"
         >
           <X className="h-5 w-5" />
         </button>
         <div className="space-y-1">
-          <h3 className="text-base font-bold text-white">Pencatatan Pembayaran Iuran</h3>
+          <h3 className="text-base font-bold text-slate-900">Pencatatan Pembayaran Iuran</h3>
           <p className="text-[10px] text-slate-500">Sesuaikan nominal kontribusi iuran atau sumbangan sukarela warga.</p>
         </div>
         
-        <div className="p-3 bg-slate-950/60 border border-slate-850 rounded-xl space-y-1">
+        <div className="p-3 bg-white/60 border border-slate-200 rounded-xl space-y-1">
           <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wide">Nama Warga / Blok</span>
-          <span className="block text-xs text-white font-bold">{warga.nama}</span>
-          <span className="block text-[10px] text-slate-400 font-semibold">{warga.blok}</span>
+          <span className="block text-xs text-slate-900 font-bold">{warga.nama}</span>
+          <span className="block text-[10px] text-slate-500 font-semibold">{warga.blok}</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
               Nominal Pembayaran Diterima (Rp)
             </label>
             <input
@@ -65,7 +65,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
               value={nominal}
               onChange={(e) => setNominal(Number(e.target.value))}
               placeholder="0"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-sm text-white font-extrabold text-right focus:outline-none focus:border-red-500 tracking-wide"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-3 text-sm text-slate-900 font-extrabold text-right focus:outline-none focus:border-red-500 tracking-wide"
             />
             <span className="block text-[10px] text-slate-500 font-medium italic mt-1 leading-relaxed">
               *Masukkan nominal pembayaran (standar Rp 50.000). Ketik 0 atau kosongkan untuk menyetel kembali status warga menjadi Belum Membayar.
@@ -76,14 +76,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-slate-800 hover:bg-slate-950 rounded-xl text-xs text-slate-400 transition-colors"
+              className="px-4 py-2 border border-slate-200 hover:bg-white rounded-xl text-xs text-slate-500 transition-colors"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/10 disabled:opacity-50"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/10 disabled:opacity-50"
             >
               {submitting ? 'Menyimpan...' : 'Simpan Pembayaran'}
             </button>
@@ -93,3 +93,4 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
     </div>
   );
 };
+

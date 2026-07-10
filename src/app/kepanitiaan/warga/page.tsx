@@ -327,10 +327,10 @@ export default function KepanitiaanWarga() {
 
   if (loading) {
     return (
-      <div className="flex-grow flex items-center justify-center bg-slate-950 text-white min-h-[50vh]">
+      <div className="flex-grow flex items-center justify-center bg-white text-slate-900 min-h-[50vh]">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
-          <p className="text-xs text-slate-400">Memuat Data Warga...</p>
+          <p className="text-xs text-slate-500">Memuat Data Warga...</p>
         </div>
       </div>
     );
@@ -339,23 +339,23 @@ export default function KepanitiaanWarga() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="border-b border-slate-900 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="border-b border-slate-200 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-white">Manajemen Warga RT 12</h1>
-          <p className="text-xs text-slate-400 mt-1">Kelola data warga kepala keluarga dan sesuaikan kontribusi iuran wajib / sumbangan.</p>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">Manajemen Warga RT 12</h1>
+          <p className="text-xs text-slate-500 mt-1">Kelola data warga kepala keluarga dan sesuaikan kontribusi iuran wajib / sumbangan.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={handleImportGoogleSheets}
             disabled={importing}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-200 font-bold text-xs rounded-xl transition-all disabled:opacity-50 shrink-0"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all disabled:opacity-50 shrink-0"
           >
             <FileSpreadsheet className="h-4 w-4 text-emerald-500" />
             <span>{importing ? 'Mengimpor...' : 'Import dari Google Sheet'}</span>
           </button>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
           >
             <Plus className="h-4 w-4" />
             <span>Tambah KK Baru</span>
@@ -366,18 +366,18 @@ export default function KepanitiaanWarga() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Warga */}
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-          <div className="flex justify-between items-center text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <div className="bg-slate-100/20 border border-slate-200/80 rounded-2xl p-5 space-y-3">
+          <div className="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
             <span>Total Warga</span>
             <Users className="h-4.5 w-4.5 text-blue-400" />
           </div>
-          <div className="text-2xl font-black text-white">{totalWarga} KK</div>
+          <div className="text-2xl font-black text-slate-900">{totalWarga} KK</div>
           <p className="text-[10px] text-slate-500 font-medium">Terdaftar di lingkungan RT 12</p>
         </div>
 
         {/* Sudah Lunas */}
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-          <div className="flex justify-between items-center text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <div className="bg-slate-100/20 border border-slate-200/80 rounded-2xl p-5 space-y-3">
+          <div className="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
             <span>Sudah Lunas</span>
             <CheckCircle className="h-4.5 w-4.5 text-emerald-400" />
           </div>
@@ -386,8 +386,8 @@ export default function KepanitiaanWarga() {
         </div>
 
         {/* Belum Lunas */}
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-          <div className="flex justify-between items-center text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <div className="bg-slate-100/20 border border-slate-200/80 rounded-2xl p-5 space-y-3">
+          <div className="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
             <span>Belum Lunas</span>
             <AlertCircle className="h-4.5 w-4.5 text-red-400" />
           </div>
@@ -396,18 +396,18 @@ export default function KepanitiaanWarga() {
         </div>
 
         {/* Dana Terkumpul */}
-        <div className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-          <div className="flex justify-between items-center text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <div className="bg-slate-100/20 border border-slate-200/80 rounded-2xl p-5 space-y-3">
+          <div className="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
             <span>Dana Terkumpul</span>
             <DollarSign className="h-4.5 w-4.5 text-emerald-400" />
           </div>
-          <div className="text-2xl font-black text-white">Rp {totalCollected.toLocaleString('id-ID')}</div>
+          <div className="text-2xl font-black text-slate-900">Rp {totalCollected.toLocaleString('id-ID')}</div>
           <p className="text-[10px] text-slate-500 font-medium">Akumulasi iuran lunas warga</p>
         </div>
       </div>
 
       {/* Filters & Table */}
-      <div className="bg-slate-900/10 border border-slate-800 rounded-2xl p-6 space-y-6">
+      <div className="bg-slate-100/10 border border-slate-200 rounded-2xl p-6 space-y-6">
         <div className="flex flex-col md:flex-row gap-4 justify-between">
           <div className="relative flex-grow max-w-md">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
@@ -418,7 +418,7 @@ export default function KepanitiaanWarga() {
               placeholder="Cari nama kepala keluarga atau blok..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
@@ -426,7 +426,7 @@ export default function KepanitiaanWarga() {
             <select
               value={filterBlok}
               onChange={(e) => setFilterBlok(e.target.value)}
-              className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-red-500"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-red-500"
             >
               <option value="ALL">Semua Blok</option>
               <option value="Blok A">Blok A</option>
@@ -438,7 +438,7 @@ export default function KepanitiaanWarga() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-red-500"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-red-500"
             >
               <option value="ALL">Semua Status</option>
               <option value="LUNAS">Lunas</option>
@@ -448,10 +448,10 @@ export default function KepanitiaanWarga() {
         </div>
 
         {/* Warga Table */}
-        <div className="overflow-x-auto border border-slate-850 rounded-xl">
+        <div className="overflow-x-auto border border-slate-200 rounded-xl">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-950 border-b border-slate-850 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="bg-white border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                 <th className="py-3.5 px-4">Nama Kepala Keluarga</th>
                 <th className="py-3.5 px-4 text-center">Blok</th>
                 <th className="py-3.5 px-4 text-right">Nominal Iuran</th>
@@ -462,10 +462,10 @@ export default function KepanitiaanWarga() {
             </thead>
             <tbody>
               {filteredWarga.map((w) => (
-                <tr key={w.id} className="border-b border-slate-900 hover:bg-slate-900/10">
-                  <td className="py-3.5 px-4 text-white font-bold">{w.nama}</td>
-                  <td className="py-3.5 px-4 text-center text-slate-400 font-semibold">{w.blok}</td>
-                  <td className="py-3.5 px-4 text-right text-white font-bold">
+                <tr key={w.id} className="border-b border-slate-200 hover:bg-slate-100">
+                  <td className="py-3.5 px-4 text-slate-900 font-bold">{w.nama}</td>
+                  <td className="py-3.5 px-4 text-center text-slate-500 font-semibold">{w.blok}</td>
+                  <td className="py-3.5 px-4 text-right text-slate-900 font-bold">
                     Rp {Number(w.nominal_iuran).toLocaleString('id-ID')}
                   </td>
                   <td className="py-3.5 px-4 text-center">
@@ -477,7 +477,7 @@ export default function KepanitiaanWarga() {
                       {w.is_paid ? 'Lunas' : 'Belum Lunas'}
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 text-center text-slate-450">
+                  <td className="py-3.5 px-4 text-center text-slate-500">
                     {w.paid_at 
                       ? new Date(w.paid_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })
                       : '-'
@@ -488,7 +488,7 @@ export default function KepanitiaanWarga() {
                       <button
                         onClick={() => handleOpenPaymentModal(w)}
                         title="Ubah Pembayaran"
-                        className="px-3 py-1.5 bg-slate-950 border border-slate-800 text-slate-300 hover:text-white rounded-lg transition-colors flex items-center space-x-1 font-bold text-[10px]"
+                        className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:text-slate-900 rounded-lg transition-colors flex items-center space-x-1 font-bold text-[10px]"
                       >
                         <DollarSign className="h-3 w-3 text-emerald-400" />
                         <span>Pembayaran</span>
@@ -497,7 +497,7 @@ export default function KepanitiaanWarga() {
                         <button
                           onClick={() => handlePrintReceipt(w)}
                           title="Cetak Struk Pembayaran (Thermal 80mm)"
-                          className="p-1.5 bg-slate-950 border border-slate-800 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                          className="p-1.5 bg-white border border-slate-200 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition-colors"
                         >
                           <Printer className="h-3.5 w-3.5" />
                         </button>
@@ -505,14 +505,14 @@ export default function KepanitiaanWarga() {
                       <button
                         onClick={() => handleOpenEditModal(w)}
                         title="Edit Profil"
-                        className="p-1.5 bg-slate-950 border border-slate-800 text-slate-450 hover:text-slate-200 rounded-lg transition-colors"
+                        className="p-1.5 bg-white border border-slate-200 text-slate-500 hover:text-slate-700 rounded-lg transition-colors"
                       >
                         <Edit className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteWarga(w.id, w.nama)}
                         title="Hapus Warga"
-                        className="p-1.5 bg-slate-950 border border-slate-850 text-slate-500 hover:text-red-400 hover:border-red-500/20 rounded-lg transition-colors"
+                        className="p-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-400 hover:border-red-500/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -559,3 +559,4 @@ export default function KepanitiaanWarga() {
     </div>
   );
 }
+

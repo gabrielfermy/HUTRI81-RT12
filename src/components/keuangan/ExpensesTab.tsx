@@ -86,19 +86,19 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fadeIn">
       {/* Add Expense Form */}
-      <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-6 h-fit">
+      <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Input Belanja Baru</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Input Belanja Baru</h3>
           <p className="text-[10px] text-slate-500">Mencatat pengeluaran riil panitia dan hubungkan ke pos RAB.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Pilih Item Anggaran (RAB)</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Pilih Item Anggaran (RAB)</label>
             <select
               value={expRabId}
               onChange={(e) => setExpRabId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             >
               <option value="">Pos Belanja Umum (Tanpa RAB)</option>
               {rabList.map(r => (
@@ -110,46 +110,46 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Detail Belanja Barang</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Detail Belanja Barang</label>
             <input
               type="text"
               required
               value={expItem}
               onChange={(e) => setExpItem(e.target.value)}
               placeholder="e.g. Pembelian 15 piala & pita merah putih"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nominal Belanja (Rp)</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nominal Belanja (Rp)</label>
               <input
                 type="number"
                 required
                 value={expNominal}
                 onChange={(e) => setExpNominal(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 text-right font-semibold"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right font-semibold"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Tanggal Pembelian</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tanggal Pembelian</label>
               <input
                 type="date"
                 required
                 value={expTanggal}
                 onChange={(e) => setExpTanggal(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Seksi Penanggung Jawab</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Seksi Penanggung Jawab</label>
             <select
               value={expSeksi}
               onChange={(e) => setExpSeksi(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
             >
               <option value="Acara">Acara</option>
               <option value="Perlengkapan & Dekorasi">Perlengkapan & Dekorasi</option>
@@ -162,20 +162,20 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
 
           {/* Receipt Upload Input */}
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Unggah Bukti Nota / Struk</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Unggah Bukti Nota / Struk</label>
             <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-800 hover:border-slate-700 bg-slate-950 rounded-xl cursor-pointer transition-colors relative overflow-hidden group">
+              <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 hover:border-slate-700 bg-white rounded-xl cursor-pointer transition-colors relative overflow-hidden group">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   {buktiFile ? (
                     <div className="text-center space-y-1">
                       <ImageIcon className="h-6 w-6 text-emerald-450 mx-auto" />
-                      <p className="text-[10px] font-bold text-white max-w-[200px] truncate">{buktiFile.name}</p>
+                      <p className="text-[10px] font-bold text-slate-900 max-w-[200px] truncate">{buktiFile.name}</p>
                       <p className="text-[8px] text-slate-500">{(buktiFile.size / 1024 / 1024).toFixed(2)} MB (Akan dikompresi)</p>
                     </div>
                   ) : (
                     <div className="text-center">
-                      <Upload className="h-5 w-5 text-slate-500 group-hover:text-slate-400 mx-auto mb-1 transition-colors" />
-                      <p className="text-[9px] text-slate-450 group-hover:text-slate-350 font-bold transition-colors">Pilih File Foto Bukti</p>
+                      <Upload className="h-5 w-5 text-slate-500 group-hover:text-slate-500 mx-auto mb-1 transition-colors" />
+                      <p className="text-[9px] text-slate-500 group-hover:text-slate-350 font-bold transition-colors">Pilih File Foto Bukti</p>
                       <p className="text-[7px] text-slate-600 font-medium">JPEG, PNG maks 10MB (Auto kompresi)</p>
                     </div>
                   )}
@@ -195,7 +195,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {uploading ? 'Mengompres & Mengunggah Bukti...' : submitting ? 'Menyimpan...' : 'Simpan Transaksi Belanja'}
             </button>
@@ -204,12 +204,12 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
       </div>
 
       {/* Expenses List View */}
-      <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
-        <h3 className="text-base font-bold text-white">Riwayat Pengeluaran Belanja</h3>
-        <div className="overflow-x-auto border border-slate-850 rounded-xl">
+      <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <h3 className="text-base font-bold text-slate-900">Riwayat Pengeluaran Belanja</h3>
+        <div className="overflow-x-auto border border-slate-200 rounded-xl">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-950 border-b border-slate-850 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="bg-white border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                 <th className="py-3 px-4">Nama Barang</th>
                 <th className="py-3 px-4 text-center">Seksi / PIC</th>
                 <th className="py-3 px-4 text-center">Tanggal</th>
@@ -219,8 +219,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             </thead>
             <tbody>
               {expensesList.map((e, idx) => (
-                <tr key={idx} className="border-b border-slate-900 hover:bg-slate-900/10">
-                  <td className="py-3 px-4 text-white font-semibold">
+                <tr key={idx} className="border-b border-slate-200 hover:bg-slate-100">
+                  <td className="py-3 px-4 text-slate-900 font-semibold">
                     <div className="flex items-center gap-2">
                       <div>
                         {e.item_pembelian}
@@ -246,10 +246,10 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                     <span className="block text-xs font-semibold">{e.seksi_pj}</span>
                     <span className="block text-[9px] text-slate-550 font-medium">{e.pic}</span>
                   </td>
-                  <td className="py-3 px-4 text-center text-slate-400">
+                  <td className="py-3 px-4 text-center text-slate-500">
                     {new Date(e.tanggal_pembelian).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                   </td>
-                  <td className="py-3 px-4 text-right font-bold text-white">
+                  <td className="py-3 px-4 text-right font-bold text-slate-900">
                     Rp {Number(e.nominal_riil).toLocaleString('id-ID')}
                   </td>
                   <td className="py-3 px-4 text-center">
@@ -274,21 +274,21 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
 
       {/* Lightbox Receipt Modal */}
       {activePreviewUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
-          <div className="relative max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/80 backdrop-blur-sm animate-fadeIn">
+          <div className="relative max-w-2xl w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                 <ImageIcon className="h-4 w-4 text-red-500" />
                 <span>Bukti Kwitansi / Struk Pembelian</span>
               </h4>
               <button
                 onClick={() => setActivePreviewUrl(null)}
-                className="p-1 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+                className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition-all"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex justify-center bg-slate-950 p-2.5 rounded-xl border border-slate-850 max-h-[70vh] overflow-y-auto">
+            <div className="flex justify-center bg-white p-2.5 rounded-xl border border-slate-200 max-h-[70vh] overflow-y-auto">
               <img
                 src={activePreviewUrl}
                 alt="Bukti Kwitansi Belanja"
@@ -301,3 +301,4 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
     </div>
   );
 };
+

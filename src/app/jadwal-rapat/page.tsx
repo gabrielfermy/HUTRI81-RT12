@@ -1,5 +1,5 @@
 import HomeClient from '@/components/HomeClient';
 
 export default function Page() {
-  return <HomeClient initialTab="keuangan" />;
+  return <HomeClient initialTab="notulen" />;
 }

@@ -242,17 +242,6 @@ export default function KepanitiaanKeuangan() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex-grow flex items-center justify-center bg-slate-950 text-white min-h-[50vh]">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
-          <p className="text-xs text-slate-400">Memuat Data Keuangan...</p>
-        </div>
-      </div>
-    );
-  }
-
   const allowedTabs = React.useMemo(() => {
     const userAccess = currentUser?.akses_menu || '';
     return [
@@ -263,19 +252,30 @@ export default function KepanitiaanKeuangan() {
     ].filter((tab) => userAccess.includes(tab.key));
   }, [currentUser]);
 
+  if (loading) {
+    return (
+      <div className="flex-grow flex items-center justify-center bg-white text-slate-900 min-h-[50vh]">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
+          <p className="text-xs text-slate-500">Memuat Data Keuangan...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="border-b border-slate-900 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="border-b border-slate-200 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-white">Laporan & Manajemen Keuangan</h1>
-          <p className="text-xs text-slate-400 mt-1">Kelola pembukuan belanja riil, iuran wajib, donatur, dan perencanaan anggaran.</p>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">Laporan & Manajemen Keuangan</h1>
+          <p className="text-xs text-slate-500 mt-1">Kelola pembukuan belanja riil, iuran wajib, donatur, dan perencanaan anggaran.</p>
         </div>
       </div>
 
       {/* Tabs Switcher */}
       {allowedTabs.length > 1 && (
-        <div className="flex border-b border-slate-800 space-x-1 overflow-x-auto pb-px">
+        <div className="flex border-b border-slate-200 space-x-1 overflow-x-auto pb-px">
           {allowedTabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -284,8 +284,8 @@ export default function KepanitiaanKeuangan() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-t-2 ${
                   activeTab === tab.id
-                    ? 'bg-slate-900/40 border-red-500 text-red-400'
-                    : 'border-transparent text-slate-450 hover:text-slate-200'
+                    ? 'bg-slate-100/40 border-red-500 text-red-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-700'
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -342,3 +342,4 @@ export default function KepanitiaanKeuangan() {
     </div>
   );
 }
+

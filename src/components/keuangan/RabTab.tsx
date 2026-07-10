@@ -34,19 +34,19 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fadeIn">
       {/* Add RAB Form */}
-      <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-6 h-fit">
+      <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">Tambah Target Belanja (RAB)</h3>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Tambah Target Belanja (RAB)</h3>
           <p className="text-[10px] text-slate-500">Mendaftarkan kebutuhan pengeluaran terencana rapat.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kategori Pos Belanja</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kategori Pos Belanja</label>
             <select
               value={rabKategori}
               onChange={(e) => setRabKategori(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             >
               <option value="Hadiah Lomba">Hadiah Lomba</option>
               <option value="Konsumsi Puncak">Konsumsi Puncak</option>
@@ -57,56 +57,56 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Nama Item Pekerjaan</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nama Item Pekerjaan</label>
             <input
               type="text"
               required
               value={rabItem}
               onChange={(e) => setRabItem(e.target.value)}
               placeholder="e.g. Sewa Panggung Utama & Sound System"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kuantitas</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kuantitas</label>
               <input
                 type="number"
                 required
                 value={rabKuantitas}
                 onChange={(e) => setRabKuantitas(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 text-center"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Satuan</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Satuan</label>
               <input
                 type="text"
                 required
                 value={rabSatuan}
                 onChange={(e) => setRabSatuan(e.target.value)}
                 placeholder="Set / Pcs / Pax"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 text-center"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Harga Satuan (Rp)</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Harga Satuan (Rp)</label>
             <input
               type="number"
               required
               value={rabHargaSatuan}
               onChange={(e) => setRabHargaSatuan(Number(e.target.value))}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 text-right"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
             {submitting ? 'Menyimpan...' : 'Simpan Target RAB'}
           </button>
@@ -114,12 +114,12 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
       </div>
 
       {/* RAB List View */}
-      <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
-        <h3 className="text-base font-bold text-white">Tabel Perencanaan RAB</h3>
-        <div className="overflow-x-auto border border-slate-850 rounded-xl">
+      <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <h3 className="text-base font-bold text-slate-900">Tabel Perencanaan RAB</h3>
+        <div className="overflow-x-auto border border-slate-200 rounded-xl">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-950 border-b border-slate-855 text-slate-400 font-bold uppercase tracking-wider">
+              <tr className="bg-white border-b border-slate-855 text-slate-500 font-bold uppercase tracking-wider">
                 <th className="py-3 px-4">Kategori</th>
                 <th className="py-3 px-4">Nama Item</th>
                 <th className="py-3 px-4 text-center">Kuantitas</th>
@@ -129,16 +129,16 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
             </thead>
             <tbody>
               {rabList.map((r, idx) => (
-                <tr key={idx} className="border-b border-slate-900 hover:bg-slate-900/10">
+                <tr key={idx} className="border-b border-slate-200 hover:bg-slate-100">
                   <td className="py-3 px-4 font-bold text-red-400">{r.kategori}</td>
-                  <td className="py-3 px-4 text-white">{r.item}</td>
-                  <td className="py-3 px-4 text-center font-semibold text-slate-300">
+                  <td className="py-3 px-4 text-slate-900">{r.item}</td>
+                  <td className="py-3 px-4 text-center font-semibold text-slate-700">
                     {r.kuantitas} {r.satuan}
                   </td>
-                  <td className="py-3 px-4 text-right font-semibold text-slate-400">
+                  <td className="py-3 px-4 text-right font-semibold text-slate-500">
                     Rp {Number(r.harga_satuan).toLocaleString('id-ID')}
                   </td>
-                  <td className="py-3 px-4 text-right font-bold text-white">
+                  <td className="py-3 px-4 text-right font-bold text-slate-900">
                     Rp {Number(r.total_idr || r.kuantitas * r.harga_satuan).toLocaleString('id-ID')}
                   </td>
                 </tr>
@@ -155,3 +155,4 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
     </div>
   );
 };
+
