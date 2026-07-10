@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles, ShieldAlert } from 'lucide-react';
+import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles, ShieldAlert, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 const seedRundown = [
   { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.', seksi_pj: ['Acara', 'Konsumsi'], instruksi_internal: 'Instruktur senam harus standby jam 05:45. Sie Konsumsi menyiapkan air mineral gelas.', kategori: 'Utama' },
@@ -85,6 +85,8 @@ export default function KepanitiaanDashboard() {
   // Active meeting notulen edit state
   const [activeRapatId, setActiveRapatId] = useState<string | null>(null);
   const [notulenContent, setNotulenContent] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load user from local storage and fetch stats/rapat
   useEffect(() => {
@@ -293,6 +295,48 @@ export default function KepanitiaanDashboard() {
     setNotulenContent('');
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeRapatId) return;
+
+    // Check size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran gambar maksimal 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${activeRapatId}-${Date.now()}.${fileExt}`;
+      const filePath = `notulen/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('rapat-notulen')
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('rapat-notulen')
+        .getPublicUrl(filePath);
+
+      const imageUrl = publicUrlData.publicUrl;
+      
+      // Append markdown image syntax to the cursor position or end of text
+      const imageMarkdown = `\n\n![Dokumentasi Rapat](${imageUrl})\n\n`;
+      setNotulenContent((prev) => prev + imageMarkdown);
+
+      alert('Gambar berhasil diunggah dan disisipkan!');
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      alert('Gagal mengunggah gambar. Pastikan Anda telah membuat Storage Bucket "rapat-notulen" dan diset ke Public di Supabase.\n\nDetail: ' + err.message);
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="space-y-10">
       {/* Welcome Header */}
@@ -461,24 +505,43 @@ export default function KepanitiaanDashboard() {
                 value={notulenContent}
                 onChange={(e) => setNotulenContent(e.target.value)}
                 placeholder="Tulis keputusan di sini (e.g. ## Kesepakatan:\n1. Beli soto ayam 200 porsi...)"
-                className="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-mono"
               />
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => {
-                    setActiveRapatId(null);
-                    setNotulenContent('');
-                  }}
-                  className="px-4 py-2 border border-slate-200 hover:bg-white text-slate-600 hover:text-slate-900 rounded-lg text-xs font-bold transition-all"
-                >
-                  Batal
-                </button>
-                <button
-                  onClick={handleSaveNotulen}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 rounded-lg text-xs font-bold transition-all"
-                >
-                  Simpan Notulen
-                </button>
+              <div className="flex justify-between items-center">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImage}
+                    className="flex items-center space-x-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                  >
+                    {uploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4 text-blue-500" />}
+                    <span>{uploadingImage ? 'Mengunggah...' : 'Sisipkan Gambar'}</span>
+                  </button>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => {
+                      setActiveRapatId(null);
+                      setNotulenContent('');
+                    }}
+                    className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-lg text-xs font-bold transition-all"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleSaveNotulen}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all"
+                  >
+                    Simpan Notulen
+                  </button>
+                </div>
               </div>
             </div>
           ) : (

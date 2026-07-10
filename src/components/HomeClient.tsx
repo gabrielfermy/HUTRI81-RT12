@@ -273,7 +273,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
               { label: 'Detik', value: timeLeft.seconds },
             ].map((t) => (
               <div key={t.label} className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-5">
-                <span className="text-2xl sm:text-5xl font-extrabold text-slate-900 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
+                <span className="text-2xl sm:text-5xl font-extrabold text-slate-900 bg-gradient-to-b from-slate-800 to-slate-500 bg-clip-text text-transparent">
                   {String(t.value).padStart(2, '0')}
                 </span>
                 <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-widest block mt-2">
