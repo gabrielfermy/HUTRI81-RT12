@@ -62,6 +62,10 @@ export default function KepanitiaanDashboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const isKetua = currentUser?.jabatan === 'Ketua Panitia';
+  const isInti = currentUser?.seksi === 'Inti';
+
+
   // States for stats
   const [panitiaCount, setPanitiaCount] = useState(0);
   const [totalCollected, setTotalCollected] = useState(2000000); // default is initial RT Kas
