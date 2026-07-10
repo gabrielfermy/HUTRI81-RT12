@@ -33,7 +33,7 @@ export default function KepanitiaanLayout({
         // Fetch panitia list for login dropdown
         const { data, error } = await supabase
           .from('panitia')
-          .select('id, nama, seksi, jabatan, pin_akses')
+          .select('id, nama, seksi, jabatan, level, pin_akses')
           .order('nama', { ascending: true });
 
         if (data && !error) {
@@ -52,24 +52,23 @@ export default function KepanitiaanLayout({
         if (storedSession) {
           const user = JSON.parse(storedSession);
 
-          // Fetch dynamic permissions for user's position
+          // Fetch dynamic permissions for user's seksi
           const { data: sData } = await supabase
             .from('seksi')
             .select('akses_menu')
-            .eq('nama', user.jabatan)
+            .eq('nama', user.seksi)
             .single();
 
-          if (sData) {
+          if (user.seksi === 'Inti') {
+            user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+          } else if (user.level === 'Anggota') {
+            // Anggota hanya bisa membuka dashboard dan catatan
+            user.akses_menu = 'dashboard,catatan';
+          } else if (sData) {
             user.akses_menu = sData.akses_menu;
           } else {
-            // Seeding fallback
-            if (user.seksi === 'BOD') {
-              user.akses_menu = 'dashboard,logs,proposal,backdrop';
-            } else if (user.jabatan === 'Ketua Panitia') {
-              user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
-            } else {
-              user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop';
-            }
+            // Fallback
+            user.akses_menu = 'dashboard,catatan';
           }
 
           setLoggedInUser(user);
@@ -121,27 +120,26 @@ export default function KepanitiaanLayout({
         nama: matched.nama,
         seksi: matched.seksi,
         jabatan: matched.jabatan,
+        level: matched.level || 'Anggota',
       };
 
-      // Fetch dynamic permissions for matched position on login
+      // Fetch dynamic permissions for matched seksi on login
       try {
         const { data: sData } = await supabase
           .from('seksi')
           .select('akses_menu')
-          .eq('nama', matched.jabatan)
+          .eq('nama', matched.seksi)
           .single();
 
-        if (sData) {
+        if (matched.seksi === 'Inti') {
+          sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
+        } else if (matched.level === 'Anggota') {
+          // Anggota hanya bisa membuka dashboard dan catatan
+          sessionData.akses_menu = 'dashboard,catatan';
+        } else if (sData) {
           sessionData.akses_menu = sData.akses_menu;
         } else {
-          // Seeding fallback
-          if (matched.seksi === 'BOD') {
-            sessionData.akses_menu = 'dashboard,logs,proposal,backdrop';
-          } else if (matched.jabatan === 'Ketua Panitia') {
-            sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop';
-          } else {
-            sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,proposal,backdrop';
-          }
+          sessionData.akses_menu = 'dashboard,catatan';
         }
       } catch (err) {
         console.error('Failed to load permissions during login:', err);
