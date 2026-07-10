@@ -135,12 +135,12 @@ export default function KepanitiaanLayout({
         if (matched.seksi === 'Inti') {
           sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat';
         } else if (matched.level === 'Anggota') {
-          // Anggota hanya bisa membuka dashboard dan catatan
-          sessionData.akses_menu = 'dashboard,catatan';
+          // Anggota hanya bisa membuka dashboard, catatan, dan profil
+          sessionData.akses_menu = 'dashboard,catatan,panitia';
         } else if (sData) {
           sessionData.akses_menu = sData.akses_menu;
         } else {
-          sessionData.akses_menu = 'dashboard,catatan';
+          sessionData.akses_menu = 'dashboard,catatan,panitia';
         }
       } catch (err) {
         console.error('Failed to load permissions during login:', err);
@@ -287,7 +287,7 @@ export default function KepanitiaanLayout({
     { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText, key: 'catatan' },
     { name: 'Notulen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
     { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
-  ].filter((item) => userAccess.includes(item.key));
+  ].filter((item) => userAccess.includes(item.key) || item.key === 'panitia');
 
   return (
     <div className="flex-grow flex flex-col md:flex-row min-h-[85vh] bg-slate-50 text-slate-900">
