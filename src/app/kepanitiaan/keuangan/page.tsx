@@ -36,15 +36,19 @@ export default function KepanitiaanKeuangan() {
 
       // Select first allowed tab as active
       const userAccess = sessionUser?.akses_menu || '';
+      const accessArray = userAccess.split(',');
+      const hasFullAccess = accessArray.includes('keuangan');
       const allowed = [
         { id: 'expenses', key: 'keuangan_pengeluaran' },
         { id: 'warga', key: 'keuangan_iuran' },
         { id: 'sponsorship', key: 'keuangan_sponsor' },
         { id: 'rab', key: 'keuangan_rab' }
-      ].filter((t) => userAccess.includes(t.key));
+      ].filter((t) => hasFullAccess || accessArray.includes(t.key));
 
       if (allowed.length > 0) {
         setActiveTab(allowed[0].id as any);
+      } else {
+        setActiveTab(''); // No tabs allowed
       }
     }
 
@@ -244,12 +248,14 @@ export default function KepanitiaanKeuangan() {
 
   const allowedTabs = React.useMemo(() => {
     const userAccess = currentUser?.akses_menu || '';
+    const accessArray = userAccess.split(',');
+    const hasFullAccess = accessArray.includes('keuangan');
     return [
       { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign, key: 'keuangan_pengeluaran' },
       { id: 'warga', label: '2. Iuran Warga', icon: Users, key: 'keuangan_iuran' },
       { id: 'sponsorship', label: '3. Donatur & Sponsor', icon: Award, key: 'keuangan_sponsor' },
       { id: 'rab', label: '4. Rencana Anggaran (RAB)', icon: ShieldAlert, key: 'keuangan_rab' }
-    ].filter((tab) => userAccess.includes(tab.key));
+    ].filter((tab) => hasFullAccess || accessArray.includes(tab.key));
   }, [currentUser]);
 
   if (loading) {
