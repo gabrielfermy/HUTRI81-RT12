@@ -19,7 +19,8 @@ interface PanitiaTabProps {
   onEditPanitia: (id: string, nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null, no_wa?: string) => Promise<void>;
   onDeletePanitia: (id: string, nama: string) => Promise<void>;
   onResetPin: (id: string, nama: string) => Promise<void>;
-  onUpdateOwnProfile: (nama: string, pin?: string) => Promise<void>;
+  onResetPin: (id: string, nama: string) => Promise<void>;
+  onUpdateOwnProfile: (nama: string, pin?: string, oldPin?: string, noWa?: string) => Promise<void>;
 }
 
 // ─── LEVEL BADGE ──────────────────────────────────────────
@@ -143,6 +144,8 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
 
   // ─── PROFILE FORM STATE (non-Inti) ───────────────────────
   const [profNama, setProfNama] = useState(currentUser?.nama || '');
+  const [profNoWa, setProfNoWa] = useState(currentUser?.no_wa || '');
+  const [profOldPin, setProfOldPin] = useState('');
   const [profPin, setProfPin] = useState('');
   const [profPinConfirm, setProfPinConfirm] = useState('');
   const [profileSuccess, setProfileSuccess] = useState('');
@@ -300,13 +303,14 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     setProfileSuccess(''); setProfileError('');
     if (!profNama.trim()) { setProfileError('Nama tidak boleh kosong.'); return; }
     if (profPin) {
+      if (!profOldPin) { setProfileError('Anda harus memasukkan PIN lama untuk merubah PIN.'); return; }
       if (profPin.length !== 4 || !/^\d+$/.test(profPin)) { setProfileError('PIN baru harus 4 digit angka.'); return; }
       if (profPin !== profPinConfirm) { setProfileError('Konfirmasi PIN tidak cocok.'); return; }
     }
     try {
-      await onUpdateOwnProfile(profNama.trim(), profPin || undefined);
+      await onUpdateOwnProfile(profNama.trim(), profPin || undefined, profOldPin || undefined, profNoWa.trim());
       setProfileSuccess('Profil berhasil diperbarui!');
-      setProfPin(''); setProfPinConfirm('');
+      setProfPin(''); setProfPinConfirm(''); setProfOldPin('');
     } catch (err: any) { setProfileError(err.message || 'Gagal memperbarui profil.'); }
   };
 
@@ -361,6 +365,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             <input type="text" required value={profNama} onChange={e => setProfNama(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
           </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nomor WhatsApp</label>
+            <input type="tel" value={profNoWa} onChange={e => setProfNoWa(e.target.value)} placeholder="08xxxxxxxxxx"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-400 uppercase">Seksi</label>
@@ -378,11 +387,19 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <h4 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <Lock className="h-3.5 w-3.5 text-red-500" /> Ganti PIN Baru
               </h4>
-              <p className="text-[10px] text-slate-400 mt-0.5">Kosongkan jika tidak diganti.</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Kosongkan ketiga kotak jika PIN tidak ingin diubah.</p>
             </div>
+            
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Lama</label>
+              <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
+                value={profOldPin} onChange={e => setProfOldPin(e.target.value)} placeholder="••••"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Baru (4 Angka)</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Baru</label>
                 <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
                   value={profPin} onChange={e => setProfPin(e.target.value)} placeholder="••••"
                   className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />

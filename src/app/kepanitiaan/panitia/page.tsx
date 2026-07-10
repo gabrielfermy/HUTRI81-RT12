@@ -176,14 +176,23 @@ export default function KepanitiaanPanitia() {
     }
   };
 
-  const handleUpdateOwnProfile = async (nama: string, pin?: string) => {
+  const handleUpdateOwnProfile = async (nama: string, pin?: string, oldPin?: string, noWa?: string) => {
+    if (pin) {
+      if (!oldPin) throw new Error('Anda harus memasukkan PIN lama untuk mengganti PIN.');
+      const { data: userData } = await supabase.from('panitia').select('pin_akses').eq('id', currentUser.id).single();
+      if (userData?.pin_akses !== oldPin) {
+        throw new Error('PIN lama yang Anda masukkan salah.');
+      }
+    }
+
     const payload: any = { nama };
     if (pin) payload.pin_akses = pin;
+    if (noWa !== undefined) payload.no_wa = noWa;
 
     const { error } = await supabase.from('panitia').update(payload).eq('id', currentUser.id);
 
     if (!error) {
-      const updatedSession = { ...currentUser, nama };
+      const updatedSession = { ...currentUser, nama, no_wa: noWa };
       localStorage.setItem('session_panitia', JSON.stringify(updatedSession));
       setCurrentUser(updatedSession);
       await logAudit(

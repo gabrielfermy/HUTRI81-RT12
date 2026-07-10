@@ -351,7 +351,7 @@ export default function KepanitiaanDashboard() {
       </div>
 
       {/* Database Empty Seeder Banner */}
-      {rabCount === 0 && rundownCount === 0 && (
+      {isKetua && rabCount === 0 && rundownCount === 0 && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-1">
             <h4 className="text-sm font-bold text-amber-400 flex items-center gap-2">
@@ -415,7 +415,8 @@ export default function KepanitiaanDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Add Meeting Form */}
-        <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
+        {isInti && (
+          <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Plus className="h-5 w-5 text-red-500" />
@@ -482,9 +483,10 @@ export default function KepanitiaanDashboard() {
             </button>
           </form>
         </div>
+        )}
 
         {/* Meeting Minutes Editor & List */}
-        <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <div className={`bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 ${isInti ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <FileText className="h-5 w-5 text-red-500" />
@@ -563,12 +565,14 @@ export default function KepanitiaanDashboard() {
                     <p className="text-xs text-slate-500">Tempat: <span className="text-slate-600 font-medium">{r.tempat}</span></p>
                   </div>
 
-                  <button
-                    onClick={() => handleOpenNotulenEditor(r)}
-                    className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
-                  >
-                    {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
-                  </button>
+                  {isInti && (
+                    <button
+                      onClick={() => handleOpenNotulenEditor(r)}
+                      className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
+                    >
+                      {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
+                    </button>
+                  )}
                 </div>
               ))}
               {rapatList.length === 0 && (
