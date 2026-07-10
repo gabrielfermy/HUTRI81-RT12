@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Swal from 'sweetalert2';
 import {
   Plus, Trash2, Key, Edit2, Check, X, Shield, Lock,
-  Users, Crown, Star, User, ChevronRight, ChevronDown,
+  Crown, Star, User, Users, ChevronRight, ChevronDown,
   UserCog, AlertCircle
 } from 'lucide-react';
 
@@ -32,7 +33,7 @@ const LevelBadge = ({ level }: { level: string }) => {
     'Anggota':         'bg-slate-100 text-slate-600 border border-slate-200',
   };
   return (
-    <span className={`text-[8px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-wide ${map[level] || map['Anggota']}`}>
+    <span className={`text-[8px] px-1.5 py-0.5 rounded-md font-black uppercase tracking-wide shrink-0 ${map[level] || map['Anggota']}`}>
       {level}
     </span>
   );
@@ -46,57 +47,72 @@ const MemberRow = ({
   onEdit: (p: any) => void;
   onDelete: (id: string, nama: string) => void;
   onResetPin: (id: string, nama: string) => void;
-}) => (
-  <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 group hover:border-red-200 hover:bg-red-50/30 transition-all">
-    <div className="flex items-center gap-2">
-      <User className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-      <div>
-        <span className="text-sm font-semibold text-slate-800">
-          {p.nama || <span className="text-slate-400 italic text-xs">Belum Ada Penjabat</span>}
-        </span>
-        {p.id === currentUser?.id && (
-          <span className="ml-1.5 text-[8px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase">Anda</span>
-        )}
-        {p.jabatan && p.jabatan !== p.level && (
-          <span className="ml-1.5 text-[10px] text-slate-500">— {p.jabatan}</span>
-        )}
-      </div>
-    </div>
-    {isInti && (
-      <div className="flex items-center gap-1 shrink-0">
-        <button onClick={() => onEdit(p)} title="Edit" className="p-1 text-slate-400 hover:text-blue-500 rounded-lg transition-colors">
-          <Edit2 className="h-3 w-3" />
-        </button>
-        <button onClick={() => onResetPin(p.id, p.nama)} title="Reset PIN" className="p-1 text-slate-400 hover:text-amber-500 rounded-lg transition-colors">
-          <Key className="h-3 w-3" />
-        </button>
-        {p.id !== currentUser?.id && (
-          <button onClick={() => onDelete(p.id, p.nama)} title="Hapus" className="p-1 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
-            <Trash2 className="h-3 w-3" />
-          </button>
-        )}
-      </div>
-    )}
-  </div>
-);
+}) => {
+  const handleDeleteClick = () => {
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: `Ingin mengeluarkan "${p.nama}" dari kepanitiaan?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, Keluarkan!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onDelete(p.id, p.nama);
+      }
+    });
+  };
 
-// ─── FLAT SECTION (Pelindung / Penasihat) ─────────────────
-const FlatSection = ({
-  title, icon: Icon, members, currentUser, isInti, onEdit, onDelete, onResetPin, colorClass,
-}: any) => {
-  if (members.length === 0) return null;
+  const handleResetPinClick = () => {
+    Swal.fire({
+      title: 'Reset PIN Akses',
+      text: `Ingin mereset PIN keamanan "${p.nama}" kembali ke default 1212?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#f59e0b',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, Reset PIN!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onResetPin(p.id, p.nama);
+      }
+    });
+  };
+
   return (
-    <div className="space-y-2">
-      <div className={`flex items-center gap-2 font-bold text-sm ${colorClass}`}>
-        <Icon className="h-4 w-4" />
-        <span>{title}</span>
-        <span className="text-xs font-normal text-slate-400">({members.length} orang)</span>
+    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all gap-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <User className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+        <div className="truncate">
+          <span className="text-sm font-semibold text-slate-800">
+            {p.nama || <span className="text-slate-400 italic text-xs">Belum Ada Penjabat</span>}
+          </span>
+          {p.id === currentUser?.id && (
+            <span className="ml-1.5 text-[8px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase inline-block">Anda</span>
+          )}
+          {p.jabatan && p.jabatan !== p.level && (
+            <span className="ml-1.5 text-[10px] text-slate-500">— {p.jabatan}</span>
+          )}
+        </div>
       </div>
-      <div className="space-y-1.5 pl-6">
-        {members.map((p: any) => (
-          <MemberRow key={p.id} p={p} currentUser={currentUser} isInti={isInti} onEdit={onEdit} onDelete={onDelete} onResetPin={onResetPin} />
-        ))}
-      </div>
+      {isInti && (
+        <div className="flex items-center gap-1 shrink-0">
+          <button onClick={() => onEdit(p)} title="Edit" className="p-1 text-slate-400 hover:text-blue-500 rounded-lg transition-colors">
+            <Edit2 className="h-3 w-3" />
+          </button>
+          <button onClick={handleResetPinClick} title="Reset PIN" className="p-1 text-slate-400 hover:text-amber-500 rounded-lg transition-colors">
+            <Key className="h-3 w-3" />
+          </button>
+          {p.id !== currentUser?.id && (
+            <button onClick={handleDeleteClick} title="Hapus" className="p-1 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
+              <Trash2 className="h-3 w-3" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -219,7 +235,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         await onAddPanitia(nama.trim(), 'Inti', intiJabatan, 'Inti', null);
       } else {
         // Harian
-        if (!selectedSeksi || !level) { alert('Pilih seksi dan level terlebih dahulu.'); return; }
+        if (!selectedSeksi || !level) {
+          Swal.fire('Error', 'Pilih seksi dan level terlebih dahulu.', 'error');
+          setSubmitting(false);
+          return;
+        }
         let finalParentId: string | null = null;
         if (level === 'Sub-Koordinator' || level === 'Anggota') {
           finalParentId = parentId || null;
@@ -227,6 +247,14 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         await onAddPanitia(nama.trim(), selectedSeksi, jabatan.trim() || level, level, finalParentId);
       }
       setNama(''); setJabatan(''); setParentId('');
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Anggota berhasil ditambahkan',
+        showConfirmButton: false,
+        timer: 3000
+      });
     } catch (err) { console.error(err); }
     finally { setSubmitting(false); }
   };
@@ -252,6 +280,14 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         editParentId || null
       );
       setEditingId(null);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Perubahan berhasil disimpan',
+        showConfirmButton: false,
+        timer: 3000
+      });
     } catch (err) { console.error(err); }
   };
 
@@ -268,6 +304,40 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
       setProfileSuccess('Profil berhasil diperbarui!');
       setProfPin(''); setProfPinConfirm('');
     } catch (err: any) { setProfileError(err.message || 'Gagal memperbarui profil.'); }
+  };
+
+  const handleSweetDelete = (id: string, name: string) => {
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: `Ingin mengeluarkan "${name}" dari kepanitiaan?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, Keluarkan!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onDeletePanitia(id, name);
+      }
+    });
+  };
+
+  const handleSweetResetPin = (id: string, name: string) => {
+    Swal.fire({
+      title: 'Reset PIN Akses',
+      text: `Ingin mereset PIN keamanan "${name}" kembali ke default 1212?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#f59e0b',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, Reset PIN!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onResetPin(id, name);
+      }
+    });
   };
 
   // ─── NON-INTI VIEW: Profile Only ──────────────────────────
@@ -485,14 +555,54 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         <div className="space-y-6 overflow-y-auto max-h-[70vh] pr-1">
 
           {/* PELINDUNG */}
-          <FlatSection title="Pelindung / Pembina" icon={Crown} members={pelindungList}
-            currentUser={currentUser} isInti={isInti} colorClass="text-purple-700"
-            onEdit={handleStartEdit} onDelete={onDeletePanitia} onResetPin={onResetPin} />
+          {pelindungList.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-bold text-sm text-purple-700">
+                <Crown className="h-4 w-4" />
+                <span>Pelindung / Pembina</span>
+                <span className="text-xs font-normal text-slate-400">({pelindungList.length} orang)</span>
+              </div>
+              <div className="space-y-1.5 pl-6">
+                {pelindungList.map(p => (
+                  <div key={p.id}>
+                    {editingId === p.id ? (
+                      <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
+                        editJabatan={editJabatan} setEditJabatan={setEditJabatan}
+                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                    ) : (
+                      <MemberRow p={p} currentUser={currentUser} isInti={isInti}
+                        onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* PENASIHAT */}
-          <FlatSection title="Penasihat" icon={Star} members={penasihatList}
-            currentUser={currentUser} isInti={isInti} colorClass="text-blue-700"
-            onEdit={handleStartEdit} onDelete={onDeletePanitia} onResetPin={onResetPin} />
+          {penasihatList.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-bold text-sm text-blue-700">
+                <Star className="h-4 w-4" />
+                <span>Penasihat</span>
+                <span className="text-xs font-normal text-slate-400">({penasihatList.length} orang)</span>
+              </div>
+              <div className="space-y-1.5 pl-6">
+                {penasihatList.map(p => (
+                  <div key={p.id}>
+                    {editingId === p.id ? (
+                      <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
+                        editJabatan={editJabatan} setEditJabatan={setEditJabatan}
+                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                    ) : (
+                      <MemberRow p={p} currentUser={currentUser} isInti={isInti}
+                        onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* PANITIA INTI */}
           {intiList.length > 0 && (
@@ -511,7 +621,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
                     ) : (
                       <MemberRow p={p} currentUser={currentUser} isInti={isInti}
-                        onEdit={handleStartEdit} onDelete={onDeletePanitia} onResetPin={onResetPin} />
+                        onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
                     )}
                   </div>
                 ))}
@@ -534,12 +644,12 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             const isExpanded = expandedSeksi.has('all') || expandedSeksi.has(seksiNama);
 
             return (
-              <div key={seksiNama} className="border border-slate-200 rounded-2xl overflow-hidden">
+              <div key={seksiNama} className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 {/* Seksi header */}
                 <button onClick={() => toggleSeksi(seksiNama)} type="button"
                   className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors">
                   <div className="flex items-center gap-2">
-                    <UserCog className="h-4 w-4 text-slate-500" />
+                    <UserCog className="h-4 w-4 text-slate-500 animate-pulse" />
                     <span className="font-bold text-sm text-slate-800">Seksi {seksiNama}</span>
                     {seksiInfo?.mempunyai_sub_koordinator && (
                       <span className="text-[8px] bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded-md font-black uppercase">Sub-Koord</span>
@@ -559,7 +669,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                       const subKoords = seksiMembers.filter(p => p.level === 'Sub-Koordinator' && p.parent_id === koord.id);
                       const directAnggota = seksiMembers.filter(p => p.level === 'Anggota' && p.parent_id === koord.id);
                       return (
-                        <div key={koord.id} className="space-y-2">
+                        <div key={koord.id} className="space-y-2 border-l-2 border-amber-300/40 pl-3">
                           {/* Koordinator row */}
                           <div className="flex items-center gap-2">
                             <Crown className="h-4 w-4 text-amber-500 shrink-0" />
@@ -574,20 +684,20 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                   </select>
                                 } />
                             ) : (
-                              <div className="flex-1 flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 group hover:border-amber-300 transition-all">
-                                <div>
+                              <div className="flex-1 flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 hover:border-amber-300 transition-all gap-2">
+                                <div className="truncate">
                                   <span className="text-sm font-bold text-amber-900">{koord.nama}</span>
                                   {koord.jabatan && koord.jabatan !== 'Koordinator' && (
                                     <span className="ml-2 text-xs text-amber-700">— {koord.jabatan}</span>
                                   )}
-                                  <LevelBadge level="Koordinator" />
+                                  <span className="ml-2"><LevelBadge level="Koordinator" /></span>
                                 </div>
                                 {isInti && (
                                   <div className="flex gap-1 shrink-0">
                                     <button onClick={() => handleStartEdit(koord)} className="p-1 text-amber-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
-                                    <button onClick={() => onResetPin(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-amber-600 rounded"><Key className="h-3 w-3" /></button>
+                                    <button onClick={() => handleSweetResetPin(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-amber-600 rounded"><Key className="h-3 w-3" /></button>
                                     {koord.id !== currentUser?.id && (
-                                      <button onClick={() => onDeletePanitia(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
+                                      <button onClick={() => handleSweetDelete(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
                                     )}
                                   </div>
                                 )}
@@ -599,7 +709,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                           {subKoords.map(sk => {
                             const skAnggota = seksiMembers.filter(p => p.level === 'Anggota' && p.parent_id === sk.id);
                             return (
-                              <div key={sk.id} className="pl-8 space-y-1.5">
+                              <div key={sk.id} className="pl-8 space-y-1.5 border-l border-emerald-250 ml-2">
                                 <div className="flex items-center gap-2">
                                   <ChevronRight className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
                                   {editingId === sk.id ? (
@@ -607,20 +717,20 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                       editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                       onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
                                   ) : (
-                                    <div className="flex-1 flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 group hover:border-emerald-300 transition-all">
-                                      <div>
+                                    <div className="flex-1 flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 hover:border-emerald-300 transition-all gap-2">
+                                      <div className="truncate">
                                         <span className="text-sm font-bold text-emerald-900">{sk.nama}</span>
                                         {sk.jabatan && sk.jabatan !== 'Sub-Koordinator' && (
                                           <span className="ml-2 text-xs text-emerald-700">— {sk.jabatan}</span>
                                         )}
-                                        <span className="ml-1.5 text-[8px] bg-emerald-100 text-emerald-700 border border-emerald-200 px-1.5 py-0.5 rounded-md font-black uppercase">Sub-Koord</span>
+                                        <span className="ml-2"><LevelBadge level="Sub-Koordinator" /></span>
                                       </div>
                                       {isInti && (
                                         <div className="flex gap-1 shrink-0">
                                           <button onClick={() => handleStartEdit(sk)} className="p-1 text-emerald-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
-                                          <button onClick={() => onResetPin(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-amber-500 rounded"><Key className="h-3 w-3" /></button>
+                                          <button onClick={() => handleSweetResetPin(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-amber-500 rounded"><Key className="h-3 w-3" /></button>
                                           {sk.id !== currentUser?.id && (
-                                            <button onClick={() => onDeletePanitia(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
+                                            <button onClick={() => handleSweetDelete(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
                                           )}
                                         </div>
                                       )}
@@ -700,10 +810,10 @@ function EditInlineRow({
       {extraFields}
       <div className="flex gap-1">
         <button onClick={onSave} className="p-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors">
-          <Check className="h-3 w-3" />
+          <Check className="h-3.5 w-3.5" />
         </button>
         <button onClick={onCancel} className="p-1.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors">
-          <X className="h-3 w-3" />
+          <X className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>
