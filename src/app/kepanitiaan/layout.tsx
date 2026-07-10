@@ -350,7 +350,7 @@ export default function KepanitiaanLayout({
         <div className="p-4 border-t border-slate-200 mt-auto">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-900/40 border border-slate-200 hover:bg-red-600 hover:border-red-600 hover:text-white transition-all"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all shadow-sm"
           >
             <LogOut className="h-4.5 w-4.5" />
             <span>Keluar Sesi</span>
@@ -440,9 +440,10 @@ export default function KepanitiaanLayout({
                 setSidebarOpen(false);
                 handleLogout();
               }}
-              className="w-full py-3 text-center bg-slate-900 text-slate-600 font-bold border border-slate-200 rounded-xl"
+              className="w-full py-3 flex items-center justify-center space-x-2 bg-white text-slate-700 font-bold border border-slate-200 rounded-xl hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all shadow-sm"
             >
-              Keluar Sesi
+              <LogOut className="h-4.5 w-4.5" />
+              <span>Keluar Sesi</span>
             </button>
           </div>
         </div>
