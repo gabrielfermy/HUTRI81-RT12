@@ -263,7 +263,14 @@ a.text-white,
 /* Footer — keep dark red, don't override with light theme */
 footer.bg-\[\#7F1D1D\] {
   background-color: #7F1D1D !important;
+  color: #FFFFFF !important;
 }
 footer.bg-\[\#7F1D1D\] * {
+  color: inherit !important;
+}
+/* Override the global .text-white -> dark rule, inside footer it must stay white */
+footer.bg-\[\#7F1D1D\] .text-white,
+footer.bg-\[\#7F1D1D\] span,
+footer.bg-\[\#7F1D1D\] p {
   color: inherit !important;
 }
