@@ -15,8 +15,8 @@ interface PanitiaTabProps {
   panitiaList: any[];
   seksiList: any[];
   currentUser: any;
-  onAddPanitia: (nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null) => Promise<void>;
-  onEditPanitia: (id: string, nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null) => Promise<void>;
+  onAddPanitia: (nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null, no_wa?: string) => Promise<void>;
+  onEditPanitia: (id: string, nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null, no_wa?: string) => Promise<void>;
   onDeletePanitia: (id: string, nama: string) => Promise<void>;
   onResetPin: (id: string, nama: string) => Promise<void>;
   onUpdateOwnProfile: (nama: string, pin?: string) => Promise<void>;
@@ -129,6 +129,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
   const [level, setLevel] = useState<LevelType>('Koordinator');
   const [intiJabatan, setIntiJabatan] = useState('Ketua Panitia');
   const [parentId, setParentId] = useState('');
+  const [noWa, setNoWa] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   // ─── EDIT STATE ───────────────────────────────────────────
@@ -138,6 +139,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
   const [editSeksi, setEditSeksi] = useState('');
   const [editLevel, setEditLevel] = useState('');
   const [editParentId, setEditParentId] = useState('');
+  const [editNoWa, setEditNoWa] = useState('');
 
   // ─── PROFILE FORM STATE (non-Inti) ───────────────────────
   const [profNama, setProfNama] = useState(currentUser?.nama || '');
@@ -228,11 +230,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     setSubmitting(true);
     try {
       if (group === 'Pelindung') {
-        await onAddPanitia(nama.trim(), 'Pelindung', jabatan.trim() || 'Pelindung', 'Pelindung', null);
+        await onAddPanitia(nama.trim(), 'Pelindung', jabatan.trim() || 'Pelindung', 'Pelindung', null, noWa.trim());
       } else if (group === 'Penasihat') {
-        await onAddPanitia(nama.trim(), 'Penasihat', jabatan.trim() || 'Penasihat', 'Penasihat', null);
+        await onAddPanitia(nama.trim(), 'Penasihat', jabatan.trim() || 'Penasihat', 'Penasihat', null, noWa.trim());
       } else if (group === 'Inti') {
-        await onAddPanitia(nama.trim(), 'Inti', intiJabatan, 'Inti', null);
+        await onAddPanitia(nama.trim(), 'Inti', intiJabatan, 'Inti', null, noWa.trim());
       } else {
         // Harian
         if (!selectedSeksi || !level) {
@@ -244,9 +246,9 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         if (level === 'Sub-Koordinator' || level === 'Anggota') {
           finalParentId = parentId || null;
         }
-        await onAddPanitia(nama.trim(), selectedSeksi, jabatan.trim() || level, level, finalParentId);
+        await onAddPanitia(nama.trim(), selectedSeksi, jabatan.trim() || level, level, finalParentId, noWa.trim());
       }
-      setNama(''); setJabatan(''); setParentId('');
+      setNama(''); setJabatan(''); setParentId(''); setNoWa('');
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -266,6 +268,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     setEditSeksi(p.seksi || '');
     setEditLevel(p.level || 'Anggota');
     setEditParentId(p.parent_id || '');
+    setEditNoWa(p.no_wa || '');
   };
 
   const handleSaveEdit = async () => {
@@ -277,7 +280,8 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
         editSeksi,
         editJabatan.trim() || editLevel,
         editLevel,
-        editParentId || null
+        editParentId || null,
+        editNoWa.trim()
       );
       setEditingId(null);
       Swal.fire({
@@ -568,7 +572,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                     {editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                     ) : (
                       <MemberRow p={p} currentUser={currentUser} isInti={isInti}
                         onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
@@ -593,7 +597,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                     {editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                     ) : (
                       <MemberRow p={p} currentUser={currentUser} isInti={isInti}
                         onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
@@ -618,7 +622,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                     {editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                        onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                     ) : (
                       <MemberRow p={p} currentUser={currentUser} isInti={isInti}
                         onEdit={handleStartEdit} onDelete={handleSweetDelete} onResetPin={handleSweetResetPin} />
@@ -715,7 +719,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                   {editingId === sk.id ? (
                                     <EditInlineRow p={sk} editNama={editNama} setEditNama={setEditNama}
                                       editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                                      onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                                      onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                                   ) : (
                                     <div className="flex-1 flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 hover:border-emerald-300 transition-all gap-2">
                                       <div className="truncate">
@@ -745,7 +749,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                         {editingId === a.id ? (
                                           <EditInlineRow p={a} editNama={editNama} setEditNama={setEditNama}
                                             editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                                            onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                                            onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                                         ) : (
                                           <MemberRow p={a} currentUser={currentUser} isInti={isInti}
                                             onEdit={handleStartEdit} onDelete={onDeletePanitia} onResetPin={onResetPin} />
@@ -766,7 +770,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                   {editingId === a.id ? (
                                     <EditInlineRow p={a} editNama={editNama} setEditNama={setEditNama}
                                       editJabatan={editJabatan} setEditJabatan={setEditJabatan}
-                                      onSave={handleSaveEdit} onCancel={() => setEditingId(null)} />
+                                      onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
                                   ) : (
                                     <MemberRow p={a} currentUser={currentUser} isInti={isInti}
                                       onEdit={handleStartEdit} onDelete={onDeletePanitia} onResetPin={onResetPin} />
@@ -819,3 +823,4 @@ function EditInlineRow({
     </div>
   );
 }
+

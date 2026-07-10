@@ -82,7 +82,8 @@ export default function KepanitiaanPanitia() {
     seksi: string,
     jabatan: string,
     level: string,
-    parentId?: string | null
+    parentId?: string | null,
+    no_wa?: string
   ) => {
     const newPanitia: any = {
       nama,
@@ -91,6 +92,7 @@ export default function KepanitiaanPanitia() {
       level: level || 'Anggota',
       pin_akses: '1212',
     };
+    if (no_wa) newPanitia.no_wa = no_wa;
     if (parentId) newPanitia.parent_id = parentId;
 
     const { data, error } = await supabase.from('panitia').insert([newPanitia]).select();
@@ -113,9 +115,11 @@ export default function KepanitiaanPanitia() {
     seksi: string,
     jabatan: string,
     level: string,
-    parentId?: string | null
+    parentId?: string | null,
+    no_wa?: string
   ) => {
     const updatePayload: any = { nama, seksi, jabatan, level: level || 'Anggota' };
+    if (no_wa !== undefined) updatePayload.no_wa = no_wa;
     updatePayload.parent_id = parentId || null;
 
     const { error } = await supabase
@@ -131,7 +135,7 @@ export default function KepanitiaanPanitia() {
       }
       setPanitiaList((prev) =>
         prev.map((p) =>
-          p.id === id ? { ...p, nama, seksi, jabatan, level, parent_id: parentId || null } : p
+          p.id === id ? { ...p, nama, seksi, jabatan, level, no_wa, parent_id: parentId || null } : p
         )
       );
       await logAudit(

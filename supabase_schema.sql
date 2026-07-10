@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.panitia (
     seksi TEXT NOT NULL,
     jabatan TEXT NOT NULL DEFAULT 'Anggota',
     pin_akses TEXT NOT NULL DEFAULT '1212', -- PIN login default
+    no_wa TEXT, -- Nomor WhatsApp Panitia (Opsional)
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
