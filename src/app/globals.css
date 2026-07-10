@@ -173,8 +173,6 @@ section.-mt-10 .max-w-3xl .text-slate-500 {
 }
 
 /* Main Section Containers at the bottom (Panitia List & Warga Status) */
-.max-w-4xl > .bg-slate-900\/20,
-.max-w-3xl > .bg-slate-900\/20,
 section.grid-cols-1.lg\:grid-cols-2 > .bg-slate-900\/20 {
   background-color: #FFFFFF !important;
   border: 1px solid #E2E8F0 !important;
@@ -182,16 +180,13 @@ section.grid-cols-1.lg\:grid-cols-2 > .bg-slate-900\/20 {
 }
 
 /* Inner Panitia Cards (standing out against the white container) */
-.max-w-4xl .bg-slate-900\/40,
 section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 {
   background-color: #F8FAFC !important;
   border: 1px solid #E2E8F0 !important;
 }
-.max-w-4xl .bg-slate-900\/40 *,
 section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 * {
   color: #0F172A !important;
 }
-.max-w-4xl .bg-slate-900\/40 .text-red-400,
 section.grid-cols-1.lg\:grid-cols-2 .bg-slate-900\/40 .text-red-400 {
   color: #DC2626 !important;
 }
@@ -241,17 +236,6 @@ a.text-white,
 .bg-indigo-600.text-white,
 .bg-blue-600.text-white {
   color: #FFFFFF !important;
-}
-
-/* Tab Buttons */
-.max-w-5xl button.bg-slate-900\/50 {
-  background-color: #FFFFFF !important;
-  color: #64748B !important;
-  border-color: #E2E8F0 !important;
-}
-.max-w-5xl button.bg-slate-900\/50:hover {
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
 }
 
 /* Explicit colors for solid buttons */

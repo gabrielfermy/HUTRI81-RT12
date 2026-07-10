@@ -244,13 +244,13 @@ export default function PublicPortal() {
             <span>Portal Informasi Warga RT 12 Pelem Kidul</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
             Pesta Rakyat HUT RI Ke-81
           </h1>
           <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-white">
             "Guyub Rukun Membangun Negeri"
           </p>
-          <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
+          <p className="max-w-2xl mx-auto text-slate-500 text-sm sm:text-base leading-relaxed">
             Portal transparansi publik resmi. Memuat jadwal acara teraktual, susunan kepanitiaan, hingga pelaporan kas masuk dan realisasi belanja aktual secara real-time.
           </p>
         </div>
@@ -270,8 +270,8 @@ export default function PublicPortal() {
               { label: 'Menit', value: timeLeft.minutes },
               { label: 'Detik', value: timeLeft.seconds },
             ].map((t) => (
-              <div key={t.label} className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 sm:p-5">
-                <span className="text-2xl sm:text-5xl font-extrabold text-white bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
+              <div key={t.label} className="bg-slate-950/80 border border-slate-200 rounded-xl p-3 sm:p-5">
+                <span className="text-2xl sm:text-5xl font-extrabold text-slate-900 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
                   {String(t.value).padStart(2, '0')}
                 </span>
                 <span className="text-[9px] sm:text-xs font-semibold text-slate-500 uppercase tracking-widest block mt-2">
@@ -286,19 +286,19 @@ export default function PublicPortal() {
       {/* Navigation Tabs */}
       <div className="max-w-5xl mx-auto px-4 mt-8 w-full z-20 relative">
         <div className="flex justify-start sm:justify-center overflow-x-auto pb-4 space-x-2 sm:space-x-4 scrollbar-hide">
-          <button onClick={() => setActiveTab('keuangan')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('keuangan')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <DollarSign className="h-4.5 w-4.5" />
             <span>Keuangan & Donasi</span>
           </button>
-          <button onClick={() => setActiveTab('jadwal')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('jadwal')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Calendar className="h-4.5 w-4.5" />
             <span>Jadwal Acara</span>
           </button>
-          <button onClick={() => setActiveTab('panitia')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('panitia')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Users className="h-4.5 w-4.5" />
             <span>Susunan Panitia</span>
           </button>
-          <button onClick={() => setActiveTab('notulen')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-900/50 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('notulen')} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <FileText className="h-4.5 w-4.5" />
             <span>Jadwal Rapat</span>
           </button>
@@ -314,18 +314,18 @@ export default function PublicPortal() {
             {/* Section 1: Dashboard Keuangan & Realisasi Belanja */}
             <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
               <DollarSign className="text-red-500" />
               <span>Transparansi Kas & Belanja Warga</span>
             </h2>
-            <p className="text-sm text-slate-400">Semua nominal tercatat real-time dari pembukuan Bendahara.</p>
+            <p className="text-sm text-slate-500">Semua nominal tercatat real-time dari pembukuan Bendahara.</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Box 1: Pendanaan Progress */}
-            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+            <div className="bg-slate-900/30 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between space-y-6">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">Status Penggalangan Dana</h3>
+                <h3 className="text-base font-bold text-slate-900 mb-1">Status Penggalangan Dana</h3>
                 <p className="text-xs text-slate-500">Target anggaran ideal Rp {totalTarget.toLocaleString('id-ID')}</p>
               </div>
 
@@ -334,7 +334,7 @@ export default function PublicPortal() {
                   <span className="text-2xl sm:text-3xl font-black text-emerald-400">
                     Rp {totalCollected.toLocaleString('id-ID')}
                   </span>
-                  <span className="text-xs text-slate-400 font-semibold">{progressPercentage}% Terkumpul</span>
+                  <span className="text-xs text-slate-500 font-semibold">{progressPercentage}% Terkumpul</span>
                 </div>
                 <div className="w-full bg-slate-800 rounded-full h-3 p-0.5 border border-slate-700">
                   <div
@@ -344,26 +344,26 @@ export default function PublicPortal() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-800 text-xs text-slate-400 space-y-2">
+              <div className="pt-4 border-t border-slate-200 text-xs text-slate-500 space-y-2">
                 <div className="flex justify-between">
                   <span>Kas RT 12:</span>
-                  <span className="font-semibold text-white">Rp {kasRt.toLocaleString('id-ID')}</span>
+                  <span className="font-semibold text-slate-900">Rp {kasRt.toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Iuran Warga (KK):</span>
-                  <span className="font-semibold text-white">Rp {totalIuranPaid.toLocaleString('id-ID')}</span>
+                  <span className="font-semibold text-slate-900">Rp {totalIuranPaid.toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Sponsorship & Donatur:</span>
-                  <span className="font-semibold text-white">Rp {totalSponsorCollected.toLocaleString('id-ID')}</span>
+                  <span className="font-semibold text-slate-900">Rp {totalSponsorCollected.toLocaleString('id-ID')}</span>
                 </div>
               </div>
             </div>
 
             {/* Box 2: Realisasi Anggaran (RAB vs Aktual) */}
-            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
+            <div className="bg-slate-900/30 border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
               <div>
-                <h3 className="text-base font-bold text-white mb-1">Realisasi Anggaran Per Kategori</h3>
+                <h3 className="text-base font-bold text-slate-900 mb-1">Realisasi Anggaran Per Kategori</h3>
                 <p className="text-xs text-slate-500">Perbandingan antara Rencana Belanja (RAB) dengan realisasi pengeluaran riil.</p>
               </div>
 
@@ -375,8 +375,8 @@ export default function PublicPortal() {
                       <div key={index} className="space-y-1">
                         <div className="flex justify-between text-xs font-semibold">
                           <span className="text-slate-300">{item.category}</span>
-                          <span className="text-slate-400">
-                            <span className="text-white font-bold">Rp {item.actual.toLocaleString('id-ID')}</span>
+                          <span className="text-slate-500">
+                            <span className="text-slate-900 font-bold">Rp {item.actual.toLocaleString('id-ID')}</span>
                             <span> / Rp {item.planned.toLocaleString('id-ID')}</span>
                           </span>
                         </div>
@@ -394,8 +394,8 @@ export default function PublicPortal() {
                 <p className="text-xs text-slate-500 italic">Belum ada item anggaran tercatat.</p>
               )}
 
-              <div className="pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
-                <span className="text-slate-400">Total Belanja Riil Saat Ini:</span>
+              <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span className="text-slate-500">Total Belanja Riil Saat Ini:</span>
                 <span className="text-base font-black text-red-400">
                   Rp {totalSpent.toLocaleString('id-ID')}
                 </span>
@@ -412,16 +412,16 @@ export default function PublicPortal() {
             {/* Section 2: Jadwal Acara & Rundown */}
             <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
               <Calendar className="text-red-500" />
               <span>Jadwal & Rundown Acara</span>
             </h2>
-            <p className="text-sm text-slate-400">Rangkaian kegiatan Pesta Rakyat warga RT 12 Pelem Kidul.</p>
+            <p className="text-sm text-slate-500">Rangkaian kegiatan Pesta Rakyat warga RT 12 Pelem Kidul.</p>
           </div>
 
           {/* Date Tabs selector */}
           {uniqueRundownDates.length > 1 && (
-            <div className="flex justify-center border-b border-slate-800 space-x-2 overflow-x-auto pb-px">
+            <div className="flex justify-center border-b border-slate-200 space-x-2 overflow-x-auto pb-px">
               {uniqueRundownDates.map((dateStr) => {
                 const isActive = dateStr === activeRundownDate;
                 const formattedDate = new Date(dateStr).toLocaleDateString('id-ID', {
@@ -448,27 +448,27 @@ export default function PublicPortal() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
             {filteredRundownList.map((item, index) => (
-              <div key={index} className="bg-slate-900/20 border border-slate-800/80 rounded-2xl p-6 space-y-4 hover:border-red-500/20 transition-all duration-300">
+              <div key={index} className="bg-white border border-slate-200 shadow-sm/80 rounded-2xl p-6 space-y-4 hover:border-red-500/20 transition-all duration-300">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
                     {new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </span>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-400 font-semibold bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg">
+                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold bg-slate-900 border border-slate-200 px-2.5 py-1 rounded-lg">
                     <Clock className="h-3.5 w-3.5 text-red-500" />
                     <span>{item.jam_mulai} - {item.jam_selesai} WIB</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-white transition-colors">{item.kegiatan}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">{item.keterangan}</p>
+                  <h3 className="text-lg font-bold text-slate-900 transition-colors">{item.kegiatan}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{item.keterangan}</p>
                 </div>
 
                 {item.seksi_pj && item.seksi_pj.length > 0 && (
-                  <div className="pt-3 border-t border-slate-800/50 flex flex-wrap gap-1.5 items-center">
+                  <div className="pt-3 border-t border-slate-200/50 flex flex-wrap gap-1.5 items-center">
                     <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mr-1">Penanggung Jawab:</span>
                     {item.seksi_pj.map((pj: string, i: number) => (
-                      <span key={i} className="text-[10px] font-semibold text-slate-300 bg-slate-800/60 border border-slate-700 px-2 py-0.5 rounded-md">
+                      <span key={i} className="text-[10px] font-semibold text-slate-300 bg-slate-100 border border-slate-700 px-2 py-0.5 rounded-md">
                         {pj}
                       </span>
                     ))}
@@ -490,33 +490,33 @@ export default function PublicPortal() {
             {/* Section 3: Notulensi Rapat Panitia */}
             <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
               <FileText className="text-red-500" />
               <span>Jadwal Rapat Panitia</span>
             </h2>
-            <p className="text-sm text-slate-400">Jadwal rapat/kegiatan panitia. Hasil/notulen rapat dapat dilihat jika kegiatan telah terlaksana.</p>
+            <p className="text-sm text-slate-500">Jadwal rapat/kegiatan panitia. Hasil/notulen rapat dapat dilihat jika kegiatan telah terlaksana.</p>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-4">
             {rapatList.map((r, index) => {
               const isExpanded = expandedRapatId === r.id;
               return (
-                <div key={index} className="bg-slate-900/30 border border-slate-800 rounded-xl overflow-hidden transition-all duration-300">
+                <div key={index} className="bg-slate-900/30 border border-slate-200 rounded-xl overflow-hidden transition-all duration-300">
                   <div
                     onClick={() => setExpandedRapatId(isExpanded ? null : r.id)}
                     className="p-5 flex justify-between items-center cursor-pointer hover:bg-slate-900/60 transition-colors"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2.5">
-                        <span className="text-xs text-slate-400 font-semibold">
+                        <span className="text-xs text-slate-500 font-semibold">
                           {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </span>
                         <span className="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-full font-bold">
                           {r.waktu}
                         </span>
                       </div>
-                      <h3 className="text-base font-bold text-white">{r.agenda}</h3>
-                      <p className="text-xs text-slate-500">Tempat: <strong className="text-slate-400">{r.tempat}</strong></p>
+                      <h3 className="text-base font-bold text-slate-900">{r.agenda}</h3>
+                      <p className="text-xs text-slate-500">Tempat: <strong className="text-slate-500">{r.tempat}</strong></p>
                     </div>
                     <span className="text-xs font-bold text-red-400 hover:text-red-300 flex items-center">
                       {isExpanded ? 'Tutup Detail' : 'Lihat Detail / Notulen'}
@@ -525,7 +525,7 @@ export default function PublicPortal() {
                   </div>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-3 border-t border-slate-800/80 bg-slate-950/20 text-slate-300 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
+                    <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-slate-950/20 text-slate-300 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
                       {r.notulen || 'Notulen rapat belum dimasukkan.'}
                     </div>
                   )}
@@ -543,11 +543,11 @@ export default function PublicPortal() {
             {/* Section 4: Sponsor & Donatur */}
             <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
               <Heart className="text-red-500" />
               <span>Sponsor & Donatur Terdaftar</span>
             </h2>
-            <p className="text-sm text-slate-400">Apresiasi setinggi-tingginya kepada para pihak yang menyokong kesuksesan acara.</p>
+            <p className="text-sm text-slate-500">Apresiasi setinggi-tingginya kepada para pihak yang menyokong kesuksesan acara.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -559,7 +559,7 @@ export default function PublicPortal() {
                 </span>
                 <div className="space-y-1">
                   {sponsorList.filter(s => s.tipe === 'Platinum').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-white flex justify-between items-center py-1 border-b border-[#FFB703]/10">
+                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-[#FFB703]/10">
                       <span>{s.nama}</span>
                       <span className="text-xs text-[#FFB703]">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
                     </div>
@@ -580,7 +580,7 @@ export default function PublicPortal() {
                 </span>
                 <div className="space-y-1">
                   {sponsorList.filter(s => s.tipe === 'Gold').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-white flex justify-between items-center py-1 border-b border-slate-700/50">
+                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-slate-700/50">
                       <span>{s.nama}</span>
                       <span className="text-xs text-slate-300">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
                     </div>
@@ -590,7 +590,7 @@ export default function PublicPortal() {
                   )}
                 </div>
               </div>
-              <span className="text-[10px] font-semibold text-slate-400 italic">*Branding Sedang & Ad-Lips MC</span>
+              <span className="text-[10px] font-semibold text-slate-500 italic">*Branding Sedang & Ad-Lips MC</span>
             </div>
 
             {/* Silver Card */}
@@ -601,7 +601,7 @@ export default function PublicPortal() {
                 </span>
                 <div className="space-y-1">
                   {sponsorList.filter(s => s.tipe === 'Silver').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-white flex flex-col py-1.5 border-b border-slate-800">
+                    <div key={i} className="text-sm font-bold text-slate-900 flex flex-col py-1.5 border-b border-slate-200">
                       <div className="flex justify-between items-center">
                         <span>{s.nama}</span>
                         {Number(s.nominal) > 0 && <span className="text-xs text-amber-500">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>}
@@ -625,7 +625,7 @@ export default function PublicPortal() {
                 </span>
                 <div className="space-y-1">
                   {sponsorList.filter(s => s.tipe === 'Donatur Warga').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-white flex justify-between items-center py-1 border-b border-emerald-900/30">
+                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-emerald-900/30">
                       <span>{s.nama}</span>
                       <span className="text-xs text-emerald-400">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
                     </div>
@@ -646,8 +646,8 @@ export default function PublicPortal() {
         {activeTab === 'panitia' && (
           <div className="space-y-8 animate-fadeIn max-w-4xl mx-auto w-full">
             {/* Panitia List - Hierarchical */}
-            <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
-            <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 space-y-6">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center space-x-2">
               <Users className="text-red-500" />
               <span>Susunan Kepanitiaan RT 12</span>
             </h3>
@@ -659,8 +659,8 @@ export default function PublicPortal() {
                 <div className="space-y-1.5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-purple-400">Pelindung / Pembina</p>
                   {panitiaGroups.pelindung.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
-                      <span className="font-bold text-white flex items-center">
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
+                      <span className="font-bold text-slate-900 flex items-center">
                         {p.nama}
                         {p.no_wa && (
                           <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
@@ -679,8 +679,8 @@ export default function PublicPortal() {
                 <div className="space-y-1.5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Penasihat</p>
                   {panitiaGroups.penasihat.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
-                      <span className="font-bold text-white flex items-center">
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
+                      <span className="font-bold text-slate-900 flex items-center">
                         {p.nama}
                         {p.no_wa && (
                           <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
@@ -699,9 +699,9 @@ export default function PublicPortal() {
                 <div className="space-y-1.5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-red-400">Panitia Inti</p>
                   {panitiaGroups.inti.map((p, i) => (
-                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-800/60">
+                    <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
                       <div>
-                        <span className="font-bold text-white flex items-center">
+                        <span className="font-bold text-slate-900 flex items-center">
                           {p.nama}
                           {p.no_wa && (
                             <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
@@ -719,7 +719,7 @@ export default function PublicPortal() {
               {/* Panitia Harian */}
               {panitiaGroups.harian.length > 0 && (
                 <div className="space-y-4 pt-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Panitia Harian</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Panitia Harian</p>
                   {panitiaGroups.harian.map((seksi, si) => (
                     <div key={si} className="space-y-2">
                       <p className="text-xs font-black text-amber-400 uppercase tracking-wide">Seksi {seksi.seksiNama}</p>
@@ -727,7 +727,7 @@ export default function PublicPortal() {
                         <div key={ki} className="space-y-1.5 pl-2">
                           {/* Koordinator */}
                           <div className="flex justify-between items-center py-1.5 border-b border-amber-900/30">
-                            <span className="font-bold text-white flex items-center">
+                            <span className="font-bold text-slate-900 flex items-center">
                               {koord.nama}
                               {koord.no_wa && (
                                 <a href={`https://wa.me/${koord.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${koord.nama}`}>
@@ -741,7 +741,7 @@ export default function PublicPortal() {
                           {koord.subKoords?.map((sk: any, ski: number) => (
                             <div key={ski} className="pl-4 space-y-1">
                               <div className="flex justify-between items-center py-1 border-b border-emerald-900/30">
-                                <span className="font-semibold text-white opacity-90 text-xs flex items-center">
+                                <span className="font-semibold text-slate-900 opacity-90 text-xs flex items-center">
                                   └ {sk.nama}
                                   {sk.no_wa && (
                                     <a href={`https://wa.me/${sk.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${sk.nama}`}>
@@ -753,7 +753,7 @@ export default function PublicPortal() {
                               </div>
                               {sk.anggota?.map((a: any, ai: number) => (
                                 <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                                  <span className="text-xs text-white opacity-80 flex items-center">
+                                  <span className="text-xs text-slate-900 opacity-80 flex items-center">
                                     └ {a.nama}
                                     {a.no_wa && (
                                       <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
@@ -769,7 +769,7 @@ export default function PublicPortal() {
                           {/* Direct Anggota (no sub-koord) */}
                           {koord.anggota?.map((a: any, ai: number) => (
                             <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
-                              <span className="text-xs text-white opacity-80 flex items-center">
+                              <span className="text-xs text-slate-900 opacity-80 flex items-center">
                                 └ {a.nama}
                                 {a.no_wa && (
                                   <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
@@ -799,9 +799,9 @@ export default function PublicPortal() {
         {activeTab === 'keuangan' && (
           <div className="space-y-12 animate-fadeIn max-w-3xl mx-auto w-full">
             {/* Payment Status (Public Read Only Checklist) */}
-            <div className="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col h-[500px]">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col h-[500px]">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+              <h3 className="text-xl font-bold text-slate-900 flex items-center space-x-2">
                 <CheckCircle2 className="text-red-500" />
                 <span>Status Iuran Warga (80 KK)</span>
               </h3>
@@ -810,16 +810,16 @@ export default function PublicPortal() {
               </span>
             </div>
 
-            <div className="overflow-y-auto flex-grow border border-slate-800/60 rounded-xl p-2 bg-slate-950/20 space-y-2">
+            <div className="overflow-y-auto flex-grow border border-slate-200/60 rounded-xl p-2 bg-slate-950/20 space-y-2">
               {wargaList.map((w) => (
                 <div
                   key={w.id}
                   className={`flex items-center justify-between p-3 rounded-lg border text-sm transition-all ${
-                    w.is_paid ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-slate-900/20 border-slate-800'
+                    w.is_paid ? 'bg-emerald-500/5 border-emerald-500/10' : 'bg-slate-900/20 border-slate-200'
                   }`}
                 >
                   <div className="flex items-center space-x-2.5">
-                    <span className="font-semibold text-white">{w.nama}</span>
+                    <span className="font-semibold text-slate-900">{w.nama}</span>
                     <span className="text-xs text-slate-500">({w.blok})</span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -849,3 +849,4 @@ export default function PublicPortal() {
     </div>
   );
 }
+
