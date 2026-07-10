@@ -253,10 +253,17 @@ a.text-white,
   color: #FFFFFF !important;
 }
 
-/* Light portal layout gradient variables */
 .from-red-950\/20 {
   --tw-gradient-from: rgba(220, 38, 38, 0.04) !important;
 }
 .via-\[\#070A13\] {
   --tw-gradient-to: #F8FAFC !important;
+}
+
+/* Footer — keep dark red, don't override with light theme */
+footer.bg-\[\#7F1D1D\] {
+  background-color: #7F1D1D !important;
+}
+footer.bg-\[\#7F1D1D\] * {
+  color: inherit !important;
 }

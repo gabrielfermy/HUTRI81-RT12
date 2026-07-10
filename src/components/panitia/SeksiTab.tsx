@@ -463,7 +463,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4 border-t border-slate-900 mt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4 border-t border-slate-200 mt-4">
             <span className="text-[10px] text-slate-500 font-semibold">
               Halaman {currentPage} dari {totalPages} ({filteredAndSortedList.length} Jabatan)
             </span>
@@ -471,9 +471,9 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className="px-2.5 py-1.5 bg-slate-950 border border-slate-850 hover:border-slate-800 rounded-lg text-[10px] font-bold text-white transition-colors disabled:opacity-40"
+                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:text-red-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
               >
-                Sebelumnya
+                ← Sebelumnya
               </button>
               {Array.from({ length: totalPages }).map((_, idx) => {
                 const pageNum = idx + 1;
@@ -483,8 +483,8 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                     onClick={() => setCurrentPage(pageNum)}
                     className={`h-7 w-7 rounded-lg text-[10px] font-bold transition-all ${
                       currentPage === pageNum
-                        ? 'bg-red-650 text-white shadow-md'
-                        : 'bg-slate-950 border border-slate-850 text-slate-450 hover:text-white hover:border-slate-800'
+                        ? 'bg-red-600 text-white shadow-sm'
+                        : 'bg-white border border-slate-200 text-slate-600 hover:border-red-300 hover:text-red-600'
                     }`}
                   >
                     {pageNum}
@@ -494,9 +494,9 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className="px-2.5 py-1.5 bg-slate-950 border border-slate-850 hover:border-slate-800 rounded-lg text-[10px] font-bold text-white transition-colors disabled:opacity-40"
+                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:text-red-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
               >
-                Berikutnya
+                Berikutnya →
               </button>
             </div>
           </div>
