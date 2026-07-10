@@ -43,7 +43,7 @@ export default function KepanitiaanLogs() {
         </div>
         <button
           onClick={loadLogs}
-          className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-slate-900 bg-slate-900 border border-slate-200 hover:border-slate-700 px-3.5 py-2 rounded-xl transition-all"
+          className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-white bg-slate-900 border border-slate-200 hover:border-slate-700 px-3.5 py-2 rounded-xl transition-all"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>Segarkan Log</span>

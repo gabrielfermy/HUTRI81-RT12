@@ -195,7 +195,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {uploading ? 'Mengompres & Mengunggah Bukti...' : submitting ? 'Menyimpan...' : 'Simpan Transaksi Belanja'}
             </button>

@@ -86,7 +86,7 @@ export const EditWargaModal: React.FC<EditWargaModalProps> = ({ isOpen, warga, o
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {submitting ? 'Menyimpan...' : 'Simpan Perubahan'}
             </button>

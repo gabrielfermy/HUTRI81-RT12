@@ -350,7 +350,7 @@ export default function KepanitiaanLayout({
         <div className="p-4 border-t border-slate-200 mt-auto">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-900/40 border border-slate-200 hover:bg-red-600 hover:border-red-600 hover:text-slate-900 transition-all"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-900/40 border border-slate-200 hover:bg-red-600 hover:border-red-600 hover:text-white transition-all"
           >
             <LogOut className="h-4.5 w-4.5" />
             <span>Keluar Sesi</span>
@@ -361,7 +361,7 @@ export default function KepanitiaanLayout({
       {/* Sidebar - Mobile Toggle & Drawer */}
       <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex justify-between items-center print:hidden">
         <div className="flex items-center space-x-2">
-          <div className="bg-red-600 p-1 rounded-md text-slate-900 font-bold text-xs">P</div>
+          <div className="bg-red-600 p-1 rounded-md text-white font-bold text-xs">P</div>
           <span className="font-extrabold text-sm text-slate-900 tracking-wide">PANITIA PORTAL</span>
         </div>
         <button

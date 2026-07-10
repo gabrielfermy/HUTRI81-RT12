@@ -83,7 +83,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/10 disabled:opacity-50"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-emerald-600/10 disabled:opacity-50"
             >
               {submitting ? 'Menyimpan...' : 'Simpan Pembayaran'}
             </button>

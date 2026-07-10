@@ -96,7 +96,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
             {submitting ? 'Menyimpan...' : 'Simpan Donasi / Sponsor'}
           </button>

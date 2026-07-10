@@ -28,7 +28,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo / Title */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative p-1.5 bg-red-650 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
+            <div className="relative p-1.5 bg-red-600 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
               <Flag className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">

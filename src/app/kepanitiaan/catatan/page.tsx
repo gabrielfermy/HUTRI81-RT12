@@ -245,7 +245,7 @@ export default function KepanitiaanCatatan() {
 
         <button
           onClick={handleCreateNote}
-          className="flex items-center space-x-2 px-4 py-2 bg-red-650 hover:bg-red-600 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg"
+          className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-600 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
         >
           <Plus className="h-4 w-4" />
           <span>Buat Catatan Baru</span>
@@ -384,7 +384,7 @@ export default function KepanitiaanCatatan() {
                   {/* Save button */}
                   <button
                     onClick={handleSaveNote}
-                    className="flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg"
+                    className="flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
                   >
                     <Save className="h-3.5 w-3.5" />
                     <span>Simpan</span>

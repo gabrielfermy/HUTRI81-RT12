@@ -150,7 +150,7 @@ export default function KepanitiaanRapat() {
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10"
           >
             <Plus className="h-4 w-4" />
             <span>Tambah Rapat Baru</span>
@@ -216,7 +216,7 @@ export default function KepanitiaanRapat() {
 
             <div className="flex justify-end pt-2">
               <button type="submit" disabled={submitting}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl transition-all disabled:opacity-50">
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50">
                 {submitting ? 'Menyimpan...' : (editingId ? 'Simpan Perubahan' : 'Terbitkan Notulen')}
               </button>
             </div>
@@ -231,7 +231,7 @@ export default function KepanitiaanRapat() {
             <div className="p-5 flex justify-between items-start md:items-center flex-col md:flex-row gap-4 bg-slate-50">
               <div className="space-y-1.5 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wider bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full">
                     {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                   <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-bold flex items-center gap-1">

@@ -565,7 +565,7 @@ export default function KepanitiaanDashboard() {
 
                   <button
                     onClick={() => handleOpenNotulenEditor(r)}
-                    className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-slate-900 text-xs font-bold rounded-xl transition-all"
+                    className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
                   >
                     {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
                   </button>

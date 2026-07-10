@@ -53,13 +53,13 @@ export default function BackdropPage() {
 
       {/* 🔴 Top Drapery / Red-White Curtains (Static) */}
       <div className="absolute top-0 left-0 w-full z-20 flex flex-col pointer-events-none">
-        <div className="h-6 bg-red-650 w-full" />
+        <div className="h-6 bg-red-600 w-full" />
         <div className="flex justify-between w-full -mt-0.5">
           {Array.from({ length: 16 }).map((_, idx) => (
             <div
               key={idx}
               className={`h-8 w-full rounded-b-[30px] ${
-                idx % 2 === 0 ? 'bg-red-650' : 'bg-white'
+                idx % 2 === 0 ? 'bg-red-600' : 'bg-white'
               }`}
             />
           ))}
@@ -140,7 +140,7 @@ export default function BackdropPage() {
       <main className="text-center my-4 max-w-4xl mx-auto w-full px-16 sm:px-24 z-10 flex-grow flex flex-col justify-center space-y-4">
         
         {/* Ribbon decoration banner */}
-        <div className="inline-flex items-center gap-2 bg-red-650 text-white px-6 py-1.5 rounded-full shadow-md border border-red-500/20 max-w-fit mx-auto">
+        <div className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-1.5 rounded-full shadow-md border border-red-500/20 max-w-fit mx-auto">
           <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">DIRGAHAYU</span>
         </div>
 

@@ -355,7 +355,7 @@ export default function KepanitiaanWarga() {
           </button>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
           >
             <Plus className="h-4 w-4" />
             <span>Tambah KK Baru</span>

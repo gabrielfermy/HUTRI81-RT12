@@ -274,7 +274,7 @@ export default function KepanitiaanRundown() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-slate-900 font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
             >
               Simpan Rundown Acara
             </button>
