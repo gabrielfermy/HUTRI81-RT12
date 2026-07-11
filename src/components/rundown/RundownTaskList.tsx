@@ -156,7 +156,7 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
       <div className="space-y-3.5 max-h-60 overflow-y-auto pr-1">
         {groupedTasks.map(group => (
           <div key={group.sectionName} className="space-y-1.5">
-            <span className="block text-[9px] text-red-400 font-extrabold uppercase tracking-wide">
+            <span className="block text-[9px] text-primary-400 font-extrabold uppercase tracking-wide">
               {group.sectionName === 'Semua Panitia' ? 'Umum / Semua PJ' : `Seksi ${group.sectionName}`}
             </span>
             <div className="space-y-1 pl-1">
@@ -182,7 +182,7 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
                   <button 
                     type="button" 
                     onClick={() => handleDeleteTask(t.id)}
-                    className="text-slate-750 hover:text-red-400 p-1 rounded-md transition-colors shrink-0"
+                    className="text-slate-750 hover:text-primary-400 p-1 rounded-md transition-colors shrink-0"
                   >
                     <Trash2 className="h-3 w-3" />
                   </button>
@@ -204,13 +204,13 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
           placeholder="Tugas baru (e.g. Siapkan 10 obor)"
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
-          className="sm:col-span-2 bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-red-500"
+          className="sm:col-span-2 bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-primary-500"
         />
         <div className="flex gap-1.5">
           <select
             value={newPic}
             onChange={(e) => setNewPic(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-850 rounded-lg px-1.5 py-1.5 text-[11px] text-white focus:outline-none focus:border-red-500"
+            className="w-full bg-slate-950 border border-slate-850 rounded-lg px-1.5 py-1.5 text-[11px] text-white focus:outline-none focus:border-primary-500"
           >
             <option value="Semua Panitia">Semua PJ</option>
             {seksiPj.map((sec) => (
@@ -219,7 +219,7 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
           </select>
           <button
             type="submit"
-            className="p-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors shrink-0 flex items-center justify-center"
+            className="p-1.5 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors shrink-0 flex items-center justify-center"
           >
             <Plus className="h-4.5 w-4.5" />
           </button>

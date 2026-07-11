@@ -167,7 +167,7 @@ export default function KepanitiaanLayout({
     return (
       <div className="flex-grow flex items-center justify-center bg-white text-slate-900 min-h-[70vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-red-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
           <p className="text-sm text-slate-500">Menyiapkan Akses Panitia...</p>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function KepanitiaanLayout({
         
         <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 backdrop-blur-md shadow-2xl relative z-10 space-y-6">
           <div className="text-center space-y-2">
-            <div className="inline-flex p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 mb-2">
+            <div className="inline-flex p-3 bg-primary-500/10 border border-primary-500/20 rounded-xl text-primary-500 mb-2">
               <Lock className="h-6 w-6" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Login Panitia RT 12</h1>
@@ -195,7 +195,7 @@ export default function KepanitiaanLayout({
               <select
                 value={selectedPanitiaId}
                 onChange={(e) => setSelectedPanitiaId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-red-500 transition-colors"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-primary-500 transition-colors"
               >
                 <option value="">-- Pilih Anggota --</option>
 
@@ -245,12 +245,12 @@ export default function KepanitiaanLayout({
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
                 placeholder="••••"
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 tracking-widest text-center focus:outline-none focus:border-red-500 transition-colors"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 tracking-widest text-center focus:outline-none focus:border-primary-500 transition-colors"
               />
             </div>
 
             {loginError && (
-              <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl flex items-center space-x-2">
+              <div className="p-3 bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs rounded-xl flex items-center space-x-2">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{loginError}</span>
               </div>
@@ -258,7 +258,7 @@ export default function KepanitiaanLayout({
 
             <button
               type="submit"
-              className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-red-600/20"
+              className="w-full py-3 bg-primary-600 hover:bg-primary-500 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-primary-600/20"
             >
               Masuk Dasbor
             </button>
@@ -296,7 +296,7 @@ export default function KepanitiaanLayout({
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 shrink-0">
         {/* User Info Header */}
         <div className="p-6 border-b border-slate-200 bg-slate-50">
-          <div className="text-xs text-red-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
+          <div className="text-xs text-primary-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
           <div className="font-bold text-slate-900 text-base truncate">{loggedInUser?.nama}</div>
           <div className="text-[10px] text-slate-500 font-medium truncate">{loggedInUser?.jabatan}</div>
         </div>
@@ -312,7 +312,7 @@ export default function KepanitiaanLayout({
                 href={item.href}
                 className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                   isActive
-                    ? 'bg-red-600 text-white shadow-md shadow-red-600/10 font-bold'
+                    ? 'bg-primary-600 text-white shadow-md shadow-primary-600/10 font-bold'
                     : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                 }`}
               >
@@ -350,7 +350,7 @@ export default function KepanitiaanLayout({
         <div className="p-4 border-t border-slate-200 mt-auto">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all shadow-sm"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:bg-primary-50 hover:border-primary-200 hover:text-primary-600 transition-all shadow-sm"
           >
             <LogOut className="h-4.5 w-4.5" />
             <span>Keluar Sesi</span>
@@ -361,7 +361,7 @@ export default function KepanitiaanLayout({
       {/* Sidebar - Mobile Toggle & Drawer */}
       <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex justify-between items-center print:hidden">
         <div className="flex items-center space-x-2">
-          <div className="bg-red-600 p-1 rounded-md text-white font-bold text-xs">P</div>
+          <div className="bg-primary-600 p-1 rounded-md text-white font-bold text-xs">P</div>
           <span className="font-extrabold text-sm text-slate-900 tracking-wide">PANITIA PORTAL</span>
         </div>
         <button
@@ -382,7 +382,7 @@ export default function KepanitiaanLayout({
           </button>
           
           <div className="p-6 border-b border-slate-200 text-center">
-            <div className="text-xs text-red-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
+            <div className="text-xs text-primary-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
             <div className="font-bold text-slate-900 text-lg">{loggedInUser?.nama}</div>
             <div className="text-xs text-slate-500 font-medium">{loggedInUser?.jabatan}</div>
           </div>
@@ -398,7 +398,7 @@ export default function KepanitiaanLayout({
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold transition-all ${
                     isActive
-                      ? 'bg-red-600 text-white'
+                      ? 'bg-primary-600 text-white'
                       : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                   }`}
                 >
@@ -440,7 +440,7 @@ export default function KepanitiaanLayout({
                 setSidebarOpen(false);
                 handleLogout();
               }}
-              className="w-full py-3 flex items-center justify-center space-x-2 bg-white text-slate-700 font-bold border border-slate-200 rounded-xl hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all shadow-sm"
+              className="w-full py-3 flex items-center justify-center space-x-2 bg-white text-slate-700 font-bold border border-slate-200 rounded-xl hover:bg-primary-50 hover:border-primary-200 hover:text-primary-600 transition-all shadow-sm"
             >
               <LogOut className="h-4.5 w-4.5" />
               <span>Keluar Sesi</span>

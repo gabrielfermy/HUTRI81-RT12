@@ -23,19 +23,19 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#450A0A]/95 backdrop-blur-md border-b border-red-500/20 text-white shadow-lg print:hidden">
+    <nav className="sticky top-0 z-50 bg-primary-950/95 backdrop-blur-md border-b border-primary-500/20 text-white shadow-lg print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Title */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative p-1.5 bg-red-600 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
+            <div className="relative p-1.5 bg-primary-600 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
               <Flag className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold tracking-wider text-sm sm:text-base bg-gradient-to-r from-white via-red-200 to-red-400 bg-clip-text text-transparent">
+              <span className="font-bold tracking-wider text-sm sm:text-base bg-gradient-to-r from-white via-primary-200 to-primary-400 bg-clip-text text-transparent">
                 RT 12 PELEM KIDUL
               </span>
-              <span className="text-[10px] text-red-300 font-medium tracking-widest uppercase">
+              <span className="text-[10px] text-primary-300 font-medium tracking-widest uppercase">
                 HUT RI KE-81
               </span>
             </div>
@@ -52,7 +52,7 @@ export default function Navbar() {
                   href={item.href}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
                     isActive
-                      ? 'bg-red-600 text-white shadow-md shadow-red-600/30 font-bold scale-[1.02]'
+                      ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30 font-bold scale-[1.02]'
                       : 'hover:bg-white/10 text-slate-200 hover:text-white'
                   }`}
                 >
@@ -78,7 +78,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-[#450A0A] border-t border-red-500/10">
+        <div className="md:hidden bg-primary-950 border-t border-primary-500/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -90,7 +90,7 @@ export default function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-semibold transition-all ${
                     isActive
-                      ? 'bg-red-600 text-white'
+                      ? 'bg-primary-600 text-white'
                       : 'text-slate-300 hover:bg-white/10 hover:text-white'
                   }`}
                 >

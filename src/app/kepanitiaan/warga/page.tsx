@@ -329,7 +329,7 @@ export default function KepanitiaanWarga() {
     return (
       <div className="flex-grow flex items-center justify-center bg-white text-slate-900 min-h-[50vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
           <p className="text-xs text-slate-500">Memuat Data Warga...</p>
         </div>
       </div>
@@ -355,7 +355,7 @@ export default function KepanitiaanWarga() {
           </button>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-primary-600/10 shrink-0"
           >
             <Plus className="h-4 w-4" />
             <span>Tambah KK Baru</span>
@@ -389,9 +389,9 @@ export default function KepanitiaanWarga() {
         <div className="bg-slate-100/20 border border-slate-200/80 rounded-2xl p-5 space-y-3">
           <div className="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
             <span>Belum Lunas</span>
-            <AlertCircle className="h-4.5 w-4.5 text-red-400" />
+            <AlertCircle className="h-4.5 w-4.5 text-primary-400" />
           </div>
-          <div className="text-2xl font-black text-red-400">{belumLunasCount} KK</div>
+          <div className="text-2xl font-black text-primary-400">{belumLunasCount} KK</div>
           <p className="text-[10px] text-slate-500 font-medium">Menunggu tindak lanjut iuran</p>
         </div>
 
@@ -418,7 +418,7 @@ export default function KepanitiaanWarga() {
               placeholder="Cari nama kepala keluarga atau blok..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -426,7 +426,7 @@ export default function KepanitiaanWarga() {
             <select
               value={filterBlok}
               onChange={(e) => setFilterBlok(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-red-500"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-primary-500"
             >
               <option value="ALL">Semua Blok</option>
               <option value="Blok A">Blok A</option>
@@ -438,7 +438,7 @@ export default function KepanitiaanWarga() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-red-500"
+              className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-primary-500"
             >
               <option value="ALL">Semua Status</option>
               <option value="LUNAS">Lunas</option>
@@ -472,7 +472,7 @@ export default function KepanitiaanWarga() {
                     <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
                       w.is_paid 
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                        : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                        : 'bg-primary-500/10 text-primary-400 border border-primary-500/20'
                     }`}>
                       {w.is_paid ? 'Lunas' : 'Belum Lunas'}
                     </span>
@@ -512,7 +512,7 @@ export default function KepanitiaanWarga() {
                       <button
                         onClick={() => handleDeleteWarga(w.id, w.nama)}
                         title="Hapus Warga"
-                        className="p-1.5 bg-white border border-slate-200 text-slate-500 hover:text-red-400 hover:border-red-500/20 rounded-lg transition-colors"
+                        className="p-1.5 bg-white border border-slate-200 text-slate-500 hover:text-primary-400 hover:border-primary-500/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

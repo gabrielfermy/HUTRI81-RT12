@@ -102,7 +102,7 @@ export default function ProposalPrintPage() {
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h4 className="text-xs font-black uppercase tracking-wider text-red-400">Print Center Panitia</h4>
+            <h4 className="text-xs font-black uppercase tracking-wider text-primary-400">Print Center Panitia</h4>
             <p className="text-[10px] text-slate-400">Pilih mode cetak di bawah dan tekan Ctrl+P / Klik tombol Print.</p>
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function ProposalPrintPage() {
           </select>
           <button
             onClick={() => window.print()}
-            className="flex items-center space-x-1.5 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all"
+            className="flex items-center space-x-1.5 px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white text-xs font-bold rounded-xl transition-all"
           >
             <Printer className="h-4 w-4" />
             <span>Cetak</span>

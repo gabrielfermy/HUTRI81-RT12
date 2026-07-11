@@ -127,7 +127,7 @@ export default function KepanitiaanRapat() {
     return (
       <div className="flex-grow flex items-center justify-center min-h-[50vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
           <p className="text-xs text-slate-500">Memuat Notulen Rapat...</p>
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function KepanitiaanRapat() {
       <div className="border-b border-slate-200 pb-4 flex justify-between items-end">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <FileText className="text-red-500 h-6 w-6" />
+            <FileText className="text-primary-500 h-6 w-6" />
             Manajemen Notulen Rapat
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -150,7 +150,7 @@ export default function KepanitiaanRapat() {
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10"
+            className="flex items-center space-x-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-primary-600/10"
           >
             <Plus className="h-4 w-4" />
             <span>Tambah Rapat Baru</span>
@@ -176,7 +176,7 @@ export default function KepanitiaanRapat() {
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <input type="date" required value={tanggal} onChange={e => setTanggal(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500" />
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500" />
                 </div>
               </div>
               <div className="space-y-1.5">
@@ -185,7 +185,7 @@ export default function KepanitiaanRapat() {
                   <Clock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <input type="text" required value={waktu} onChange={e => setWaktu(e.target.value)}
                     placeholder="Mis. 19:30 - 21:00 WIB"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500" />
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500" />
                 </div>
               </div>
               <div className="space-y-1.5">
@@ -194,7 +194,7 @@ export default function KepanitiaanRapat() {
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
                   <input type="text" required value={tempat} onChange={e => setTempat(e.target.value)}
                     placeholder="Mis. Rumah Pak RT"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500" />
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500" />
                 </div>
               </div>
             </div>
@@ -203,14 +203,14 @@ export default function KepanitiaanRapat() {
               <label className="text-[10px] font-bold text-slate-500 uppercase">Agenda Utama</label>
               <input type="text" required value={agenda} onChange={e => setAgenda(e.target.value)}
                 placeholder="Mis. Rapat Pembentukan Kepanitiaan"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-bold" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500 font-bold" />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase">Isi Notulen & Keputusan</label>
               <textarea rows={8} value={notulen} onChange={e => setNotulen(e.target.value)}
                 placeholder="Tuliskan hasil keputusan rapat di sini (mendukung format Markdown)..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-primary-500 leading-relaxed" />
               <p className="text-[9px] text-slate-500 italic">Gunakan *, -, atau angka untuk membuat daftar list.</p>
             </div>
 
@@ -231,7 +231,7 @@ export default function KepanitiaanRapat() {
             <div className="p-5 flex justify-between items-start md:items-center flex-col md:flex-row gap-4 bg-slate-50">
               <div className="space-y-1.5 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-white uppercase tracking-wider bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider bg-primary-600/10 border border-primary-500/20 px-3 py-1 rounded-full">
                     {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                   <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-bold flex items-center gap-1">
@@ -248,7 +248,7 @@ export default function KepanitiaanRapat() {
                 <button onClick={() => handleEditClick(r)} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors">
                   <Edit2 className="h-3.5 w-3.5" /> Edit
                 </button>
-                <button onClick={() => handleDelete(r.id, r.agenda)} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 hover:bg-red-500/10 text-slate-500 hover:text-red-400 border border-transparent hover:border-red-500/30 rounded-lg transition-colors">
+                <button onClick={() => handleDelete(r.id, r.agenda)} className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 hover:bg-primary-500/10 text-slate-500 hover:text-primary-400 border border-transparent hover:border-primary-500/30 rounded-lg transition-colors">
                   <Trash2 className="h-3.5 w-3.5" /> Hapus
                 </button>
               </div>

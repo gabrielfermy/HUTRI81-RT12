@@ -349,7 +349,7 @@ export default function KepanitiaanDashboard() {
           <h1 className="text-xl sm:text-2xl font-black text-slate-900">Selamat Datang, {currentUser?.nama || 'Panitia'}!</h1>
           <p className="text-xs text-slate-600 mt-1">Dasbor koordinasi terpusat HUT RI Ke-81 RT 12 Pelem Kidul.</p>
         </div>
-        <div className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">
+        <div className="text-xs font-bold text-primary-400 bg-primary-600/10 border border-primary-500/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">
           Akses: {currentUser?.jabatan || 'Anggota'}
         </div>
       </div>
@@ -408,7 +408,7 @@ export default function KepanitiaanDashboard() {
         <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Agenda Rapat</span>
-            <Calendar className="h-4.5 w-4.5 text-red-500" />
+            <Calendar className="h-4.5 w-4.5 text-primary-500" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-slate-900">{rapatList.length} Kali</div>
           <div className="text-[10px] text-slate-500 font-semibold">Total rapat evaluasi kepanitiaan</div>
@@ -423,7 +423,7 @@ export default function KepanitiaanDashboard() {
           <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Plus className="h-5 w-5 text-red-500" />
+              <Plus className="h-5 w-5 text-primary-500" />
               <span>Jadwalkan Rapat</span>
             </h3>
             <p className="text-xs text-slate-500">Mendaftarkan agenda rapat koordinasi selanjutnya.</p>
@@ -438,7 +438,7 @@ export default function KepanitiaanDashboard() {
                 value={agenda}
                 onChange={(e) => setAgenda(e.target.value)}
                 placeholder="Contoh: Rapat Pleno 2 Hadiah Lomba"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
               />
             </div>
 
@@ -450,7 +450,7 @@ export default function KepanitiaanDashboard() {
                   required
                   value={tanggal}
                   onChange={(e) => setTanggal(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
                 />
               </div>
 
@@ -462,7 +462,7 @@ export default function KepanitiaanDashboard() {
                   value={waktu}
                   onChange={(e) => setWaktu(e.target.value)}
                   placeholder="Contoh: 19:30 - selesai"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
                 />
               </div>
             </div>
@@ -475,13 +475,13 @@ export default function KepanitiaanDashboard() {
                 value={tempat}
                 onChange={(e) => setTempat(e.target.value)}
                 placeholder="Contoh: Rumah Pak RT 12"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all"
             >
               Simpan Jadwal Rapat
             </button>
@@ -493,7 +493,7 @@ export default function KepanitiaanDashboard() {
         <div className={`bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 ${isInti ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-red-500" />
+              <FileText className="h-5 w-5 text-primary-500" />
               <span>Notulen Rapat Resmi</span>
             </h3>
             <p className="text-xs text-slate-500">Tulis dan edit hasil keputusan koordinasi kepanitiaan di bawah.</p>
@@ -503,7 +503,7 @@ export default function KepanitiaanDashboard() {
             /* Markdown Editor view */
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-red-400">Menyunting Notulen</span>
+                <span className="text-xs font-bold text-primary-400">Menyunting Notulen</span>
                 <span className="text-[10px] text-slate-500">Format teks bebas (mendukung Markdown)</span>
               </div>
               <textarea
@@ -511,7 +511,7 @@ export default function KepanitiaanDashboard() {
                 value={notulenContent}
                 onChange={(e) => setNotulenContent(e.target.value)}
                 placeholder="Tulis keputusan di sini (e.g. ## Kesepakatan:\n1. Beli soto ayam 200 porsi...)"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-primary-500 font-mono"
               />
               <div className="flex justify-between items-center">
                 <div>
@@ -554,7 +554,7 @@ export default function KepanitiaanDashboard() {
             /* Meeting List View */
             <div className="space-y-4">
               {rapatList.map((r, index) => (
-                <div key={index} className="bg-slate-50/40 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-red-500/10 transition-colors">
+                <div key={index} className="bg-slate-50/40 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-primary-500/10 transition-colors">
                   <div className="space-y-1.5">
                     <div className="flex items-center space-x-2">
                       <Clock className="h-3.5 w-3.5 text-slate-500" />
@@ -572,7 +572,7 @@ export default function KepanitiaanDashboard() {
                   {isInti && (
                     <button
                       onClick={() => handleOpenNotulenEditor(r)}
-                      className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
+                      className="px-3.5 py-2 bg-primary-600/10 hover:bg-primary-600 border border-primary-500/20 text-primary-400 hover:text-white text-xs font-bold rounded-xl transition-all"
                     >
                       {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
                     </button>
@@ -589,10 +589,10 @@ export default function KepanitiaanDashboard() {
 
       {/* Danger Zone for Ketua Panitia */}
       {currentUser?.jabatan === 'Ketua Panitia' && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 space-y-4">
+        <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6 space-y-4">
           <div className="space-y-1">
-            <h4 className="text-sm font-bold text-red-400 flex items-center gap-2">
-              <ShieldAlert className="h-4.5 w-4.5 text-red-500" />
+            <h4 className="text-sm font-bold text-primary-400 flex items-center gap-2">
+              <ShieldAlert className="h-4.5 w-4.5 text-primary-500" />
               <span>Zona Bahaya (Ketua Panitia)</span>
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed">
@@ -602,7 +602,7 @@ export default function KepanitiaanDashboard() {
           <button
             onClick={handleResetDatabase}
             disabled={resetting}
-            className="px-4 py-2.5 bg-red-600 hover:bg-red-600 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
+            className="px-4 py-2.5 bg-primary-600 hover:bg-primary-600 text-white text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
           >
             {resetting ? 'Sedang Mereset...' : 'Reset Seluruh Database'}
           </button>

@@ -46,7 +46,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
             <select
               value={rabKategori}
               onChange={(e) => setRabKategori(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
             >
               <option value="Hadiah Lomba">Hadiah Lomba</option>
               <option value="Konsumsi Puncak">Konsumsi Puncak</option>
@@ -64,7 +64,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
               value={rabItem}
               onChange={(e) => setRabItem(e.target.value)}
               placeholder="e.g. Sewa Panggung Utama & Sound System"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -76,7 +76,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
                 required
                 value={rabKuantitas}
                 onChange={(e) => setRabKuantitas(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-center"
               />
             </div>
             <div className="space-y-1.5">
@@ -87,7 +87,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
                 value={rabSatuan}
                 onChange={(e) => setRabSatuan(e.target.value)}
                 placeholder="Set / Pcs / Pax"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-center"
               />
             </div>
           </div>
@@ -99,14 +99,14 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
               required
               value={rabHargaSatuan}
               onChange={(e) => setRabHargaSatuan(Number(e.target.value))}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-right"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
             {submitting ? 'Menyimpan...' : 'Simpan Target RAB'}
           </button>
@@ -130,7 +130,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
             <tbody>
               {rabList.map((r, idx) => (
                 <tr key={idx} className="border-b border-slate-200 hover:bg-slate-100">
-                  <td className="py-3 px-4 font-bold text-red-400">{r.kategori}</td>
+                  <td className="py-3 px-4 font-bold text-primary-400">{r.kategori}</td>
                   <td className="py-3 px-4 text-slate-900">{r.item}</td>
                   <td className="py-3 px-4 text-center font-semibold text-slate-700">
                     {r.kuantitas} {r.satuan}

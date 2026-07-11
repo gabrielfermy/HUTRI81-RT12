@@ -98,7 +98,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <select
               value={expRabId}
               onChange={(e) => setExpRabId(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
             >
               <option value="">Pos Belanja Umum (Tanpa RAB)</option>
               {rabList.map(r => (
@@ -117,7 +117,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
               value={expItem}
               onChange={(e) => setExpItem(e.target.value)}
               placeholder="e.g. Pembelian 15 piala & pita merah putih"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500 font-semibold"
             />
           </div>
 
@@ -129,7 +129,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                 required
                 value={expNominal}
                 onChange={(e) => setExpNominal(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right font-semibold"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-right font-semibold"
               />
             </div>
             <div className="space-y-1.5">
@@ -139,7 +139,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                 required
                 value={expTanggal}
                 onChange={(e) => setExpTanggal(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 font-semibold"
               />
             </div>
           </div>
@@ -149,7 +149,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <select
               value={expSeksi}
               onChange={(e) => setExpSeksi(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-semibold"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 font-semibold"
             >
               <option value="Acara">Acara</option>
               <option value="Perlengkapan & Dekorasi">Perlengkapan & Dekorasi</option>
@@ -195,7 +195,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {uploading ? 'Mengompres & Mengunggah Bukti...' : submitting ? 'Menyimpan...' : 'Simpan Transaksi Belanja'}
             </button>
@@ -235,7 +235,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                         <button
                           onClick={() => setActivePreviewUrl(e.bukti_nota_url)}
                           title="Lihat Bukti Kwitansi"
-                          className="p-1 text-red-400 bg-red-500/10 border border-red-500/10 hover:bg-red-500/25 rounded-md transition-colors"
+                          className="p-1 text-primary-400 bg-primary-500/10 border border-primary-500/10 hover:bg-primary-500/25 rounded-md transition-colors"
                         >
                           <Eye className="h-3.5 w-3.5" />
                         </button>
@@ -255,7 +255,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                   <td className="py-3 px-4 text-center">
                     <button
                       onClick={() => onDeleteExpense(e.id, e.item_pembelian, e.nominal_riil)}
-                      className="p-1.5 text-slate-650 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                      className="p-1.5 text-slate-650 hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all"
                     >
                       <Trash2 className="h-4.5 w-4.5" />
                     </button>
@@ -278,7 +278,7 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
           <div className="relative max-w-2xl w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4">
             <div className="flex justify-between items-center border-b border-slate-200 pb-3">
               <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                <ImageIcon className="h-4 w-4 text-red-500" />
+                <ImageIcon className="h-4 w-4 text-primary-500" />
                 <span>Bukti Kwitansi / Struk Pembelian</span>
               </h4>
               <button
