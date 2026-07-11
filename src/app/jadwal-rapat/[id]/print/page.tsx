@@ -48,7 +48,7 @@ export default function CetakAbsensiPage() {
             return 3; // Anggota
           };
 
-          pData.sort((a, b) => {
+          pData.sort((a: any, b: any) => {
             // 1. Kelompok Jabatan (Inti goes first, then Harian)
             const pA = getRolePriority(a);
             const pB = getRolePriority(b);
