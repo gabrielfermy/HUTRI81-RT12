@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Calendar, Plus, Trash2, Clock, MapPin, AlignLeft, Users } from 'lucide-react';
 import { RundownTaskList } from '@/components/rundown/RundownTaskList';
+import { logAuditActivity } from '@/lib/logger';
 
 
 
@@ -74,18 +75,7 @@ export default function KepanitiaanRundown() {
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
-    try {
-      await supabase.from('audit_log').insert([
-        {
-          panitia_id: currentUser.id,
-          nama_panitia: currentUser.nama,
-          aksi,
-          detail,
-        },
-      ]);
-    } catch (err) {
-      console.error('Audit logging failed:', err);
-    }
+    await logAuditActivity(aksi, detail, currentUser);
   };
 
   const handleCheckboxChange = (section: string) => {

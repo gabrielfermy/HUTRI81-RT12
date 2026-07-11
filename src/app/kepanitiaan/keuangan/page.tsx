@@ -8,6 +8,7 @@ import { WargaTab } from '@/components/keuangan/WargaTab';
 import { SponsorshipTab } from '@/components/keuangan/SponsorshipTab';
 import { RabTab } from '@/components/keuangan/RabTab';
 import { PaymentModal } from '@/components/warga/PaymentModal';
+import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanKeuangan() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -65,6 +66,11 @@ export default function KepanitiaanKeuangan() {
 
         const { data: eData } = await supabase.from('pengeluaran').select('*').order('tanggal_pembelian', { ascending: false });
         if (eData) setExpensesList(eData);
+
+        // Audit log akses baca (sensitive page)
+        if (sessionUser) {
+          logAuditActivity('Akses Baca', 'Membuka dan melihat data Keuangan', sessionUser);
+        }
       } catch (err) {
         console.error('Error loading finance data:', err);
       } finally {
@@ -87,18 +93,7 @@ export default function KepanitiaanKeuangan() {
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
-    try {
-      await supabase.from('audit_log').insert([
-        {
-          panitia_id: currentUser.id,
-          nama_panitia: currentUser.nama,
-          aksi,
-          detail,
-        },
-      ]);
-    } catch (err) {
-      console.error('Audit logging failed:', err);
-    }
+    await logAuditActivity(aksi, detail, currentUser);
   };
 
   // ==========================================

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X } from 'lucide-react';
+import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanRapat() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -92,12 +93,12 @@ export default function KepanitiaanRapat() {
         const { error } = await supabase.from('rapat').update(payload).eq('id', editingId);
         if (error) throw error;
         // Audit log
-        await supabase.from('audit_log').insert([{ panitia_id: currentUser?.id, nama_panitia: currentUser?.nama, aksi: 'Update Rapat', detail: `Mengubah notulen rapat: ${agenda}` }]);
+        await logAuditActivity('Update Rapat', `Mengubah notulen rapat: ${agenda}`, currentUser);
       } else {
         const { error } = await supabase.from('rapat').insert([payload]);
         if (error) throw error;
         // Audit log
-        await supabase.from('audit_log').insert([{ panitia_id: currentUser?.id, nama_panitia: currentUser?.nama, aksi: 'Tambah Rapat', detail: `Menambahkan rapat baru: ${agenda}` }]);
+        await logAuditActivity('Tambah Rapat', `Menambahkan rapat baru: ${agenda}`, currentUser);
       }
       
       resetForm();
@@ -116,7 +117,7 @@ export default function KepanitiaanRapat() {
       const { error } = await supabase.from('rapat').delete().eq('id', id);
       if (error) throw error;
       
-      await supabase.from('audit_log').insert([{ panitia_id: currentUser?.id, nama_panitia: currentUser?.nama, aksi: 'Hapus Rapat', detail: `Menghapus rapat: ${judul}` }]);
+      await logAuditActivity('Hapus Rapat', `Menghapus rapat: ${judul}`, currentUser);
       loadData();
     } catch (err: any) {
       alert('Gagal menghapus: ' + err.message);

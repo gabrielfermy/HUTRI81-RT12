@@ -112,6 +112,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
   const [sponsorList, setSponsorList] = useState<any[]>([]);
   const [rapatList, setRapatList] = useState<any[]>([]);
   const [pengeluaranList, setPengeluaranList] = useState<any[]>([]);
+  const [kehadiranList, setKehadiranList] = useState<any[]>([]);
 
   // Expanded Notulen
   const [expandedRapatId, setExpandedRapatId] = useState<string | null>(null);
@@ -167,6 +168,9 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
         const { data: exData } = await supabase.from('pengeluaran').select('*').order('tanggal_pembelian', { ascending: false });
         if (exData) setPengeluaranList(exData);
+
+        const { data: kehadiranData } = await supabase.from('kehadiran_rapat').select('*');
+        if (kehadiranData) setKehadiranList(kehadiranData);
       } catch (err) {
         console.error('Offline mode loaded:', err);
         setPanitiaList(fallbackPanitia);
@@ -527,8 +531,52 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   </div>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-white shadow-sm/20 text-slate-600 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
-                      {r.notulen || 'Notulen rapat belum dimasukkan.'}
+                    <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-white shadow-sm/20">
+                      <div className="mb-6">
+                        <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
+                          <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
+                          Notulen Rapat
+                        </h4>
+                        <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
+                          {r.notulen || 'Notulen rapat belum dimasukkan.'}
+                        </div>
+                      </div>
+                      
+                      <div className="border-t border-slate-100 pt-4">
+                        <div className="flex justify-between items-center mb-3">
+                          <h4 className="text-sm font-bold text-slate-900 flex items-center">
+                            <Users className="h-4 w-4 mr-1.5 text-slate-400" />
+                            Daftar Hadir
+                          </h4>
+                          <Link 
+                            href={`/jadwal-rapat/${r.id}/absensi`}
+                            className="text-xs bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg font-semibold transition-colors flex items-center"
+                          >
+                            Isi Daftar Hadir
+                            <ArrowUpRight className="h-3 w-3 ml-1" />
+                          </Link>
+                        </div>
+                        
+                        {(() => {
+                          const hadirIds = kehadiranList.filter(k => k.rapat_id === r.id).map(k => k.panitia_id);
+                          const hadirPanitia = panitiaList.filter(p => hadirIds.includes(p.id));
+                          
+                          if (hadirPanitia.length === 0) {
+                            return <p className="text-xs text-slate-500 italic">Belum ada panitia yang mengisi daftar hadir.</p>;
+                          }
+                          
+                          return (
+                            <div className="flex flex-wrap gap-2">
+                              {hadirPanitia.map((p, idx) => (
+                                <span key={idx} className="inline-flex items-center text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md">
+                                  <CheckCircle2 className="h-3 w-3 mr-1 text-emerald-500" />
+                                  {p.nama}
+                                </span>
+                              ))}
+                            </div>
+                          );
+                        })()}
+                      </div>
                     </div>
                   )}
                 </div>

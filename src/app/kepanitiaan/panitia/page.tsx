@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Users, Layers } from 'lucide-react';
 import { PanitiaTab } from '@/components/panitia/PanitiaTab';
 import { SeksiTab } from '@/components/panitia/SeksiTab';
+import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanPanitia() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -59,18 +60,7 @@ export default function KepanitiaanPanitia() {
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
-    try {
-      await supabase.from('audit_log').insert([
-        {
-          panitia_id: currentUser.id,
-          nama_panitia: currentUser.nama,
-          aksi,
-          detail,
-        },
-      ]);
-    } catch (err) {
-      console.error('Audit logging failed:', err);
-    }
+    await logAuditActivity(aksi, detail, currentUser);
   };
 
   // ==========================================

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Calendar, DollarSign, FileText, Plus, CheckCircle, Clock, Sparkles, ShieldAlert, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { logAuditActivity } from '@/lib/logger';
 
 const seedRundown = [
   { tanggal: '2026-08-09', jam_mulai: '06:00', jam_selesai: '07:30', kegiatan: 'Senam Kemerdekaan', keterangan: 'Senam pagi gembira bersama instruktur profesional.', seksi_pj: ['Acara', 'Konsumsi'], instruksi_internal: 'Instruktur senam harus standby jam 05:45. Sie Konsumsi menyiapkan air mineral gelas.', kategori: 'Utama' },
@@ -222,18 +223,7 @@ export default function KepanitiaanDashboard() {
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
-    try {
-      await supabase.from('audit_log').insert([
-        {
-          panitia_id: currentUser.id,
-          nama_panitia: currentUser.nama,
-          aksi,
-          detail,
-        },
-      ]);
-    } catch (err) {
-      console.error('Audit logging failed:', err);
-    }
+    await logAuditActivity(aksi, detail, currentUser);
   };
 
   const handleAddRapat = async (e: React.FormEvent) => {

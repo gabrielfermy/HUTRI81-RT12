@@ -6,6 +6,7 @@ import { Plus, Search, Trash2, Edit, CheckCircle, AlertCircle, DollarSign, Users
 import { AddWargaModal } from '@/components/warga/AddWargaModal';
 import { EditWargaModal } from '@/components/warga/EditWargaModal';
 import { PaymentModal } from '@/components/warga/PaymentModal';
+import { logAuditActivity } from '@/lib/logger';
 import { handlePrintReceipt } from '@/lib/printReceipt';
 
 export default function KepanitiaanWarga() {
@@ -71,18 +72,7 @@ export default function KepanitiaanWarga() {
 
   const logAudit = async (aksi: string, detail: string) => {
     if (!currentUser) return;
-    try {
-      await supabase.from('audit_log').insert([
-        {
-          panitia_id: currentUser.id,
-          nama_panitia: currentUser.nama,
-          aksi,
-          detail,
-        },
-      ]);
-    } catch (err) {
-      console.error('Audit logging failed:', err);
-    }
+    await logAuditActivity(aksi, detail, currentUser);
   };
 
   // Add Warga Handler
