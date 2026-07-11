@@ -114,9 +114,15 @@ export default function KepanitiaanLayout({
       return;
     }
 
-    const matched = panitiaList.find((p) => p.id === selectedPanitiaId);
-    if (matched && matched.pin_akses === pin) {
-      const sessionData: any = {
+    try {
+      const { data: matched, error } = await supabase
+        .from('panitia')
+        .select('id, nama, seksi, jabatan, level, pin_akses')
+        .eq('id', selectedPanitiaId)
+        .single();
+
+      if (matched && matched.pin_akses === pin) {
+        const sessionData: any = {
         id: matched.id,
         nama: matched.nama,
         seksi: matched.seksi,
@@ -153,6 +159,10 @@ export default function KepanitiaanLayout({
       setLoginError('');
     } else {
       setLoginError('PIN yang Anda masukkan salah.');
+    }
+    } catch (err) {
+      console.error('Login error:', err);
+      setLoginError('Terjadi kesalahan saat memverifikasi PIN.');
     }
   };
 
