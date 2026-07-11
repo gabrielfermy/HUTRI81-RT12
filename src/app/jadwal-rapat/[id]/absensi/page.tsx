@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { CheckCircle2, ChevronLeft, Calendar, FileText, User } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, Calendar, FileText, User, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { logAuditActivity } from '@/lib/logger';
 
@@ -175,13 +175,22 @@ export default function AbsensiPage() {
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-xl mx-auto space-y-6">
-        <Link 
-          href="/jadwal-rapat" 
-          className="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Kembali ke Jadwal
-        </Link>
+        <div className="flex justify-between items-center">
+          <Link 
+            href="/jadwal-rapat" 
+            className="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Kembali ke Jadwal
+          </Link>
+          <Link 
+            href={`/jadwal-rapat/${rapatId}/print`} 
+            className="inline-flex items-center text-xs font-bold text-slate-600 bg-white shadow-sm border border-slate-200 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            <Printer className="h-3.5 w-3.5 mr-1.5" />
+            Cetak Form Manual
+          </Link>
+        </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="bg-gradient-to-r from-red-600 to-red-700 p-6 sm:p-8 text-center space-y-2">
