@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X } from 'lucide-react';
+import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2 } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanRapat() {
@@ -20,6 +20,9 @@ export default function KepanitiaanRapat() {
   const [agenda, setAgenda] = useState('');
   const [notulen, setNotulen] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadData = async () => {
     try {
@@ -63,6 +66,48 @@ export default function KepanitiaanRapat() {
     setNotulen('');
     setEditingId(null);
     setShowForm(false);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file maksimal 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `rapat-${Date.now()}.${fileExt}`;
+      const filePath = `notulen/${fileName}`;
+
+      const { error } = await supabase.storage
+        .from('rapat-notulen')
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('rapat-notulen')
+        .getPublicUrl(filePath);
+
+      const fileUrl = publicUrlData.publicUrl;
+      const isImage = file.type.startsWith('image/');
+      
+      const fileMarkdown = isImage 
+        ? `\n\n![Lampiran Gambar](${fileUrl})\n\n`
+        : `\n\n[📥 Unduh Lampiran Dokumen](${fileUrl})\n\n`;
+
+      setNotulen((prev) => prev + fileMarkdown);
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      alert('Gagal mengunggah file. Pastikan Anda telah membuat Storage Bucket "rapat-notulen" di Supabase.\n\nDetail: ' + err.message);
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleEditClick = (r: any) => {
@@ -208,7 +253,32 @@ export default function KepanitiaanRapat() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-500 uppercase">Isi Notulen & Keputusan</label>
+              <div className="flex justify-between items-center">
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Isi Notulen & Keputusan</label>
+                
+                {/* Upload Button */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*,application/pdf"
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingImage}
+                  className="flex items-center space-x-1.5 text-[10px] font-bold text-red-600 hover:text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {uploadingImage ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <UploadCloud className="h-3.5 w-3.5" />
+                  )}
+                  <span>{uploadingImage ? 'Mengunggah...' : 'Sisipkan Gambar / PDF'}</span>
+                </button>
+              </div>
+              
               <textarea rows={8} value={notulen} onChange={e => setNotulen(e.target.value)}
                 placeholder="Tuliskan hasil keputusan rapat di sini (mendukung format Markdown)..."
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
