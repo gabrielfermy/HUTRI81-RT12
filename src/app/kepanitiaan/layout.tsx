@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react';
+import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanLayout({
   children,
@@ -62,13 +63,13 @@ export default function KepanitiaanLayout({
           if (user.seksi === 'Inti') {
             user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat';
           } else if (user.level === 'Anggota') {
-            // Anggota hanya bisa membuka dashboard dan catatan
-            user.akses_menu = 'dashboard,catatan';
+            // Anggota hanya bisa membuka dashboard, catatan, profil
+            user.akses_menu = 'dashboard,catatan,panitia';
           } else if (sData) {
-            user.akses_menu = sData.akses_menu;
+            user.akses_menu = sData.akses_menu + (sData.akses_menu.includes('panitia') ? '' : ',panitia');
           } else {
             // Fallback
-            user.akses_menu = 'dashboard,catatan';
+            user.akses_menu = 'dashboard,catatan,panitia';
           }
 
           setLoggedInUser(user);
@@ -98,7 +99,7 @@ export default function KepanitiaanLayout({
       else if (pathname.startsWith('/kepanitiaan/logs')) pathKey = 'logs';
       else if (pathname.startsWith('/kepanitiaan/rapat')) pathKey = 'rapat';
 
-      if (pathKey && !userAccess.includes(pathKey)) {
+      if (pathKey && !userAccess.includes(pathKey) && pathKey !== 'panitia') {
         alert('Akses Ditolak: Anda tidak memiliki izin untuk membuka halaman ini.');
         router.push('/kepanitiaan');
       }
@@ -144,7 +145,7 @@ export default function KepanitiaanLayout({
           // Anggota hanya bisa membuka dashboard, catatan, dan profil
           sessionData.akses_menu = 'dashboard,catatan,panitia';
         } else if (sData) {
-          sessionData.akses_menu = sData.akses_menu;
+          sessionData.akses_menu = sData.akses_menu + (sData.akses_menu.includes('panitia') ? '' : ',panitia');
         } else {
           sessionData.akses_menu = 'dashboard,catatan,panitia';
         }
@@ -157,6 +158,9 @@ export default function KepanitiaanLayout({
       setIsLoggedIn(true);
       setPin('');
       setLoginError('');
+
+      // Catat log audit login
+      logAuditActivity('Login Sistem', 'Melakukan login ke portal panitia', sessionData);
     } else {
       setLoginError('PIN yang Anda masukkan salah.');
     }
