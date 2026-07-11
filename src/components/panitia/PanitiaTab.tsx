@@ -585,7 +585,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <div className="space-y-1.5 pl-6">
                 {pelindungList.map(p => (
                   <div key={p.id}>
-                    {editingId === p.id ? (
+                    {false && editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                         onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -610,7 +610,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <div className="space-y-1.5 pl-6">
                 {penasihatList.map(p => (
                   <div key={p.id}>
-                    {editingId === p.id ? (
+                    {false && editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                         onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -635,7 +635,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <div className="space-y-1.5 pl-6">
                 {intiList.map(p => (
                   <div key={p.id}>
-                    {editingId === p.id ? (
+                    {false && editingId === p.id ? (
                       <EditInlineRow p={p} editNama={editNama} setEditNama={setEditNama}
                         editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                         onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -704,7 +704,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                           {/* Koordinator row */}
                           <div className="flex items-center gap-2">
                             <Crown className="h-4 w-4 text-amber-500 shrink-0" />
-                            {editingId === koord.id ? (
+                            {false && editingId === koord.id ? (
                               <EditInlineRow p={koord} editNama={editNama} setEditNama={setEditNama}
                                 editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                 onSave={handleSaveEdit} onCancel={() => setEditingId(null)}
@@ -743,7 +743,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                               <div key={sk.id} className="pl-8 space-y-1.5 border-l border-emerald-250 ml-2">
                                 <div className="flex items-center gap-2">
                                   <ChevronRight className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                                  {editingId === sk.id ? (
+                                  {false && editingId === sk.id ? (
                                     <EditInlineRow p={sk} editNama={editNama} setEditNama={setEditNama}
                                       editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                       onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -773,7 +773,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                   <div className="pl-8 space-y-1">
                                     {skAnggota.map(a => (
                                       <div key={a.id}>
-                                        {editingId === a.id ? (
+                                        {false && editingId === a.id ? (
                                           <EditInlineRow p={a} editNama={editNama} setEditNama={setEditNama}
                                             editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                             onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -794,7 +794,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                             <div className="pl-8 space-y-1">
                               {directAnggota.map(a => (
                                 <div key={a.id}>
-                                  {editingId === a.id ? (
+                                  {false && editingId === a.id ? (
                                     <EditInlineRow p={a} editNama={editNama} setEditNama={setEditNama}
                                       editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                       onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -821,7 +821,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         <div className="space-y-1.5">
                           {orphanedMembers.map(orphan => (
                             <div key={orphan.id}>
-                              {editingId === orphan.id ? (
+                              {false && editingId === orphan.id ? (
                                 <EditInlineRow p={orphan} editNama={editNama} setEditNama={setEditNama}
                                   editJabatan={editJabatan} setEditJabatan={setEditJabatan}
                                   onSave={handleSaveEdit} onCancel={() => setEditingId(null)} extraFields={<input value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="Nomor WA (opsional)" className="bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-blue-400 w-32" />} />
@@ -845,6 +845,113 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           )}
         </div>
       </div>
+
+      {/* ── EDIT MODAL ────────────────────────────────────── */}
+      {editingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                <Edit2 className="h-4 w-4 text-blue-500" /> Edit Panitia
+              </h3>
+              <button onClick={() => setEditingId(null)} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4 overflow-y-auto">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Nama Lengkap</label>
+                <input type="text" value={editNama} onChange={e => setEditNama(e.target.value)}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400 font-semibold" />
+              </div>
+
+              {['Pelindung', 'Penasihat', 'Inti'].includes(editSeksi) ? (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Seksi (Tetap)</label>
+                    <input type="text" disabled value={editSeksi} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-400" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Jabatan</label>
+                    {editSeksi === 'Inti' ? (
+                      <select value={editJabatan} onChange={e => setEditJabatan(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+                        <option>Ketua Panitia</option><option>Sekretaris</option><option>Bendahara</option>
+                      </select>
+                    ) : (
+                      <input type="text" value={editJabatan} onChange={e => setEditJabatan(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400" />
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Seksi</label>
+                      <select value={editSeksi} onChange={e => { setEditSeksi(e.target.value); setEditParentId(''); }} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+                        {harianSeksiList.map(s => <option key={s.id} value={s.nama}>{s.nama}</option>)}
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Level</label>
+                      <select value={editLevel} onChange={e => { setEditLevel(e.target.value); setEditParentId(''); }} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+                        <option value="Koordinator">Koordinator</option>
+                        <option value="Sub-Koordinator">Sub-Koordinator</option>
+                        <option value="Anggota">Anggota</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase">Jabatan Kustom (opsional)</label>
+                    <input type="text" value={editJabatan} onChange={e => setEditJabatan(e.target.value)} placeholder="Opsional (mengikuti level jika kosong)" className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400" />
+                  </div>
+                  
+                  {editLevel === 'Sub-Koordinator' && (
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Di Bawah Koordinator</label>
+                      <select value={editParentId || ''} onChange={e => setEditParentId(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+                        <option value="">— Pilih Koordinator —</option>
+                        {editKoordinatorsInSeksi.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {editLevel === 'Anggota' && (
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Atasan Langsung</label>
+                      <select value={editParentId || ''} onChange={e => setEditParentId(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
+                        <option value="">— Pilih Atasan —</option>
+                        {editKoordinatorsInSeksi.length > 0 && (
+                          <optgroup label="Koordinator">
+                            {editKoordinatorsInSeksi.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                          </optgroup>
+                        )}
+                        {editSubKoordsInSeksi.length > 0 && (
+                          <optgroup label="Sub-Koordinator">
+                            {editSubKoordsInSeksi.map(sk => <option key={sk.id} value={sk.id}>{sk.nama}</option>)}
+                          </optgroup>
+                        )}
+                      </select>
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-500 uppercase">Nomor WhatsApp (Opsional)</label>
+                <input type="text" value={editNoWa} onChange={e => setEditNoWa(e.target.value)} placeholder="08xxxxxxxxxx"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400" />
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-100 bg-slate-50">
+              <button onClick={handleSaveEdit} className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all shadow-sm">
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
