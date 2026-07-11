@@ -19,7 +19,6 @@ interface PanitiaTabProps {
   onEditPanitia: (id: string, nama: string, seksi: string, jabatan: string, level: string, parentId?: string | null, no_wa?: string) => Promise<void>;
   onDeletePanitia: (id: string, nama: string) => Promise<void>;
   onResetPin: (id: string, nama: string) => Promise<void>;
-  onResetPin: (id: string, nama: string) => Promise<void>;
   onUpdateOwnProfile: (nama: string, pin?: string, oldPin?: string, noWa?: string) => Promise<void>;
 }
 
