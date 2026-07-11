@@ -98,7 +98,12 @@ export default function KepanitiaanRundown() {
 
   const handleAddRundown = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!tanggal || !jamMulai || !jamSelesai || !kegiatan) return;
+    if (!tanggal || !jamMulai || !kegiatan) return;
+
+    if (jamSelesai && jamSelesai <= jamMulai) {
+      alert("Jam Selesai tidak boleh sebelum atau sama dengan Jam Mulai.");
+      return;
+    }
 
     const newItem = {
       tanggal,
@@ -199,23 +204,20 @@ export default function KepanitiaanRundown() {
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Jam Mulai</label>
                 <input
-                  type="text"
+                  type="time"
                   required
-                  placeholder="06:00"
                   value={jamMulai}
                   onChange={(e) => setJamMulai(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center cursor-text"
                 />
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Jam Selesai</label>
                 <input
-                  type="text"
-                  required
-                  placeholder="07:30"
+                  type="time"
                   value={jamSelesai}
                   onChange={(e) => setJamSelesai(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-center cursor-text"
                 />
               </div>
             </div>
@@ -308,7 +310,7 @@ export default function KepanitiaanRundown() {
                         {new Date(r.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })}
                       </span>
                       <span className="text-[9px] bg-slate-900 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-bold">
-                        {r.jam_mulai} - {r.jam_selesai} WIB
+                        {r.jam_mulai} - {r.jam_selesai ? `${r.jam_selesai} WIB` : 'Selesai'}
                       </span>
                       <span className="text-[9px] bg-slate-900 text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-bold">
                         Kat: {r.kategori}
