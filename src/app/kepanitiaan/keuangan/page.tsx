@@ -262,7 +262,7 @@ export default function KepanitiaanKeuangan() {
     return (
       <div className="flex-grow flex items-center justify-center bg-white text-slate-900 min-h-[50vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
           <p className="text-xs text-slate-500">Memuat Data Keuangan...</p>
         </div>
       </div>
@@ -290,7 +290,7 @@ export default function KepanitiaanKeuangan() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-t-2 ${
                   activeTab === tab.id
-                    ? 'bg-slate-100/40 border-primary-500 text-primary-400'
+                    ? 'bg-slate-100/40 border-red-500 text-red-400'
                     : 'border-transparent text-slate-500 hover:text-slate-700'
                 }`}
               >

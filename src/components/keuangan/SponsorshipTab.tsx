@@ -53,7 +53,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
               value={spNama}
               onChange={(e) => setSpNama(e.target.value)}
               placeholder="e.g. Toko Kelontong Bu Sri"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
@@ -63,7 +63,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
               <select
                 value={spTipe}
                 onChange={(e) => setSpTipe(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               >
                 <option value="Platinum">Platinum (Besar)</option>
                 <option value="Gold">Gold (Sedang)</option>
@@ -77,7 +77,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
                 type="number"
                 value={spNominal}
                 onChange={(e) => setSpNominal(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-right"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right"
               />
             </div>
           </div>
@@ -89,14 +89,14 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
               value={spKeterangan}
               onChange={(e) => setSpKeterangan(e.target.value)}
               placeholder="e.g. Menyumbang 5 set krayon anak dan voucher belanja..."
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
+              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
             {submitting ? 'Menyimpan...' : 'Simpan Donasi / Sponsor'}
           </button>
@@ -138,7 +138,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
                   <td className="py-3 px-4 text-center">
                     <button
                       onClick={() => onDeleteSponsor(s.id, s.nama)}
-                      className="p-1.5 text-slate-650 hover:text-primary-400 rounded-lg transition-colors"
+                      className="p-1.5 text-slate-650 hover:text-red-400 rounded-lg transition-colors"
                     >
                       <Trash2 className="h-4.5 w-4.5" />
                     </button>

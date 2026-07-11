@@ -238,10 +238,10 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
   return (
     <div className="flex-grow flex flex-col justify-start">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-4 text-center bg-gradient-to-b from-[#450A0A] via-[#070A13] to-[#070A13] border-b border-primary-500/10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-600/10 via-transparent to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden py-24 px-4 text-center bg-gradient-to-b from-[#450A0A] via-[#070A13] to-[#070A13] border-b border-red-500/10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-600/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-          <div className="inline-flex items-center space-x-2 bg-primary-600/10 border border-primary-500/30 px-4 py-2 rounded-full text-primary-400 text-xs sm:text-sm font-semibold tracking-wider uppercase animate-pulse">
+          <div className="inline-flex items-center space-x-2 bg-red-600/10 border border-red-500/30 px-4 py-2 rounded-full text-red-400 text-xs sm:text-sm font-semibold tracking-wider uppercase animate-pulse">
             <Flag className="h-4 w-4" />
             <span>Portal Informasi Warga RT 12 Pelem Kidul</span>
           </div>
@@ -249,7 +249,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
             Pesta Rakyat HUT RI Ke-81
           </h1>
-          <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-primary-500 via-primary-400 to-white">
+          <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-white">
             "Guyub Rukun Membangun Negeri"
           </p>
           <p className="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed">
@@ -260,8 +260,8 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
       {/* Countdown Timer Section */}
       <section className="-mt-10 px-4 relative z-20">
-        <div className="max-w-3xl mx-auto bg-slate-100/90 backdrop-blur-md border border-primary-500/30 rounded-2xl shadow-xl shadow-primary-600/5 p-6 sm:p-8">
-          <div className="flex items-center justify-center space-x-2 text-primary-400 font-semibold mb-6">
+        <div className="max-w-3xl mx-auto bg-slate-100/90 backdrop-blur-md border border-red-500/30 rounded-2xl shadow-xl shadow-red-600/5 p-6 sm:p-8">
+          <div className="flex items-center justify-center space-x-2 text-red-400 font-semibold mb-6">
             <Clock className="h-5 w-5 animate-spin-slow" />
             <span className="tracking-widest uppercase text-xs sm:text-sm">Menuju Kegiatan Sesi 1 (9 Agustus 2026)</span>
           </div>
@@ -288,19 +288,19 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
       {/* Navigation Tabs */}
       <div className="max-w-5xl mx-auto px-4 mt-8 w-full z-20 relative">
         <div className="flex justify-start sm:justify-center overflow-x-auto pb-4 space-x-2 sm:space-x-4 scrollbar-hide">
-          <button onClick={() => { setActiveTab('keuangan'); router.push('/keuangan-donasi', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-primary-600 text-slate-900 shadow-lg shadow-primary-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('keuangan'); router.push('/keuangan-donasi', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'keuangan' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <DollarSign className="h-4.5 w-4.5" />
             <span>Keuangan & Donasi</span>
           </button>
-          <button onClick={() => { setActiveTab('jadwal'); router.push('/jadwal-acara', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-primary-600 text-slate-900 shadow-lg shadow-primary-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('jadwal'); router.push('/jadwal-acara', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'jadwal' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Calendar className="h-4.5 w-4.5" />
             <span>Jadwal Acara</span>
           </button>
-          <button onClick={() => { setActiveTab('panitia'); router.push('/susunan-panitia', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-primary-600 text-slate-900 shadow-lg shadow-primary-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('panitia'); router.push('/susunan-panitia', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'panitia' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <Users className="h-4.5 w-4.5" />
             <span>Susunan Panitia</span>
           </button>
-          <button onClick={() => { setActiveTab('notulen'); router.push('/jadwal-rapat', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-primary-600 text-slate-900 shadow-lg shadow-primary-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
+          <button onClick={() => { setActiveTab('notulen'); router.push('/jadwal-rapat', { scroll: false }); }} className={`flex items-center space-x-2 px-5 py-3 rounded-full font-bold whitespace-nowrap transition-all ${activeTab === 'notulen' ? 'bg-red-600 text-slate-900 shadow-lg shadow-red-600/20' : 'bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900'}`}>
             <FileText className="h-4.5 w-4.5" />
             <span>Jadwal Rapat</span>
           </button>
@@ -317,7 +317,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-              <DollarSign className="text-primary-500" />
+              <DollarSign className="text-red-500" />
               <span>Transparansi Kas & Belanja Warga</span>
             </h2>
             <p className="text-sm text-slate-500">Semua nominal tercatat real-time dari pembukuan Bendahara.</p>
@@ -384,7 +384,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                         </div>
                         <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className={`h-full rounded-full ${ratio > 100 ? 'bg-primary-500' : 'bg-primary-600'}`}
+                            className={`h-full rounded-full ${ratio > 100 ? 'bg-red-500' : 'bg-red-600'}`}
                             style={{ width: `${Math.min(ratio, 100)}%` }}
                           />
                         </div>
@@ -398,7 +398,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
               <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-xs">
                 <span className="text-slate-500">Total Belanja Riil Saat Ini:</span>
-                <span className="text-base font-black text-primary-400">
+                <span className="text-base font-black text-red-400">
                   Rp {totalSpent.toLocaleString('id-ID')}
                 </span>
               </div>
@@ -415,7 +415,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-              <Calendar className="text-primary-500" />
+              <Calendar className="text-red-500" />
               <span>Jadwal & Rundown Acara</span>
             </h2>
             <p className="text-sm text-slate-500">Rangkaian kegiatan Pesta Rakyat warga RT 12 Pelem Kidul.</p>
@@ -437,7 +437,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                     onClick={() => setSelectedRundownDate(dateStr)}
                     className={`px-5 py-3 text-xs sm:text-sm font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 ${
                       isActive
-                        ? 'border-primary-500 text-primary-400 bg-slate-100/40'
+                        ? 'border-red-500 text-red-400 bg-slate-100/40'
                         : 'border-transparent text-slate-450 hover:text-slate-700'
                     }`}
                   >
@@ -450,13 +450,13 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
             {filteredRundownList.map((item, index) => (
-              <div key={index} className="bg-white border border-slate-200 shadow-sm/80 rounded-2xl p-6 space-y-4 hover:border-primary-500/20 transition-all duration-300">
+              <div key={index} className="bg-white border border-slate-200 shadow-sm/80 rounded-2xl p-6 space-y-4 hover:border-red-500/20 transition-all duration-300">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-primary-400 bg-primary-600/10 border border-primary-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
+                  <span className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
                     {new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </span>
                   <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
-                    <Clock className="h-3.5 w-3.5 text-primary-500" />
+                    <Clock className="h-3.5 w-3.5 text-red-500" />
                     <span>{item.jam_mulai} - {item.jam_selesai} WIB</span>
                   </div>
                 </div>
@@ -493,7 +493,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-              <FileText className="text-primary-500" />
+              <FileText className="text-red-500" />
               <span>Jadwal Rapat Panitia</span>
             </h2>
             <p className="text-sm text-slate-500">Jadwal rapat/kegiatan panitia. Hasil/notulen rapat dapat dilihat jika kegiatan telah terlaksana.</p>
@@ -520,7 +520,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                       <h3 className="text-base font-bold text-slate-900">{r.agenda}</h3>
                       <p className="text-xs text-slate-500">Tempat: <strong className="text-slate-500">{r.tempat}</strong></p>
                     </div>
-                    <span className="text-xs font-bold text-primary-400 hover:text-primary-300 flex items-center">
+                    <span className="text-xs font-bold text-red-400 hover:text-red-300 flex items-center">
                       {isExpanded ? 'Tutup Detail' : 'Lihat Detail / Notulen'}
                       <ArrowUpRight className="ml-1 h-3.5 w-3.5" />
                     </span>
@@ -546,7 +546,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <section className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center justify-center gap-2">
-              <Heart className="text-primary-500" />
+              <Heart className="text-red-500" />
               <span>Sponsor & Donatur Terdaftar</span>
             </h2>
             <p className="text-sm text-slate-500">Apresiasi setinggi-tingginya kepada para pihak yang menyokong kesuksesan acara.</p>
@@ -650,7 +650,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             {/* Panitia List - Hierarchical */}
             <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 space-y-6">
             <h3 className="text-xl font-bold text-slate-900 flex items-center space-x-2">
-              <Users className="text-primary-500" />
+              <Users className="text-red-500" />
               <span>Susunan Kepanitiaan RT 12</span>
             </h3>
 
@@ -699,7 +699,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
               {/* Panitia Inti */}
               {panitiaGroups.inti.length > 0 && (
                 <div className="space-y-1.5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary-400">Panitia Inti</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-red-400">Panitia Inti</p>
                   {panitiaGroups.inti.map((p, i) => (
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
                       <div>
@@ -712,7 +712,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                           )}
                         </span>
                       </div>
-                      <span className="text-xs text-primary-400 font-semibold">{p.jabatan}</span>
+                      <span className="text-xs text-red-400 font-semibold">{p.jabatan}</span>
                     </div>
                   ))}
                 </div>
@@ -804,7 +804,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col h-[500px]">
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold text-slate-900 flex items-center space-x-2">
-                <CheckCircle2 className="text-primary-500" />
+                <CheckCircle2 className="text-red-500" />
                 <span>Status Iuran Warga (80 KK)</span>
               </h3>
               <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full font-bold">

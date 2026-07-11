@@ -53,7 +53,7 @@ export const AddWargaModal: React.FC<AddWargaModalProps> = ({ isOpen, onClose, o
               placeholder="e.g. Bapak Joko Widodo"
               value={nama}
               onChange={(e) => setNama(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-500"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
@@ -63,7 +63,7 @@ export const AddWargaModal: React.FC<AddWargaModalProps> = ({ isOpen, onClose, o
               <select
                 value={blok}
                 onChange={(e) => setBlok(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-350 focus:outline-none focus:border-primary-500"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-350 focus:outline-none focus:border-red-500"
               >
                 <option value="Blok A">Blok A</option>
                 <option value="Blok B">Blok B</option>
@@ -79,7 +79,7 @@ export const AddWargaModal: React.FC<AddWargaModalProps> = ({ isOpen, onClose, o
                 required
                 value={nominal}
                 onChange={(e) => setNominal(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-primary-500 text-right"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-red-500 text-right"
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ export const AddWargaModal: React.FC<AddWargaModalProps> = ({ isOpen, onClose, o
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+              className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
               {submitting ? 'Menyimpan...' : 'Simpan KK Baru'}
             </button>

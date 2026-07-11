@@ -1,34 +1,178 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary-50: #fef2f2;
-  --color-primary-100: #fee2e2;
-  --color-primary-200: #fecaca;
-  --color-primary-300: #fca5a5;
-  --color-primary-400: #f87171;
-  --color-primary-500: #ef4444;
-  --color-primary-600: #dc2626;
-  --color-primary-700: #b91c1c;
-  --color-primary-800: #991b1b;
-  --color-primary-900: #7f1d1d;
-  --color-primary-950: #450a0a;
-
-  --color-primary: var(--color-primary-600);
-  --color-primary-hover: var(--color-primary-500);
-  --color-primary-active: var(--color-primary-700);
-  
-  --color-background: #F8FAFC;
-  --color-foreground: #0F172A;
-}
-
 :root {
-  --background: var(--color-background);
-  --foreground: var(--color-foreground);
+  --background: #F8FAFC;
+  --foreground: #0F172A;
 }
 
+/* Global Light Theme Override */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  font-family: Inter, system-ui, -apple-system, sans-serif !important;
 }
 
-/* Add any custom non-Tailwind component CSS below */
+/* Aside / Sidebar styles (white sidebar for admin) */
+aside {
+  background-color: #FFFFFF !important;
+  border-right: 1px solid #E2E8F0 !important;
+}
+
+aside .bg-slate-900\/10 {
+  background-color: #F1F5F9 !important;
+}
+
+/* Make all dark slate backgrounds white in light mode */
+.bg-slate-950,
+.bg-slate-900,
+.bg-slate-900\/30,
+.bg-slate-900\/40,
+.bg-slate-900\/60,
+.bg-slate-950\/60,
+.bg-slate-950\/80,
+.bg-slate-950\/20 {
+  background-color: #FFFFFF !important;
+}
+
+/* Inputs and Selects styling */
+select, input, textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+select:focus, input:focus, textarea:focus {
+  border-color: #DC2626 !important;
+}
+
+/* Borders in light mode */
+.border-slate-800,
+.border-slate-850,
+.border-slate-900 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Default text mapping for light mode */
+.text-white {
+  color: #0F172A !important;
+}
+.text-slate-100 {
+  color: #0F172A !important;
+}
+.text-slate-300,
+.text-slate-350,
+.text-slate-400 {
+  color: #334155 !important;
+}
+.text-slate-450,
+.text-slate-500,
+.text-slate-550 {
+  color: #64748B !important;
+}
+
+/* ======================================================== */
+/* HERO SECTION & NAVBAR & COUNTDOWN CONTRAST PROTECTION     */
+/* (These must remain dark with white text)                */
+/* ======================================================== */
+
+/* 1. Navbar */
+nav.bg-\[\#450A0A\]\/95 {
+  background-color: #7F1D1D !important; /* Premium deep red */
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2) !important;
+}
+nav.bg-\[\#450A0A\]\/95 *, 
+nav.bg-\[\#450A0A\]\/95 a, 
+nav.bg-\[\#450A0A\]\/95 span {
+  color: #FFFFFF !important;
+}
+nav.bg-\[\#450A0A\]\/95 .text-red-300 {
+  color: #FCA5A5 !important; /* light red */
+}
+
+/* 2. Hero Section */
+section.bg-gradient-to-b {
+  background: linear-gradient(to bottom, #7F1D1D, #991B1B, #450A0A) !important; /* Deep red gradient */
+  border-bottom: 1px solid rgba(220, 38, 38, 0.2) !important;
+}
+section.bg-gradient-to-b * {
+  color: #FFFFFF !important;
+}
+section.bg-gradient-to-b h1 {
+  color: #FFFFFF !important;
+}
+section.bg-gradient-to-b p {
+  color: #F8FAFC !important;
+}
+section.bg-gradient-to-b .text-red-450,
+section.bg-gradient-to-b .text-red-400 {
+  color: #FECACA !important; /* light red */
+}
+section.bg-gradient-to-b .bg-red-600\/10 {
+  background-color: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+
+
+/* Stats Cards in Dashboard */
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03) !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 * {
+  color: #0F172A !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 .text-slate-400 {
+  color: #64748B !important;
+}
+.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 .bg-slate-900\/20 .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+/* Keep original text white for primary colored buttons and status pills */
+button.text-white,
+a.text-white,
+.bg-red-650.text-white,
+.bg-red-600.text-white,
+.bg-emerald-600.text-white,
+.bg-indigo-600.text-white,
+.bg-blue-600.text-white {
+  color: #FFFFFF !important;
+}
+
+/* Explicit colors for solid buttons */
+.bg-red-600,
+.bg-red-650,
+.bg-emerald-600,
+.bg-indigo-600,
+.bg-blue-600 {
+  color: #FFFFFF !important;
+}
+
+/* Active Sidebar navigation */
+.bg-red-600.text-white {
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
+.from-red-950\/20 {
+  --tw-gradient-from: rgba(220, 38, 38, 0.04) !important;
+}
+.via-\[\#070A13\] {
+  --tw-gradient-to: #F8FAFC !important;
+}
+
+/* Footer — keep dark red, don't override with light theme */
+footer.bg-\[\#7F1D1D\] {
+  background-color: #7F1D1D !important;
+  color: #FFFFFF !important;
+}
+footer.bg-\[\#7F1D1D\] * {
+  color: inherit !important;
+}
+/* Override the global .text-white -> dark rule, inside footer it must stay white */
+footer.bg-\[\#7F1D1D\] .text-white,
+footer.bg-\[\#7F1D1D\] span,
+footer.bg-\[\#7F1D1D\] p {
+  color: inherit !important;
+}

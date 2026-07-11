@@ -147,7 +147,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
       <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
           <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Plus className="h-4.5 w-4.5 text-primary-500" />
+            <Plus className="h-4.5 w-4.5 text-red-500" />
             <span>Tambah Jabatan Baru</span>
           </h3>
           <p className="text-[10px] text-slate-500">Mendaftarkan posisi jabatan baru ke dalam struktur organisasi.</p>
@@ -159,7 +159,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
             <select
               value={kategori}
               onChange={(e) => setKategori(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-primary-500 font-semibold"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
             >
               <option value="Seksi">Pengurus Harian (Seksi-seksi)</option>
               <option value="BOD">Board of Directors (Pengawas & PJ)</option>
@@ -175,7 +175,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               value={nama}
               onChange={(e) => setNama(e.target.value)}
               placeholder="e.g. Bendahara Umum"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-primary-500 font-semibold"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-semibold"
             />
           </div>
 
@@ -186,7 +186,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               value={deskripsi}
               onChange={(e) => setDeskripsi(e.target.value)}
               placeholder="e.g. Memegang kas utama panitia dan membuat laporan berkala..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-primary-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500"
             />
           </div>
 
@@ -198,7 +198,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                 id="mempunyaiSubKoordinator"
                 checked={mempunyaiSubKoordinator}
                 onChange={(e) => setMempunyaiSubKoordinator(e.target.checked)}
-                className="rounded border-slate-800 bg-slate-900 text-primary-500 focus:ring-0"
+                className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
               />
               <label htmlFor="mempunyaiSubKoordinator" className="text-[11px] text-slate-350 font-bold cursor-pointer leading-tight">
                 Seksi Memiliki Sub-Koordinator
@@ -225,7 +225,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                         setAllowedMenus(allowedMenus.filter((k) => k !== page.key));
                       }
                     }}
-                    className="rounded border-slate-800 bg-slate-900 text-primary-500 focus:ring-0"
+                    className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0"
                   />
                   <span>{page.label}</span>
                 </label>
@@ -236,7 +236,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
             {submitting ? 'Menyimpan...' : 'Simpan Jabatan Baru'}
           </button>
@@ -254,7 +254,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-white focus:outline-none focus:border-primary-500 font-semibold"
+                className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-[11px] text-white focus:outline-none focus:border-red-500 font-semibold"
               >
                 <option value="All">Semua Kategori</option>
                 <option value="BOD">BOD / Pengawas</option>
@@ -318,7 +318,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                             id={`editUnique-${s.id}`}
                             checked={editIsUnique}
                             onChange={(e) => setEditIsUnique(e.target.checked)}
-                            className="rounded border-slate-800 bg-slate-900 text-primary-500 focus:ring-0 text-xs"
+                            className="rounded border-slate-800 bg-slate-900 text-red-500 focus:ring-0 text-xs"
                           />
                           <label htmlFor={`editUnique-${s.id}`} className="text-[10px] text-slate-400 font-bold">
                             Hanya Boleh Dijabat 1 Orang
@@ -330,8 +330,8 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                       <div className="space-y-2 border-t border-slate-900 pt-3">
                         <label className="text-[9px] text-slate-550 font-bold uppercase block">Izin Akses Menu / Halaman</label>
                         {editNama === 'Ketua Panitia' ? (
-                          <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-semibold bg-red-655/5 p-2.5 rounded-lg border border-primary-500/10 w-fit">
-                            <Shield className="h-4 w-4 text-primary-500" />
+                          <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-semibold bg-red-655/5 p-2.5 rounded-lg border border-red-500/10 w-fit">
+                            <Shield className="h-4 w-4 text-red-500" />
                             <span>Ketua Panitia selalu memiliki akses penuh ke seluruh fitur dan menu.</span>
                           </div>
                         ) : (
@@ -348,7 +348,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                                       setEditAllowedMenus(editAllowedMenus.filter((k) => k !== page.key));
                                     }
                                   }}
-                                  className="rounded border-slate-800 bg-slate-950 text-primary-500 focus:ring-0"
+                                  className="rounded border-slate-800 bg-slate-950 text-red-500 focus:ring-0"
                                 />
                                 <span>{page.label}</span>
                               </label>
@@ -384,7 +384,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                             </span>
                           )}
                           {s.kategori === 'Inti' && (
-                            <span className="text-[8px] bg-primary-500/10 text-primary-400 border border-primary-500/20 px-2 py-0.5 rounded-full font-black uppercase">
+                            <span className="text-[8px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full font-black uppercase">
                               Panitia Inti
                             </span>
                           )}
@@ -444,7 +444,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                           <button
                             onClick={() => onDeleteSeksi(s.id, s.nama)}
                             title="Hapus Jabatan"
-                            className="p-2 border border-slate-850 hover:border-slate-800 text-slate-500 hover:text-primary-400 rounded-lg transition-colors"
+                            className="p-2 border border-slate-850 hover:border-slate-800 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -471,7 +471,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-primary-300 hover:text-primary-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
+                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:text-red-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
               >
                 ← Sebelumnya
               </button>
@@ -483,8 +483,8 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
                     onClick={() => setCurrentPage(pageNum)}
                     className={`h-7 w-7 rounded-lg text-[10px] font-bold transition-all ${
                       currentPage === pageNum
-                        ? 'bg-primary-600 text-white shadow-sm'
-                        : 'bg-white border border-slate-200 text-slate-600 hover:border-primary-300 hover:text-primary-600'
+                        ? 'bg-red-600 text-white shadow-sm'
+                        : 'bg-white border border-slate-200 text-slate-600 hover:border-red-300 hover:text-red-600'
                     }`}
                   >
                     {pageNum}
@@ -494,7 +494,7 @@ export const SeksiTab: React.FC<SeksiTabProps> = ({
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-primary-300 hover:text-primary-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
+                className="px-2.5 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:text-red-600 rounded-lg text-[10px] font-bold text-slate-600 transition-colors disabled:opacity-40"
               >
                 Berikutnya →
               </button>

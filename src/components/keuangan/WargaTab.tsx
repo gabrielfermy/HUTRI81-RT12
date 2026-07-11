@@ -13,10 +13,10 @@ export const WargaTab: React.FC<WargaTabProps> = ({ wargaList, onOpenPaymentModa
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Redirect / CTA Banner */}
-      <div className="bg-gradient-to-r from-primary-950/20 via-slate-900/40 to-slate-900/20 border border-primary-500/20 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-gradient-to-r from-red-950/20 via-slate-900/40 to-slate-900/20 border border-red-500/20 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-1.5">
           <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <Users className="h-4.5 w-4.5 text-primary-500" />
+            <Users className="h-4.5 w-4.5 text-red-500" />
             <span>Manajemen Pembayaran Iuran Terpusat</span>
           </h4>
           <p className="text-xs text-slate-500 max-w-xl leading-relaxed">
@@ -25,7 +25,7 @@ export const WargaTab: React.FC<WargaTabProps> = ({ wargaList, onOpenPaymentModa
         </div>
         <Link
           href="/kepanitiaan/warga"
-          className="inline-flex items-center space-x-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-primary-600/10 shrink-0"
+          className="inline-flex items-center space-x-2 px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all shadow-lg shadow-red-600/10 shrink-0"
         >
           <span>Kelola Warga & Iuran</span>
           <ArrowRight className="h-4 w-4" />

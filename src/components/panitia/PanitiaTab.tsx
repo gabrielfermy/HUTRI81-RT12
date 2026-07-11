@@ -27,7 +27,7 @@ const LevelBadge = ({ level }: { level: string }) => {
   const map: Record<string, string> = {
     'Pelindung':       'bg-purple-100 text-purple-700 border border-purple-200',
     'Penasihat':       'bg-blue-100 text-blue-700 border border-blue-200',
-    'Inti':            'bg-primary-100 text-primary-700 border border-primary-200',
+    'Inti':            'bg-red-100 text-red-700 border border-red-200',
     'Koordinator':     'bg-amber-100 text-amber-700 border border-amber-200',
     'Sub-Koordinator': 'bg-emerald-100 text-emerald-700 border border-emerald-200',
     'Anggota':         'bg-slate-100 text-slate-600 border border-slate-200',
@@ -83,7 +83,7 @@ const MemberRow = ({
   };
 
   return (
-    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-primary-200 hover:bg-primary-50/30 transition-all gap-2">
+    <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all gap-2">
       <div className="flex items-center gap-2 min-w-0">
         <User className="h-3.5 w-3.5 text-slate-400 shrink-0" />
         <div className="truncate">
@@ -91,7 +91,7 @@ const MemberRow = ({
             {p.nama || <span className="text-slate-400 italic text-xs">Belum Ada Penjabat</span>}
           </span>
           {p.id === currentUser?.id && (
-            <span className="ml-1.5 text-[8px] bg-primary-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase inline-block">Anda</span>
+            <span className="ml-1.5 text-[8px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-black uppercase inline-block">Anda</span>
           )}
           {p.jabatan && p.jabatan !== p.level && (
             <span className="ml-1.5 text-[10px] text-slate-500">— {p.jabatan}</span>
@@ -107,7 +107,7 @@ const MemberRow = ({
             <Key className="h-3 w-3" />
           </button>
           {p.id !== currentUser?.id && (
-            <button onClick={handleDeleteClick} title="Hapus" className="p-1 text-slate-400 hover:text-primary-500 rounded-lg transition-colors">
+            <button onClick={handleDeleteClick} title="Hapus" className="p-1 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
               <Trash2 className="h-3 w-3" />
             </button>
           )}
@@ -352,7 +352,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
     return (
       <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-sm space-y-6 animate-fadeIn">
         <div className="text-center space-y-2 border-b border-slate-100 pb-4">
-          <div className="inline-flex p-3 bg-primary-50 border border-primary-100 rounded-2xl text-primary-500 mb-2">
+          <div className="inline-flex p-3 bg-red-50 border border-red-100 rounded-2xl text-red-500 mb-2">
             <Shield className="h-6 w-6" />
           </div>
           <h2 className="text-xl font-bold text-slate-900">Sunting Profil & PIN Keamanan</h2>
@@ -362,12 +362,12 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nama Lengkap</label>
             <input type="text" required value={profNama} onChange={e => setProfNama(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-400" />
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
           </div>
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nomor WhatsApp</label>
             <input type="tel" value={profNoWa} onChange={e => setProfNoWa(e.target.value)} placeholder="08xxxxxxxxxx"
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-400" />
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -384,7 +384,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           <div className="border-t border-slate-100 pt-4 space-y-4">
             <div>
               <h4 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Lock className="h-3.5 w-3.5 text-primary-500" /> Ganti PIN Baru
+                <Lock className="h-3.5 w-3.5 text-red-500" /> Ganti PIN Baru
               </h4>
               <p className="text-[10px] text-slate-400 mt-0.5">Kosongkan ketiga kotak jika PIN tidak ingin diubah.</p>
             </div>
@@ -393,7 +393,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Lama</label>
               <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
                 value={profOldPin} onChange={e => setProfOldPin(e.target.value)} placeholder="••••"
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-primary-400" />
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -401,19 +401,19 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                 <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Baru</label>
                 <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
                   value={profPin} onChange={e => setProfPin(e.target.value)} placeholder="••••"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-primary-400" />
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Konfirmasi PIN</label>
                 <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
                   value={profPinConfirm} onChange={e => setProfPinConfirm(e.target.value)} placeholder="••••"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-primary-400" />
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
               </div>
             </div>
           </div>
           {profileSuccess && <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl">{profileSuccess}</div>}
-          {profileError && <div className="p-3 bg-primary-50 border border-primary-200 text-primary-600 text-xs rounded-xl">{profileError}</div>}
-          <button type="submit" className="w-full py-3 bg-primary-600 hover:bg-primary-500 text-white font-bold text-sm rounded-xl transition-all shadow-sm">
+          {profileError && <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl">{profileError}</div>}
+          <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm rounded-xl transition-all shadow-sm">
             Simpan Perubahan Profil
           </button>
         </form>
@@ -429,7 +429,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
       <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5 h-fit shadow-sm">
         <div>
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <Plus className="h-4 w-4 text-primary-500" /> Daftarkan Anggota Baru
+            <Plus className="h-4 w-4 text-red-500" /> Daftarkan Anggota Baru
           </h3>
           <p className="text-[10px] text-slate-400 mt-1">Pilih grup, seksi, dan level terlebih dahulu.</p>
         </div>
@@ -441,7 +441,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             <div className="grid grid-cols-2 gap-2">
               {(['Pelindung', 'Penasihat', 'Inti', 'Harian'] as GroupType[]).map(g => (
                 <button key={g} type="button" onClick={() => { setGroup(g); setNama(''); setJabatan(''); setSelectedSeksi(''); setParentId(''); }}
-                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${group === g ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-slate-200 text-slate-600 hover:border-primary-300'}`}>
+                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${group === g ? 'bg-red-600 text-white border-red-600' : 'bg-white border-slate-200 text-slate-600 hover:border-red-300'}`}>
                   {g === 'Harian' ? 'Harian (Seksi)' : g}
                 </button>
               ))}
@@ -453,7 +453,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase">Jabatan Inti</label>
               <select value={intiJabatan} onChange={e => setIntiJabatan(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-primary-400">
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-red-400">
                 <option>Ketua Panitia</option>
                 <option>Sekretaris</option>
                 <option>Bendahara</option>
@@ -467,7 +467,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-500 uppercase">Seksi</label>
                 <select value={selectedSeksi} onChange={e => { setSelectedSeksi(e.target.value); setParentId(''); setLevel('Koordinator'); }}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-primary-400" required>
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-red-400" required>
                   <option value="">— Pilih Seksi —</option>
                   {harianSeksiList.map(s => (
                     <option key={s.id} value={s.nama}>{s.nama}</option>
@@ -481,7 +481,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                   <div className="grid grid-cols-3 gap-1.5">
                     {(['Koordinator', 'Sub-Koordinator', 'Anggota'] as LevelType[]).map(lv => (
                       <button key={lv} type="button" onClick={() => { setLevel(lv); setParentId(''); }}
-                        className={`py-2 px-1 text-[10px] font-bold rounded-xl border transition-all ${level === lv ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-slate-200 text-slate-600 hover:border-primary-300'}`}>
+                        className={`py-2 px-1 text-[10px] font-bold rounded-xl border transition-all ${level === lv ? 'bg-red-600 text-white border-red-600' : 'bg-white border-slate-200 text-slate-600 hover:border-red-300'}`}>
                         {lv === 'Sub-Koordinator' ? 'Sub-Koord' : lv}
                       </button>
                     ))}
@@ -499,7 +499,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-slate-500 uppercase">Di Bawah Koordinator</label>
                   <select value={parentId} onChange={e => setParentId(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-primary-400">
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-red-400">
                     <option value="">— Pilih Koordinator —</option>
                     {koordinatorsInSeksi.map(k => (
                       <option key={k.id} value={k.id}>{k.nama}</option>
@@ -512,7 +512,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-slate-500 uppercase">Atasan Langsung</label>
                   <select value={parentId} onChange={e => setParentId(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-primary-400" required>
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-red-400" required>
                     <option value="">— Pilih Atasan —</option>
                     {koordinatorsInSeksi.length > 0 && (
                       <optgroup label="Koordinator">
@@ -539,7 +539,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
             <label className="text-[10px] font-bold text-slate-500 uppercase">Nama Lengkap *</label>
             <input type="text" required value={nama} onChange={e => setNama(e.target.value)}
               placeholder="Contoh: Pak Bambang Suhendra"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-400 font-semibold" />
+              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400 font-semibold" />
           </div>
 
           {/* Custom jabatan (optional) */}
@@ -548,7 +548,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
               <label className="text-[10px] font-bold text-slate-500 uppercase">Jabatan Kustom <span className="font-normal text-slate-400">(opsional)</span></label>
               <input type="text" value={jabatan} onChange={e => setJabatan(e.target.value)}
                 placeholder={group === 'Pelindung' ? 'Contoh: Ketua RT' : group === 'Penasihat' ? 'Contoh: Tokoh Masyarakat' : 'Contoh: Koordinator Sesi Pagi'}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-primary-400" />
+                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
             </div>
           )}
 
@@ -557,7 +557,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           </div>
 
           <button type="submit" disabled={submitting}
-            className="w-full py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50">
+            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50">
             {submitting ? 'Menyimpan...' : 'Daftarkan Anggota'}
           </button>
         </form>
@@ -567,7 +567,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
       <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6 shadow-sm">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <Users className="h-4 w-4 text-primary-500" /> Susunan Kepanitiaan
+            <Users className="h-4 w-4 text-red-500" /> Susunan Kepanitiaan
           </h3>
           <span className="text-xs text-slate-400 font-semibold">{panitiaList.length} orang terdaftar</span>
         </div>
@@ -627,7 +627,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           {/* PANITIA INTI */}
           {intiList.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 font-bold text-sm text-primary-700">
+              <div className="flex items-center gap-2 font-bold text-sm text-red-700">
                 <Shield className="h-4 w-4" />
                 <span>Panitia Inti</span>
                 <span className="text-xs font-normal text-slate-400">({intiList.length} orang)</span>
@@ -710,7 +710,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                 onSave={handleSaveEdit} onCancel={() => setEditingId(null)}
                                 extraFields={
                                   <select value={editParentId} onChange={e => setEditParentId(e.target.value)}
-                                    className="bg-white border border-slate-200 rounded-xl px-2 py-1.5 text-[11px] focus:outline-none focus:border-primary-400">
+                                    className="bg-white border border-slate-200 rounded-xl px-2 py-1.5 text-[11px] focus:outline-none focus:border-red-400">
                                     <option value="">Tidak ada atasan</option>
                                   </select>
                                 } />
@@ -728,7 +728,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                     <button onClick={() => handleStartEdit(koord)} className="p-1 text-amber-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
                                     <button onClick={() => handleSweetResetPin(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-amber-600 rounded"><Key className="h-3 w-3" /></button>
                                     {koord.id !== currentUser?.id && (
-                                      <button onClick={() => handleSweetDelete(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-primary-500 rounded"><Trash2 className="h-3 w-3" /></button>
+                                      <button onClick={() => handleSweetDelete(koord.id, koord.nama)} className="p-1 text-amber-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
                                     )}
                                   </div>
                                 )}
@@ -761,7 +761,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                           <button onClick={() => handleStartEdit(sk)} className="p-1 text-emerald-500 hover:text-blue-500 rounded"><Edit2 className="h-3 w-3" /></button>
                                           <button onClick={() => handleSweetResetPin(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-amber-500 rounded"><Key className="h-3 w-3" /></button>
                                           {sk.id !== currentUser?.id && (
-                                            <button onClick={() => handleSweetDelete(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-primary-500 rounded"><Trash2 className="h-3 w-3" /></button>
+                                            <button onClick={() => handleSweetDelete(sk.id, sk.nama)} className="p-1 text-emerald-500 hover:text-red-500 rounded"><Trash2 className="h-3 w-3" /></button>
                                           )}
                                         </div>
                                       )}
@@ -812,11 +812,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
 
                     {/* Orphaned Members (No valid parent) */}
                     {orphanedMembers.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-primary-100 space-y-2">
-                        <div className="flex items-center gap-2 text-xs font-bold text-primary-500 bg-primary-50 px-3 py-1.5 rounded-lg border border-primary-100">
+                      <div className="mt-4 pt-4 border-t border-red-100 space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-lg border border-red-100">
                           <AlertCircle className="h-4 w-4" />
                           <span>Anggota Tanpa Atasan ({orphanedMembers.length})</span>
-                          <span className="text-[10px] font-normal text-primary-400 ml-auto">(Silakan Edit untuk memilih atasan)</span>
+                          <span className="text-[10px] font-normal text-red-400 ml-auto">(Silakan Edit untuk memilih atasan)</span>
                         </div>
                         <div className="space-y-1.5">
                           {orphanedMembers.map(orphan => (

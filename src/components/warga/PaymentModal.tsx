@@ -65,7 +65,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
               value={nominal}
               onChange={(e) => setNominal(Number(e.target.value))}
               placeholder="0"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-3 text-sm text-slate-900 font-extrabold text-right focus:outline-none focus:border-primary-500 tracking-wide"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-3 text-sm text-slate-900 font-extrabold text-right focus:outline-none focus:border-red-500 tracking-wide"
             />
             <span className="block text-[10px] text-slate-500 font-medium italic mt-1 leading-relaxed">
               *Masukkan nominal pembayaran (standar Rp 50.000). Ketik 0 atau kosongkan untuk menyetel kembali status warga menjadi Belum Membayar.

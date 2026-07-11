@@ -36,7 +36,7 @@ export default function KepanitiaanLogs() {
       <div className="border-b border-slate-900 pb-4 flex justify-between items-center">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <ShieldAlert className="text-primary-500" />
+            <ShieldAlert className="text-red-500" />
             <span>Audit Log Aktivitas Panitia</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">Daftar rekaman perubahan data penting di dalam sistem secara real-time.</p>
@@ -57,12 +57,12 @@ export default function KepanitiaanLogs() {
           {logs.map((log) => (
             <div
               key={log.id}
-              className="bg-slate-50 border border-slate-850 rounded-xl p-5 hover:border-primary-500/10 transition-colors"
+              className="bg-slate-50 border border-slate-850 rounded-xl p-5 hover:border-red-500/10 transition-colors"
             >
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-black text-primary-400 bg-primary-600/10 border border-primary-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                    <span className="text-[10px] font-black text-red-400 bg-red-600/10 border border-red-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
                       {log.aksi}
                     </span>
                     <span className="text-xs font-extrabold text-slate-900">

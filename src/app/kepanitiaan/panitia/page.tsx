@@ -304,7 +304,7 @@ export default function KepanitiaanPanitia() {
     return (
       <div className="flex-grow flex items-center justify-center min-h-[50vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
           <p className="text-xs text-slate-500">Memuat Data Kepanitiaan...</p>
         </div>
       </div>
@@ -332,7 +332,7 @@ export default function KepanitiaanPanitia() {
             onClick={() => setActiveTab('panitia')}
             className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 ${
               activeTab === 'panitia'
-                ? 'border-primary-500 text-primary-600 bg-primary-50'
+                ? 'border-red-500 text-red-600 bg-red-50'
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
@@ -343,7 +343,7 @@ export default function KepanitiaanPanitia() {
             onClick={() => setActiveTab('seksi')}
             className={`flex items-center space-x-2 px-5 py-3 text-xs font-bold whitespace-nowrap rounded-t-xl transition-all border-b-2 ${
               activeTab === 'seksi'
-                ? 'border-primary-500 text-primary-600 bg-primary-50'
+                ? 'border-red-500 text-red-600 bg-red-50'
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >

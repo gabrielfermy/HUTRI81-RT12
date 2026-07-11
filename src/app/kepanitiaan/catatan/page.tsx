@@ -192,7 +192,7 @@ export default function KepanitiaanCatatan() {
     html = html.replace(/\*(.*?)\*/g, '<em class="italic text-slate-350">$1</em>');
 
     // Code
-    html = html.replace(/`(.*?)`/g, '<code class="bg-slate-50 px-1.5 py-0.5 rounded text-primary-400 font-mono text-[10px]">$1</code>');
+    html = html.replace(/`(.*?)`/g, '<code class="bg-slate-50 px-1.5 py-0.5 rounded text-red-400 font-mono text-[10px]">$1</code>');
 
     // Lists
     html = html.replace(/^\-\s(.*$)/gim, '<li class="list-disc list-inside text-slate-600 ml-4 my-1">$1</li>');
@@ -220,7 +220,7 @@ export default function KepanitiaanCatatan() {
     return (
       <div className="flex-grow flex items-center justify-center bg-slate-50 text-slate-900 min-h-[50vh]">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-500 border-r-2 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-500 border-r-2 mx-auto"></div>
           <p className="text-xs text-slate-500">Memuat Catatan Panitia...</p>
         </div>
       </div>
@@ -233,7 +233,7 @@ export default function KepanitiaanCatatan() {
       <div className="border-b border-slate-900 pb-4 flex justify-between items-center">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary-500" />
+            <FileText className="h-5 w-5 text-red-500" />
             <span>Catatan & Agenda Penting</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -245,7 +245,7 @@ export default function KepanitiaanCatatan() {
 
         <button
           onClick={handleCreateNote}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-600 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
+          className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-600 text-white font-bold text-xs rounded-xl transition-all shadow-lg"
         >
           <Plus className="h-4 w-4" />
           <span>Buat Catatan Baru</span>
@@ -268,7 +268,7 @@ export default function KepanitiaanCatatan() {
               placeholder="Cari kata kunci..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-600 focus:outline-none focus:border-primary-500"
+              className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-600 focus:outline-none focus:border-red-500"
             />
 
             {/* Author filter (Admin Only) */}
@@ -276,7 +276,7 @@ export default function KepanitiaanCatatan() {
               <select
                 value={selectedUserFilter}
                 onChange={(e) => setSelectedUserFilter(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-600 focus:outline-none focus:border-primary-500"
+                className="w-full bg-slate-50 border border-slate-850 rounded-xl px-3 py-2 text-xs text-slate-600 focus:outline-none focus:border-red-500"
               >
                 <option value="ALL">Semua Panitia</option>
                 {uniqueAuthors.map(auth => (
@@ -294,7 +294,7 @@ export default function KepanitiaanCatatan() {
                 onClick={() => handleSelectNote(n)}
                 className={`p-3 rounded-xl border cursor-pointer select-none transition-all flex flex-col justify-between ${
                   activeNote?.id === n.id
-                    ? 'bg-primary-500/5 border-primary-500/20 text-primary-400'
+                    ? 'bg-red-500/5 border-red-500/20 text-red-400'
                     : 'bg-slate-50/40 border-slate-900 text-slate-450 hover:border-slate-200'
                 }`}
               >
@@ -314,7 +314,7 @@ export default function KepanitiaanCatatan() {
                       e.stopPropagation();
                       handleDeleteNote(n.id, n.judul);
                     }}
-                    className="text-slate-700 hover:text-primary-400 p-0.5 rounded transition-colors"
+                    className="text-slate-700 hover:text-red-400 p-0.5 rounded transition-colors"
                   >
                     <Trash2 className="h-3 w-3" />
                   </button>
@@ -399,7 +399,7 @@ export default function KepanitiaanCatatan() {
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                     placeholder="Tulis konten catatan dengan format Markdown di sini... (e.g. # Judul, **teks tebal**, - list)"
-                    className="w-full flex-grow bg-slate-50/40 border border-slate-900 rounded-xl p-4 text-xs text-slate-700 font-medium font-sans leading-relaxed focus:outline-none focus:border-primary-500/20 resize-none min-h-[350px]"
+                    className="w-full flex-grow bg-slate-50/40 border border-slate-900 rounded-xl p-4 text-xs text-slate-700 font-medium font-sans leading-relaxed focus:outline-none focus:border-red-500/20 resize-none min-h-[350px]"
                   />
                 ) : (
                   <div 
