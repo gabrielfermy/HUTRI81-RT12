@@ -125,7 +125,7 @@ export default function KepanitiaanKontak() {
         )}
 
         {/* Harian */}
-        {Object.entries(groupedHarian).sort(([a], [b]) => a.localeCompare(b)).map(([seksi, anggota]) => (
+        {(Object.entries(groupedHarian) as [string, any[]][]).sort(([a], [b]) => a.localeCompare(b)).map(([seksi, anggota]) => (
           <div key={seksi} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-4 border-b border-slate-100 pb-2">
               <Users className="h-4 w-4 text-emerald-600" /> Seksi {seksi}
