@@ -88,7 +88,7 @@ export default function KepanitiaanRapat() {
 
     setUploadingImage(true);
     try {
-      const newAttachments = [];
+      const newAttachments: any[] = [];
 
       for (const file of files) {
         const fileExt = file.name.split('.').pop();
