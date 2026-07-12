@@ -1,17 +1,38 @@
 import React, { useState } from 'react';
+import { Edit2, Trash2, X } from 'lucide-react';
 
 interface RabTabProps {
   rabList: any[];
   onAddRab: (kategori: string, item: string, kuantitas: number, satuan: string, hargaSatuan: number) => Promise<void>;
+  onEditRab?: (id: string, kategori: string, item: string, kuantitas: number, satuan: string, hargaSatuan: number) => Promise<void>;
+  onDeleteRab?: (id: string, item: string) => Promise<void>;
 }
 
-export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
+export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab, onEditRab, onDeleteRab }) => {
   const [rabKategori, setRabKategori] = useState('Seksi Acara');
   const [rabItem, setRabItem] = useState('');
   const [rabKuantitas, setRabKuantitas] = useState(1);
   const [rabSatuan, setRabSatuan] = useState('Pcs');
   const [rabHargaSatuan, setRabHargaSatuan] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const resetForm = () => {
+    setRabItem('');
+    setRabKuantitas(1);
+    setRabSatuan('Pcs');
+    setRabHargaSatuan(0);
+    setEditingId(null);
+  };
+
+  const handleEditClick = (r: any) => {
+    setEditingId(r.id);
+    setRabKategori(r.kategori);
+    setRabItem(r.item);
+    setRabKuantitas(r.kuantitas);
+    setRabSatuan(r.satuan);
+    setRabHargaSatuan(r.harga_satuan);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +40,12 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
 
     setSubmitting(true);
     try {
-      await onAddRab(rabKategori, rabItem, rabKuantitas, rabSatuan, rabHargaSatuan);
-      setRabItem('');
-      setRabKuantitas(1);
-      setRabSatuan('Pcs');
-      setRabHargaSatuan(0);
+      if (editingId && onEditRab) {
+        await onEditRab(editingId, rabKategori, rabItem, rabKuantitas, rabSatuan, rabHargaSatuan);
+      } else {
+        await onAddRab(rabKategori, rabItem, rabKuantitas, rabSatuan, rabHargaSatuan);
+      }
+      resetForm();
     } catch (err) {
       console.error(err);
     } finally {
@@ -36,8 +58,8 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
       {/* Add RAB Form */}
       <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Tambah Target Belanja (RAB)</h3>
-          <p className="text-[10px] text-slate-500">Mendaftarkan kebutuhan pengeluaran terencana rapat.</p>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">{editingId ? 'Edit Target Belanja' : 'Tambah Target Belanja (RAB)'}</h3>
+          <p className="text-[10px] text-slate-500">{editingId ? 'Memperbarui data kebutuhan pengeluaran terencana.' : 'Mendaftarkan kebutuhan pengeluaran terencana rapat.'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,13 +128,26 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
-          >
-            {submitting ? 'Menyimpan...' : 'Simpan Target RAB'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            >
+              {submitting ? 'Menyimpan...' : (editingId ? 'Update Target RAB' : 'Simpan Target RAB')}
+            </button>
+            {editingId && (
+              <button
+                type="button"
+                onClick={resetForm}
+                disabled={submitting}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl transition-all flex items-center justify-center"
+                title="Batal Edit"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </form>
       </div>
 
@@ -128,6 +163,7 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
                 <th className="py-3 px-4 text-center">Kuantitas</th>
                 <th className="py-3 px-4 text-right">Harga Satuan</th>
                 <th className="py-3 px-4 text-right">Total Anggaran</th>
+                {(onEditRab || onDeleteRab) && <th className="py-3 px-4 text-center">Aksi</th>}
               </tr>
             </thead>
             <tbody>
@@ -144,11 +180,35 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
                   <td className="py-3 px-4 text-right font-bold text-slate-900">
                     Rp {Number(r.total_idr || r.kuantitas * r.harga_satuan).toLocaleString('id-ID')}
                   </td>
+                  {(onEditRab || onDeleteRab) && (
+                    <td className="py-3 px-4 text-center">
+                      <div className="flex items-center justify-center space-x-2">
+                        {onEditRab && (
+                          <button
+                            onClick={() => handleEditClick(r)}
+                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit RAB"
+                          >
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                        {onDeleteRab && (
+                          <button
+                            onClick={() => onDeleteRab(r.id, r.item)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Hapus RAB"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
               {rabList.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-6 text-center text-slate-500 italic">Belum ada item anggaran terencana.</td>
+                  <td colSpan={(onEditRab || onDeleteRab) ? 6 : 5} className="py-6 text-center text-slate-500 italic">Belum ada item anggaran terencana.</td>
                 </tr>
               )}
             </tbody>

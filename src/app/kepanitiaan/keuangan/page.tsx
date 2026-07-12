@@ -241,6 +241,43 @@ export default function KepanitiaanKeuangan() {
     }
   };
 
+  const handleEditRab = async (id: string, kategori: string, item: string, kuantitas: number, satuan: string, hargaSatuan: number) => {
+    try {
+      const { error } = await supabase.from('rab').update({
+        kategori,
+        item,
+        kuantitas,
+        satuan,
+        harga_satuan: hargaSatuan,
+      }).eq('id', id);
+
+      if (!error) {
+        setRabList(rabList.map(r => r.id === id ? { ...r, kategori, item, kuantitas, satuan, harga_satuan: hargaSatuan } : r).sort((a, b) => a.kategori.localeCompare(b.kategori)));
+        await logAudit('Mengubah Rencana RAB', `Mengubah pos belanja "${item}" (kategori: ${kategori}) senilai Rp ${(kuantitas * hargaSatuan).toLocaleString('id-ID')}`);
+      } else {
+        alert('Gagal mengubah RAB: ' + (error?.message || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteRab = async (id: string, name: string) => {
+    if (!confirm(`Hapus RAB "${name}"?`)) return;
+
+    try {
+      const { error } = await supabase.from('rab').delete().eq('id', id);
+      if (!error) {
+        setRabList(rabList.filter(r => r.id !== id));
+        await logAudit('Menghapus Rencana RAB', `Menghapus data rencana RAB "${name}"`);
+      } else {
+        alert('Gagal menghapus RAB: ' + error.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const allowedTabs = React.useMemo(() => {
     const userAccess = currentUser?.akses_menu || '';
     const accessArray = userAccess.split(',');
@@ -327,6 +364,8 @@ export default function KepanitiaanKeuangan() {
         <RabTab 
           rabList={rabList}
           onAddRab={handleAddRab}
+          onEditRab={handleEditRab}
+          onDeleteRab={handleDeleteRab}
         />
       )}
 
