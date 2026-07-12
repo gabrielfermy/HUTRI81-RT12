@@ -866,12 +866,34 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                   className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400 font-semibold" />
               </div>
 
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Grup / Kelompok</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(['Pelindung', 'Penasihat', 'Inti', 'Harian']).map(g => {
+                     const currentGroup = ['Pelindung', 'Penasihat', 'Inti'].includes(editSeksi) ? editSeksi : 'Harian';
+                     return (
+                      <button key={g} type="button" onClick={() => { 
+                          if (g === 'Harian') {
+                              setEditSeksi(harianSeksiList[0]?.nama || '');
+                              setEditLevel('Koordinator');
+                              setEditJabatan('');
+                          } else {
+                              setEditSeksi(g);
+                              setEditLevel(g);
+                              setEditJabatan(g === 'Inti' ? 'Ketua Panitia' : g);
+                          }
+                          setEditParentId('');
+                      }}
+                        className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${currentGroup === g ? 'bg-red-600 text-white border-red-600' : 'bg-white border-slate-200 text-slate-600 hover:border-red-300'}`}>
+                        {g === 'Harian' ? 'Harian (Seksi)' : g}
+                      </button>
+                     );
+                  })}
+                </div>
+              </div>
+
               {['Pelindung', 'Penasihat', 'Inti'].includes(editSeksi) ? (
                 <>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase">Seksi (Tetap)</label>
-                    <input type="text" disabled value={editSeksi} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-400" />
-                  </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-slate-500 uppercase">Jabatan</label>
                     {editSeksi === 'Inti' ? (
@@ -889,7 +911,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-500 uppercase">Seksi</label>
                       <select value={editSeksi} onChange={e => { setEditSeksi(e.target.value); setEditParentId(''); }} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
-                        {harianSeksiList.map(s => <option key={s.id} value={s.nama}>{s.nama}</option>)}
+                        {harianSeksiList.map((s: any) => <option key={s.id} value={s.nama}>{s.nama}</option>)}
                       </select>
                     </div>
                     <div className="space-y-1.5">
@@ -911,7 +933,7 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                       <label className="text-[10px] font-bold text-slate-500 uppercase">Di Bawah Koordinator</label>
                       <select value={editParentId || ''} onChange={e => setEditParentId(e.target.value)} className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400">
                         <option value="">— Pilih Koordinator —</option>
-                        {editKoordinatorsInSeksi.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                        {editKoordinatorsInSeksi.map((k: any) => <option key={k.id} value={k.id}>{k.nama}</option>)}
                       </select>
                     </div>
                   )}
@@ -923,12 +945,12 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                         <option value="">— Pilih Atasan —</option>
                         {editKoordinatorsInSeksi.length > 0 && (
                           <optgroup label="Koordinator">
-                            {editKoordinatorsInSeksi.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                            {editKoordinatorsInSeksi.map((k: any) => <option key={k.id} value={k.id}>{k.nama}</option>)}
                           </optgroup>
                         )}
                         {editSubKoordsInSeksi.length > 0 && (
                           <optgroup label="Sub-Koordinator">
-                            {editSubKoordsInSeksi.map(sk => <option key={sk.id} value={sk.id}>{sk.nama}</option>)}
+                            {editSubKoordsInSeksi.map((sk: any) => <option key={sk.id} value={sk.id}>{sk.nama}</option>)}
                           </optgroup>
                         )}
                       </select>
