@@ -665,6 +665,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                     <span className="ml-2 text-xs text-amber-700">— {koord.jabatan}</span>
                                   )}
                                   <span className="ml-2"><LevelBadge level="Koordinator" /></span>
+                                  {koord.no_wa && (
+                                    <a href={`https://wa.me/${koord.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-3 inline-flex text-emerald-500 hover:text-emerald-400" title={`Chat WA ${koord.nama}`}>
+                                      <MessageCircle className="h-4 w-4" />
+                                    </a>
+                                  )}
                                 </div>
                                 {isInti && (
                                   <div className="flex gap-1 shrink-0">
@@ -698,6 +703,11 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
                                           <span className="ml-2 text-xs text-emerald-700">— {sk.jabatan}</span>
                                         )}
                                         <span className="ml-2"><LevelBadge level="Sub-Koordinator" /></span>
+                                        {sk.no_wa && (
+                                          <a href={`https://wa.me/${sk.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-3 inline-flex text-emerald-500 hover:text-emerald-400" title={`Chat WA ${sk.nama}`}>
+                                            <MessageCircle className="h-4 w-4" />
+                                          </a>
+                                        )}
                                       </div>
                                       {isInti && (
                                         <div className="flex gap-1 shrink-0">
