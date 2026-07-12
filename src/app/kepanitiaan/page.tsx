@@ -69,7 +69,7 @@ export default function KepanitiaanDashboard() {
 
   // States for stats
   const [panitiaCount, setPanitiaCount] = useState(0);
-  const [totalCollected, setTotalCollected] = useState(2000000); // default is initial RT Kas
+  const [totalCollected, setTotalCollected] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [lunasCount, setLunasCount] = useState(0);
   const [totalWarga, setTotalWarga] = useState(0);
@@ -106,7 +106,7 @@ export default function KepanitiaanDashboard() {
           const { data: sponsors } = await supabase.from('sponsorship').select('nominal');
           const sponsorSum = sponsors ? sponsors.reduce((sum: number, s: any) => sum + Number(s.nominal || 0), 0) : 0;
           
-          setTotalCollected(2000000 + iuranSum + sponsorSum); // 2M initial kas RT
+          setTotalCollected(iuranSum + sponsorSum);
         }
 
         // Fetch actual spent stats
@@ -257,7 +257,7 @@ export default function KepanitiaanDashboard() {
             <DollarSign className="h-4.5 w-4.5 text-emerald-400" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-slate-900">Rp {totalCollected.toLocaleString('id-ID')}</div>
-          <div className="text-[10px] text-slate-500 font-semibold">Target: Rp 12.000.000 | RT Kas + Iuran + Sponsor</div>
+          <div className="text-[10px] text-slate-500 font-semibold">Target: Rp 12.000.000 | Total Pemasukan</div>
         </div>
 
         <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">
