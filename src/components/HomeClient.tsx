@@ -163,7 +163,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
         const { data: spData } = await supabase.from('sponsorship').select('*').order('nominal', { ascending: false });
         if (spData && spData.length > 0) setSponsorList(spData); else setSponsorList(fallbackSponsors);
 
-        const { data: rpData } = await supabase.from('rapat').select('*').order('tanggal', { ascending: false });
+        const { data: rpData } = await supabase.from('rapat').select('*').order('tanggal', { ascending: true });
         if (rpData && rpData.length > 0) setRapatList(rpData); else setRapatList(fallbackRapat);
 
         const { data: exData } = await supabase.from('pengeluaran').select('*').order('tanggal_pembelian', { ascending: false });
