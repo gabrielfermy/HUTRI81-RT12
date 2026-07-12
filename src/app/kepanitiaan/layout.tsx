@@ -338,6 +338,10 @@ export default function KepanitiaanLayout({
                 Catatan Pribadi
               </Link>
             )}
+            <Link href="/kepanitiaan/kontak" className="inline-flex items-center justify-center w-full px-3 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-lg text-xs font-bold transition-all shadow-sm">
+              <Users className="h-3.5 w-3.5 mr-1.5" />
+              Susunan Panitia
+            </Link>
           </div>
         </div>
 
@@ -445,6 +449,10 @@ export default function KepanitiaanLayout({
                   Catatan Pribadi
                 </Link>
               )}
+              <Link href="/kepanitiaan/kontak" onClick={() => setSidebarOpen(false)} className="inline-flex items-center justify-center w-full px-4 py-2 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-lg text-sm font-bold transition-all shadow-sm">
+                <Users className="h-4 w-4 mr-2" />
+                Susunan Panitia
+              </Link>
             </div>
           </div>
 
