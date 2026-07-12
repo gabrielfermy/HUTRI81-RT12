@@ -6,7 +6,7 @@ interface RabTabProps {
 }
 
 export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
-  const [rabKategori, setRabKategori] = useState('Hadiah Lomba');
+  const [rabKategori, setRabKategori] = useState('Seksi Acara');
   const [rabItem, setRabItem] = useState('');
   const [rabKuantitas, setRabKuantitas] = useState(1);
   const [rabSatuan, setRabSatuan] = useState('Pcs');
@@ -48,11 +48,14 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab }) => {
               onChange={(e) => setRabKategori(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             >
-              <option value="Hadiah Lomba">Hadiah Lomba</option>
-              <option value="Konsumsi Puncak">Konsumsi Puncak</option>
-              <option value="Perlengkapan">Perlengkapan</option>
-              <option value="Gotong Royong">Gotong Royong</option>
-              <option value="Dana Cadangan">Dana Cadangan</option>
+              <option value="Seksi Acara">Seksi Acara (Lomba, Hadiah, Hiburan)</option>
+              <option value="Seksi Perlengkapan & Dekorasi">Seksi Perlengkapan & Dekorasi (Tenda, Panggung)</option>
+              <option value="Seksi Konsumsi">Seksi Konsumsi (Makan Malam, Snack)</option>
+              <option value="Seksi Keamanan & Kebersihan">Seksi Keamanan & Kebersihan</option>
+              <option value="Seksi Dokumentasi">Seksi Dokumentasi</option>
+              <option value="Seksi Humas & Dana">Seksi Humas & Dana</option>
+              <option value="Operasional Umum (Kestari)">Operasional Umum (Kestari, ATK)</option>
+              <option value="Dana Cadangan & Lainnya">Dana Cadangan & Lainnya</option>
             </select>
           </div>
 
