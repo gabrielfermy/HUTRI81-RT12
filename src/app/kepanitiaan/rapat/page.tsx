@@ -5,6 +5,10 @@ import { supabase } from '@/lib/supabase';
 import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2, Image as ImageIcon } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 import Swal from 'sweetalert2';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false, loading: () => <p className="text-xs text-slate-400 p-4 border rounded-xl">Memuat editor...</p> });
 
 export default function KepanitiaanRapat() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -281,44 +285,30 @@ export default function KepanitiaanRapat() {
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase">Rincian Agenda (Rencana Pembahasan)</label>
-              <textarea rows={4} value={rincianAgenda} onChange={e => setRincianAgenda(e.target.value)}
-                placeholder="Tuliskan poin-poin yang akan dibahas pada saat rapat nanti (mendukung format Markdown)..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden [&_.ql-toolbar]:border-none [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50 [&_.ql-container]:border-none [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-sm">
+                <ReactQuill theme="snow" value={rincianAgenda} onChange={setRincianAgenda}
+                  placeholder="Tuliskan poin-poin yang akan dibahas pada saat rapat nanti..." />
+              </div>
             </div>
 
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label className="text-[10px] font-bold text-slate-500 uppercase">Isi Notulen & Keputusan</label>
                 
-                {/* Upload Button */}
-                <input
-                  type="file"
-                  multiple
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  accept="image/*,application/pdf"
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadingImage}
-                  className="flex items-center space-x-1.5 text-[10px] font-bold text-red-600 hover:text-red-500 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {uploadingImage ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <UploadCloud className="h-3.5 w-3.5" />
-                  )}
-                  <span>{uploadingImage ? 'Mengunggah...' : 'Sisipkan Gambar / PDF'}</span>
-                </button>
+                {/* Custom File Upload Button for Lampiran */}
+                <div className="relative">
+                  <input type="file" multiple id="file-upload" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
+                  <label htmlFor="file-upload" className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold cursor-pointer transition-colors">
+                    {uploadingImage ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UploadCloud className="h-3.5 w-3.5" />}
+                    {uploadingImage ? 'Mengunggah...' : 'Unggah File Lampiran'}
+                  </label>
+                </div>
               </div>
-              
-              <textarea rows={8} value={notulen} onChange={e => setNotulen(e.target.value)}
-                placeholder="Tuliskan hasil keputusan rapat di sini (mendukung format Markdown)..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
-              <p className="text-[9px] text-slate-500 italic">Gunakan *, -, atau angka untuk membuat daftar list.</p>
-
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden [&_.ql-toolbar]:border-none [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50 [&_.ql-container]:border-none [&_.ql-editor]:min-h-[200px] [&_.ql-editor]:text-sm">
+                <ReactQuill theme="snow" value={notulen} onChange={setNotulen}
+                  placeholder="Ketik notulen, hasil rapat, keputusan bersama di sini..." />
+              </div>
+            </div>
               {/* Attachment Preview */}
               {lampiranList.length > 0 && (
                 <div className="mt-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
@@ -386,15 +376,19 @@ export default function KepanitiaanRapat() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <div className="text-xs text-slate-500 uppercase tracking-widest font-black mb-2">Rincian Agenda (Rencana)</div>
-                  <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                    {r.rincian_agenda || <span className="italic text-slate-500">Belum ada rincian agenda.</span>}
-                  </div>
+                  {r.rincian_agenda ? (
+                    <div className="text-slate-700 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5" dangerouslySetInnerHTML={{ __html: r.rincian_agenda }} />
+                  ) : (
+                    <span className="italic text-slate-500 text-sm">Belum ada rincian agenda.</span>
+                  )}
                 </div>
                 <div>
                   <div className="text-xs text-slate-500 uppercase tracking-widest font-black mb-2">Hasil & Notulen Rapat</div>
-                  <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                    {r.notulen || <span className="italic text-slate-500">Belum ada catatan notulen yang disimpan.</span>}
-                  </div>
+                  {r.notulen ? (
+                    <div className="text-slate-700 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5" dangerouslySetInnerHTML={{ __html: r.notulen }} />
+                  ) : (
+                    <span className="italic text-slate-500 text-sm">Belum ada catatan notulen yang disimpan.</span>
+                  )}
                 </div>
               </div>
               
