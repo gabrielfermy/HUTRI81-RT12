@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2 } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
+import Swal from 'sweetalert2';
 
 export default function KepanitiaanRapat() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -69,41 +70,62 @@ export default function KepanitiaanRapat() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Ukuran file maksimal 5MB');
+    if (files.length > 5) {
+      Swal.fire('Batas Terlampaui', 'Maksimal hanya bisa mengunggah 5 file sekaligus.', 'warning');
+      return;
+    }
+
+    const invalidFiles = files.filter(f => f.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      Swal.fire('File Kebesaran', `Ada ${invalidFiles.length} file yang ukurannya melebihi 5MB. Maksimal 5MB per file.`, 'error');
       return;
     }
 
     setUploadingImage(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `rapat-${Date.now()}.${fileExt}`;
-      const filePath = `notulen/${fileName}`;
+      let appendedMarkdown = '';
 
-      const { error } = await supabase.storage
-        .from('rapat-notulen')
-        .upload(filePath, file);
+      for (const file of files) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `rapat-${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`;
+        const filePath = `notulen/${fileName}`;
 
-      if (error) throw error;
+        const { error } = await supabase.storage
+          .from('rapat-notulen')
+          .upload(filePath, file);
 
-      const { data: publicUrlData } = supabase.storage
-        .from('rapat-notulen')
-        .getPublicUrl(filePath);
+        if (error) throw error;
 
-      const fileUrl = publicUrlData.publicUrl;
-      const isImage = file.type.startsWith('image/');
+        const { data: publicUrlData } = supabase.storage
+          .from('rapat-notulen')
+          .getPublicUrl(filePath);
+
+        const fileUrl = publicUrlData.publicUrl;
+        const isImage = file.type.startsWith('image/');
+        
+        const fileMarkdown = isImage 
+          ? `\n\n![Lampiran Gambar - ${file.name}](${fileUrl})\n\n`
+          : `\n\n[📥 Unduh Lampiran Dokumen - ${file.name}](${fileUrl})\n\n`;
+
+        appendedMarkdown += fileMarkdown;
+      }
+
+      setNotulen((prev) => prev + appendedMarkdown);
       
-      const fileMarkdown = isImage 
-        ? `\n\n![Lampiran Gambar](${fileUrl})\n\n`
-        : `\n\n[📥 Unduh Lampiran Dokumen](${fileUrl})\n\n`;
-
-      setNotulen((prev) => prev + fileMarkdown);
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil Diunggah!',
+        text: `${files.length} file telah diunggah dan tautannya otomatis ditambahkan ke bagian paling bawah kolom isi notulen.`,
+        timer: 3500,
+        showConfirmButton: true,
+        confirmButtonColor: '#dc2626'
+      });
     } catch (err: any) {
       console.error('Upload error:', err);
-      alert('Gagal mengunggah file. Pastikan Anda telah membuat Storage Bucket "rapat-notulen" di Supabase.\n\nDetail: ' + err.message);
+      Swal.fire('Gagal Mengunggah', 'Pastikan Anda telah membuat Storage Bucket "rapat-notulen" di Supabase.\n\nDetail: ' + err.message, 'error');
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -259,6 +281,7 @@ export default function KepanitiaanRapat() {
                 {/* Upload Button */}
                 <input
                   type="file"
+                  multiple
                   ref={fileInputRef}
                   onChange={handleImageUpload}
                   accept="image/*,application/pdf"
