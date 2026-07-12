@@ -325,7 +325,6 @@ export default function KepanitiaanRapat() {
                   </div>
                 </div>
               )}
-            </div>
 
             <div className="flex justify-end pt-2">
               <button type="submit" disabled={submitting}
