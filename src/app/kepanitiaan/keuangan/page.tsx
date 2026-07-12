@@ -285,7 +285,7 @@ export default function KepanitiaanKeuangan() {
     return [
       { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign, key: 'keuangan_pengeluaran' },
       { id: 'warga', label: '2. Iuran Warga', icon: Users, key: 'keuangan_iuran' },
-      { id: 'sponsorship', label: '3. Donatur & Sponsor', icon: Award, key: 'keuangan_sponsor' },
+      { id: 'sponsorship', label: '3. Pemasukan Lain & Sponsor', icon: Award, key: 'keuangan_sponsor' },
       { id: 'rab', label: '4. Rencana Anggaran (RAB)', icon: ShieldAlert, key: 'keuangan_rab' }
     ].filter((tab) => hasFullAccess || accessArray.includes(tab.key));
   }, [currentUser]);

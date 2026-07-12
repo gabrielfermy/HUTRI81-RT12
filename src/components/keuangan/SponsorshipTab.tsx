@@ -40,35 +40,37 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
       {/* Add Sponsor Form */}
       <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Input Sponsor / Donatur</h3>
-          <p className="text-[10px] text-slate-500">Mendaftarkan donatur luar atau sponshorship komersial.</p>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Input Pemasukan / Sponsor</h3>
+          <p className="text-[10px] text-slate-500">Mendaftarkan donatur, sponsor, kas internal, atau dana lainnya.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nama Sponsor / Donatur</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Sumber Dana / Nama Sponsor</label>
             <input
               type="text"
               required
               value={spNama}
               onChange={(e) => setSpNama(e.target.value)}
-              placeholder="e.g. Toko Kelontong Bu Sri"
+              placeholder="e.g. Kas RT 12 / Toko Bu Sri"
               className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kasta Sponsor</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kategori Dana</label>
               <select
                 value={spTipe}
                 onChange={(e) => setSpTipe(e.target.value)}
                 className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
               >
-                <option value="Platinum">Platinum (Besar)</option>
-                <option value="Gold">Gold (Sedang)</option>
-                <option value="Silver">Silver (Kecil)</option>
-                <option value="Donatur Warga">Donatur Warga</option>
+                <option value="Kas Internal RT">Kas Internal RT</option>
+                <option value="Pemasukan Lainnya">Pemasukan Lainnya</option>
+                <option value="Platinum">Sponsor Platinum (Besar)</option>
+                <option value="Gold">Sponsor Gold (Sedang)</option>
+                <option value="Silver">Sponsor Silver (Kecil)</option>
+                <option value="Donatur Warga">Donatur Warga Luar</option>
               </select>
             </div>
             <div className="space-y-1.5">
@@ -83,12 +85,12 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Keterangan / Bantuan Barang</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Keterangan Tambahan</label>
             <textarea
               rows={3}
               value={spKeterangan}
               onChange={(e) => setSpKeterangan(e.target.value)}
-              placeholder="e.g. Menyumbang 5 set krayon anak dan voucher belanja..."
+              placeholder="e.g. Dana sisa kas RT tahun lalu..."
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
           </div>
@@ -98,7 +100,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
             disabled={submitting}
             className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
           >
-            {submitting ? 'Menyimpan...' : 'Simpan Donasi / Sponsor'}
+            {submitting ? 'Menyimpan...' : 'Simpan Pemasukan'}
           </button>
         </form>
       </div>
