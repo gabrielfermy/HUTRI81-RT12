@@ -305,6 +305,7 @@ export default function KepanitiaanLayout({
       items: [
         { name: isInti ? 'Manajemen Panitia' : 'Daftar Panitia', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
         { name: 'Manajemen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
+        { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
       ]
     },
     {
@@ -312,12 +313,6 @@ export default function KepanitiaanLayout({
       items: [
         { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
         { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
-      ]
-    },
-    {
-      group: 'Acara',
-      items: [
-        { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
       ]
     }
   ];
