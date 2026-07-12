@@ -61,10 +61,14 @@ export default function KepanitiaanLayout({
             .single();
 
           if (user.seksi === 'Inti') {
-            user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat';
+            user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat,baksos';
           } else if (user.level === 'Anggota') {
             // Anggota hanya bisa membuka dashboard, catatan, profil
-            user.akses_menu = 'dashboard,catatan,panitia';
+            if (user.seksi === 'Humas & Dana') {
+              user.akses_menu = 'dashboard,catatan,panitia,baksos';
+            } else {
+              user.akses_menu = 'dashboard,catatan,panitia';
+            }
           } else if (sData) {
             user.akses_menu = sData.akses_menu + (sData.akses_menu.includes('panitia') ? '' : ',panitia');
           } else {
