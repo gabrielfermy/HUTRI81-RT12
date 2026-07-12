@@ -212,6 +212,17 @@ export const RabTab: React.FC<RabTabProps> = ({ rabList, onAddRab, onEditRab, on
                 </tr>
               )}
             </tbody>
+            {rabList.length > 0 && (
+              <tfoot className="bg-slate-50 border-t-2 border-slate-200 font-bold text-slate-900">
+                <tr>
+                  <td colSpan={4} className="py-4 px-4 text-right">Total Keseluruhan RAB:</td>
+                  <td className="py-4 px-4 text-right text-red-600 text-sm">
+                    Rp {rabList.reduce((acc, r) => acc + (r.total_idr || r.kuantitas * r.harga_satuan), 0).toLocaleString('id-ID')}
+                  </td>
+                  {(onEditRab || onDeleteRab) && <td></td>}
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>
