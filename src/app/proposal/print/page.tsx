@@ -75,9 +75,8 @@ export default function ProposalPrintPage() {
 
   const totalExpenses = rabList.reduce((sum, item) => sum + (item.total_idr || item.kuantitas * item.harga_satuan), 0);
   const totalTarget = totalExpenses || 12000000;
-  const kasRt = 2000000;
-  const iuranPerKK = 50000;
-  const totalIuranPaid = 80 * iuranPerKK; // Target proposal is 80 KK
+  const kasRt = 0;
+  const totalIuranPaid = 0; // Set to 0 per request to remove mock data
   const totalSponsorTarget = Math.max(0, totalTarget - kasRt - totalIuranPaid);
 
   if (loading) {

@@ -203,20 +203,19 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
   // Financial calculations
   const totalTarget = rabList.reduce((sum: number, r: any) => sum + Number(r.total_idr || r.kuantitas * r.harga_satuan), 0) || 12000000;
-  const kasRt = 2000000;
-  const iuranPerKK = 50000;
-
+  
+  // Hardcoded or settings-based Kas RT (Setting to 0 per user request)
+  const kasRt = 0;
+  
   // Iuran collected from database
   const lunasWarga = wargaList.filter((w: any) => w.is_paid);
-  const totalIuranPaid = wargaList.length > 0 
-    ? lunasWarga.reduce((sum: number, w: any) => sum + Number(w.nominal_iuran), 0)
-    : 24 * iuranPerKK; // Fallback mock value
+  const totalIuranPaid = lunasWarga.reduce((sum: number, w: any) => sum + Number(w.nominal_iuran), 0);
 
   // Sponsor collected
   const totalSponsorCollected = sponsorList.reduce((sum: number, s: any) => sum + Number(s.nominal || 0), 0);
 
   const totalCollected = kasRt + totalIuranPaid + totalSponsorCollected;
-  const progressPercentage = Math.min(Math.round((totalCollected / totalTarget) * 100), 100);
+  const progressPercentage = totalTarget > 0 ? Math.min(Math.round((totalCollected / totalTarget) * 100), 100) : 0;
 
   // Expenses calculations
   const totalSpent = pengeluaranList.reduce((sum: number, e: any) => sum + Number(e.nominal_riil || 0), 0);
