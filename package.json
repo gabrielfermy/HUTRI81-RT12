@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "npx supabase db push --db-url $SUPABASE_DB_URL && next build",
     "start": "next start",
     "lint": "eslint"
   },

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle, Package } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanLayout({
@@ -312,6 +312,7 @@ export default function KepanitiaanLayout({
       group: 'Warga & Keuangan',
       items: [
         { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
+        { name: 'Bakti Sosial (Sembako)', href: '/kepanitiaan/baksos', icon: Package, key: 'baksos' },
         { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
       ]
     }
