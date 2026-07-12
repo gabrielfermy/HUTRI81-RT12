@@ -133,13 +133,15 @@ export default function KepanitiaanLayout({
 
       // Fetch dynamic permissions for matched seksi on login
       try {
+        const searchName = matched.seksi === 'Inti' ? matched.jabatan : matched.seksi;
+        
         const { data: sData } = await supabase
           .from('seksi')
           .select('akses_menu')
-          .eq('nama', matched.seksi)
+          .eq('nama', searchName)
           .single();
 
-        if (matched.seksi === 'Inti') {
+        if (matched.jabatan === 'Ketua Panitia') {
           sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat,baksos';
         } else if (matched.level === 'Anggota') {
           // Anggota hanya bisa membuka dashboard, catatan, dan profil (kecuali Humas & Dana untuk Baksos)
