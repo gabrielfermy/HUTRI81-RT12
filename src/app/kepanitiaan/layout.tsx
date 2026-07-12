@@ -98,6 +98,7 @@ export default function KepanitiaanLayout({
       else if (pathname.startsWith('/kepanitiaan/rundown')) pathKey = 'rundown';
       else if (pathname.startsWith('/kepanitiaan/warga')) pathKey = 'warga';
       else if (pathname.startsWith('/kepanitiaan/keuangan')) pathKey = 'keuangan';
+      else if (pathname.startsWith('/kepanitiaan/laporan')) pathKey = 'keuangan';
       else if (pathname.startsWith('/kepanitiaan/panitia')) pathKey = 'panitia';
       else if (pathname.startsWith('/kepanitiaan/catatan')) pathKey = 'catatan';
       else if (pathname.startsWith('/kepanitiaan/logs')) pathKey = 'logs';
@@ -324,6 +325,7 @@ export default function KepanitiaanLayout({
         { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
         { name: 'Bakti Sosial (Sembako)', href: '/kepanitiaan/baksos', icon: Package, key: 'baksos' },
         { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
+        { name: 'Laporan & LPJ', href: '/kepanitiaan/laporan', icon: FileText, key: 'keuangan' },
       ]
     }
   ];
