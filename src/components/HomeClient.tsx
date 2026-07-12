@@ -161,7 +161,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
         if (wargaData && wargaData.length > 0) setWargaList(wargaData);
 
         const { data: spData } = await supabase.from('sponsorship').select('*').order('nominal', { ascending: false });
-        if (spData && spData.length > 0) setSponsorList(spData); else setSponsorList(fallbackSponsors);
+        if (spData) setSponsorList(spData);
 
         const { data: rpData } = await supabase.from('rapat').select('*').order('tanggal', { ascending: true });
         if (rpData && rpData.length > 0) setRapatList(rpData); else setRapatList(fallbackRapat);
@@ -176,7 +176,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
         setPanitiaList(fallbackPanitia);
         setRundownList(fallbackRundown);
         setRabList(fallbackRab);
-        setSponsorList(fallbackSponsors);
+        setSponsorList([]);
         setRapatList(fallbackRapat);
       } finally {
         setLoading(false);
@@ -613,92 +613,102 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Platinum Card */}
-            <div className="bg-[#FFB703]/5 border border-[#FFB703]/30 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-[#FFB703] uppercase bg-[#FFB703]/10 border border-[#FFB703]/30 px-2.5 py-1 rounded-full w-fit block">
-                  Platinum Sponsor
-                </span>
-                <div className="space-y-1">
-                  {sponsorList.filter(s => s.tipe === 'Platinum').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-[#FFB703]/10">
-                      <span>{s.nama}</span>
-                      <span className="text-xs text-[#FFB703]">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
-                    </div>
-                  ))}
-                  {sponsorList.filter(s => s.tipe === 'Platinum').length === 0 && (
-                    <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
-                  )}
-                </div>
+            {sponsorList.length === 0 ? (
+              <div className="col-span-1 sm:col-span-2 lg:col-span-4 py-12 text-center border-2 border-dashed border-slate-200 rounded-2xl">
+                <Heart className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                <p className="text-slate-500 font-medium">Belum ada sponsor / donatur</p>
+                <p className="text-xs text-slate-400 mt-1">Jadilah yang pertama untuk berkontribusi!</p>
               </div>
-              <span className="text-[10px] font-semibold text-[#FFB703]/80 italic">*Branding Logo Utama & Ad-Lips MC</span>
-            </div>
+            ) : (
+              <>
+                {/* Platinum Card */}
+                <div className="bg-[#FFB703]/5 border border-[#FFB703]/30 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black tracking-widest text-[#FFB703] uppercase bg-[#FFB703]/10 border border-[#FFB703]/30 px-2.5 py-1 rounded-full w-fit block">
+                      Platinum Sponsor
+                    </span>
+                    <div className="space-y-1">
+                      {sponsorList.filter(s => s.tipe === 'Platinum').map((s, i) => (
+                        <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-[#FFB703]/10">
+                          <span>{s.nama}</span>
+                          <span className="text-xs text-[#FFB703]">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                        </div>
+                      ))}
+                      {sponsorList.filter(s => s.tipe === 'Platinum').length === 0 && (
+                        <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-[#FFB703]/80 italic">*Branding Logo Utama & Ad-Lips MC</span>
+                </div>
 
-            {/* Gold Card */}
-            <div className="bg-slate-300/5 border border-slate-400/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-slate-600 uppercase bg-slate-300/10 border border-slate-300/20 px-2.5 py-1 rounded-full w-fit block">
-                  Gold Sponsor
-                </span>
-                <div className="space-y-1">
-                  {sponsorList.filter(s => s.tipe === 'Gold').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-slate-300/50">
-                      <span>{s.nama}</span>
-                      <span className="text-xs text-slate-600">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                {/* Gold Card */}
+                <div className="bg-slate-300/5 border border-slate-400/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black tracking-widest text-slate-600 uppercase bg-slate-300/10 border border-slate-300/20 px-2.5 py-1 rounded-full w-fit block">
+                      Gold Sponsor
+                    </span>
+                    <div className="space-y-1">
+                      {sponsorList.filter(s => s.tipe === 'Gold').map((s, i) => (
+                        <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-slate-300/50">
+                          <span>{s.nama}</span>
+                          <span className="text-xs text-slate-600">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                        </div>
+                      ))}
+                      {sponsorList.filter(s => s.tipe === 'Gold').length === 0 && (
+                        <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
+                      )}
                     </div>
-                  ))}
-                  {sponsorList.filter(s => s.tipe === 'Gold').length === 0 && (
-                    <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
-                  )}
+                  </div>
+                  <span className="text-[10px] font-semibold text-slate-500 italic">*Branding Sedang & Ad-Lips MC</span>
                 </div>
-              </div>
-              <span className="text-[10px] font-semibold text-slate-500 italic">*Branding Sedang & Ad-Lips MC</span>
-            </div>
 
-            {/* Silver Card */}
-            <div className="bg-amber-600/5 border border-amber-600/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-amber-500 uppercase bg-amber-600/10 border border-amber-600/20 px-2.5 py-1 rounded-full w-fit block">
-                  Silver Sponsor
-                </span>
-                <div className="space-y-1">
-                  {sponsorList.filter(s => s.tipe === 'Silver').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-slate-900 flex flex-col py-1.5 border-b border-slate-200">
-                      <div className="flex justify-between items-center">
-                        <span>{s.nama}</span>
-                        {Number(s.nominal) > 0 && <span className="text-xs text-amber-500">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>}
-                      </div>
-                      {s.keterangan && <span className="text-[10px] text-slate-500 mt-0.5">{s.keterangan}</span>}
+                {/* Silver Card */}
+                <div className="bg-amber-600/5 border border-amber-600/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black tracking-widest text-amber-500 uppercase bg-amber-600/10 border border-amber-600/20 px-2.5 py-1 rounded-full w-fit block">
+                      Silver Sponsor
+                    </span>
+                    <div className="space-y-1">
+                      {sponsorList.filter(s => s.tipe === 'Silver').map((s, i) => (
+                        <div key={i} className="text-sm font-bold text-slate-900 flex flex-col py-1.5 border-b border-slate-200">
+                          <div className="flex justify-between items-center">
+                            <span>{s.nama}</span>
+                            {Number(s.nominal) > 0 && <span className="text-xs text-amber-500">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>}
+                          </div>
+                          {s.keterangan && <span className="text-[10px] text-slate-500 mt-0.5">{s.keterangan}</span>}
+                        </div>
+                      ))}
+                      {sponsorList.filter(s => s.tipe === 'Silver').length === 0 && (
+                        <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
+                      )}
                     </div>
-                  ))}
-                  {sponsorList.filter(s => s.tipe === 'Silver').length === 0 && (
-                    <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
-                  )}
+                  </div>
+                  <span className="text-[10px] font-semibold text-amber-600/80 italic">*Apresiasi Laporan Pertanggungjawaban</span>
                 </div>
-              </div>
-              <span className="text-[10px] font-semibold text-amber-600/80 italic">*Apresiasi Laporan Pertanggungjawaban</span>
-            </div>
 
-            {/* Donatur Warga Card */}
-            <div className="bg-emerald-600/5 border border-emerald-600/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black tracking-widest text-emerald-400 uppercase bg-emerald-600/10 border border-emerald-600/20 px-2.5 py-1 rounded-full w-fit block">
-                  Donatur Sukarela Warga
-                </span>
-                <div className="space-y-1">
-                  {sponsorList.filter(s => s.tipe === 'Donatur Warga').map((s, i) => (
-                    <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-emerald-900/30">
-                      <span>{s.nama}</span>
-                      <span className="text-xs text-emerald-400">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                {/* Donatur Warga Card */}
+                <div className="bg-emerald-600/5 border border-emerald-600/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black tracking-widest text-emerald-400 uppercase bg-emerald-600/10 border border-emerald-600/20 px-2.5 py-1 rounded-full w-fit block">
+                      Donatur Sukarela Warga
+                    </span>
+                    <div className="space-y-1">
+                      {sponsorList.filter(s => s.tipe === 'Donatur Warga').map((s, i) => (
+                        <div key={i} className="text-sm font-bold text-slate-900 flex justify-between items-center py-1 border-b border-emerald-900/30">
+                          <span>{s.nama}</span>
+                          <span className="text-xs text-emerald-400">Rp {Number(s.nominal).toLocaleString('id-ID')}</span>
+                        </div>
+                      ))}
+                      {sponsorList.filter(s => s.tipe === 'Donatur Warga').length === 0 && (
+                        <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
+                      )}
                     </div>
-                  ))}
-                  {sponsorList.filter(s => s.tipe === 'Donatur Warga').length === 0 && (
-                    <p className="text-xs text-slate-500 italic py-2">Belum terisi</p>
-                  )}
+                  </div>
+                  <span className="text-[10px] font-semibold text-emerald-400/80 italic">*Donasi Sukarela Warga Gotong Royong</span>
                 </div>
-              </div>
-              <span className="text-[10px] font-semibold text-emerald-400/80 italic">*Donasi Sukarela Warga Gotong Royong</span>
-            </div>
+              </>
+            )}
           </div>
         </section>
           </div>
