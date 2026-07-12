@@ -306,12 +306,12 @@ export default function KepanitiaanPanitia() {
       {/* Header */}
       <div className="border-b border-slate-200 pb-4">
         <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-          {isInti ? 'Manajemen Pengguna & Kepanitiaan' : 'Profil & Keamanan Saya'}
+          {isInti ? 'Manajemen Pengguna & Kepanitiaan' : 'Profil Saya & Daftar Panitia'}
         </h1>
         <p className="text-xs text-slate-500 mt-1">
           {isInti
             ? 'Kelola struktur kepanitiaan secara hierarki — Seksi, Koordinator, Sub-Koordinator, dan Anggota.'
-            : 'Perbarui nama lengkap dan PIN keamanan 4 digit rahasia Anda secara mandiri.'}
+            : 'Perbarui nama lengkap dan PIN keamanan Anda, serta lihat daftar kontak panitia lain.'}
         </p>
       </div>
 

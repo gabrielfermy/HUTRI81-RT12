@@ -297,7 +297,7 @@ export default function KepanitiaanLayout({
     { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
     { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
     { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
-    { name: isInti ? 'Manajemen Panitia' : 'Profil Saya', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
+    { name: isInti ? 'Manajemen Panitia' : 'Profil & Daftar Panitia', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
     { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText, key: 'catatan' },
     { name: 'Notulen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
     { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
