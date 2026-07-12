@@ -77,21 +77,9 @@ export default function KepanitiaanDashboard() {
   // Database Empty States
   const [rabCount, setRabCount] = useState(-1);
   const [rundownCount, setRundownCount] = useState(-1);
+  const [rapatCount, setRapatCount] = useState(0);
   const [seeding, setSeeding] = useState(false);
   const [resetting, setResetting] = useState(false);
-  
-  // Rapat states
-  const [rapatList, setRapatList] = useState<any[]>([]);
-  const [agenda, setAgenda] = useState('');
-  const [tanggal, setTanggal] = useState('');
-  const [waktu, setWaktu] = useState('');
-  const [tempat, setTempat] = useState('');
-
-  // Active meeting notulen edit state
-  const [activeRapatId, setActiveRapatId] = useState<string | null>(null);
-  const [notulenContent, setNotulenContent] = useState('');
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load user from local storage and fetch stats/rapat
   useEffect(() => {
@@ -127,9 +115,9 @@ export default function KepanitiaanDashboard() {
           setTotalSpent(expenses.reduce((sum: number, e: any) => sum + Number(e.nominal_riil), 0));
         }
 
-        // Fetch rapat list
-        const { data: rapat } = await supabase.from('rapat').select('*').order('tanggal', { ascending: false });
-        if (rapat) setRapatList(rapat);
+        // Fetch rapat count
+        const { count: rCount } = await supabase.from('rapat').select('*', { count: 'exact', head: true });
+        if (rCount) setRapatCount(rCount);
 
         // Fetch RAB & Rundown count to see if we need to show the seeder button
         const { count: rabC } = await supabase.from('rab').select('*', { count: 'exact', head: true });
@@ -226,111 +214,6 @@ export default function KepanitiaanDashboard() {
     await logAuditActivity(aksi, detail, currentUser);
   };
 
-  const handleAddRapat = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!agenda || !tanggal || !waktu || !tempat) return;
-
-    const newRapat = {
-      agenda,
-      tanggal,
-      waktu,
-      tempat,
-      notulen: '',
-    };
-
-    try {
-      const { data, error } = await supabase.from('rapat').insert([newRapat]).select();
-      if (data && !error) {
-        setRapatList([data[0], ...rapatList]);
-        await logAudit('Menambah Rapat Baru', `Menjadwalkan rapat: "${agenda}" pada tanggal ${tanggal}`);
-      } else {
-        // Fallback local addition
-        setRapatList([{ ...newRapat, id: String(Date.now()) }, ...rapatList]);
-      }
-    } catch (err) {
-      setRapatList([{ ...newRapat, id: String(Date.now()) }, ...rapatList]);
-    }
-
-    // Reset Form
-    setAgenda('');
-    setTanggal('');
-    setWaktu('');
-    setTempat('');
-  };
-
-  const handleOpenNotulenEditor = (rapat: any) => {
-    setActiveRapatId(rapat.id);
-    setNotulenContent(rapat.notulen || '');
-  };
-
-  const handleSaveNotulen = async () => {
-    if (!activeRapatId) return;
-
-    try {
-      const { error } = await supabase
-        .from('rapat')
-        .update({ notulen: notulenContent })
-        .eq('id', activeRapatId);
-
-      if (!error) {
-        setRapatList(
-          rapatList.map((r) => (r.id === activeRapatId ? { ...r, notulen: notulenContent } : r))
-        );
-        const rapatObj = rapatList.find(r => r.id === activeRapatId);
-        await logAudit('Memperbarui Notulen', `Mengedit hasil notulen untuk rapat agenda: "${rapatObj?.agenda}"`);
-      }
-    } catch (err) {
-      setRapatList(
-        rapatList.map((r) => (r.id === activeRapatId ? { ...r, notulen: notulenContent } : r))
-      );
-    }
-
-    setActiveRapatId(null);
-    setNotulenContent('');
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !activeRapatId) return;
-
-    // Check size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Ukuran gambar maksimal 5MB');
-      return;
-    }
-
-    setUploadingImage(true);
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${activeRapatId}-${Date.now()}.${fileExt}`;
-      const filePath = `notulen/${fileName}`;
-
-      const { data, error } = await supabase.storage
-        .from('rapat-notulen')
-        .upload(filePath, file);
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabase.storage
-        .from('rapat-notulen')
-        .getPublicUrl(filePath);
-
-      const imageUrl = publicUrlData.publicUrl;
-      
-      // Append markdown image syntax to the cursor position or end of text
-      const imageMarkdown = `\n\n![Dokumentasi Rapat](${imageUrl})\n\n`;
-      setNotulenContent((prev) => prev + imageMarkdown);
-
-      alert('Gambar berhasil diunggah dan disisipkan!');
-    } catch (err: any) {
-      console.error('Upload error:', err);
-      alert('Gagal mengunggah gambar. Pastikan Anda telah membuat Storage Bucket "rapat-notulen" dan diset ke Public di Supabase.\n\nDetail: ' + err.message);
-    } finally {
-      setUploadingImage(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-  };
-
   return (
     <div className="space-y-10">
       {/* Welcome Header */}
@@ -400,180 +283,8 @@ export default function KepanitiaanDashboard() {
             <span className="text-xs text-slate-600 font-bold uppercase tracking-wider">Agenda Rapat</span>
             <Calendar className="h-4.5 w-4.5 text-red-500" />
           </div>
-          <div className="text-xl sm:text-2xl font-black text-slate-900">{rapatList.length} Kali</div>
+          <div className="text-xl sm:text-2xl font-black text-slate-900">{rapatCount} Kali</div>
           <div className="text-[10px] text-slate-500 font-semibold">Total rapat evaluasi kepanitiaan</div>
-        </div>
-      </div>
-
-      {/* Main Grid: Add Meeting & Meeting List */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Add Meeting Form */}
-        {isInti && (
-          <div className="bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Plus className="h-5 w-5 text-red-500" />
-              <span>Jadwalkan Rapat</span>
-            </h3>
-            <p className="text-xs text-slate-500">Mendaftarkan agenda rapat koordinasi selanjutnya.</p>
-          </div>
-
-          <form onSubmit={handleAddRapat} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Agenda Rapat</label>
-              <input
-                type="text"
-                required
-                value={agenda}
-                onChange={(e) => setAgenda(e.target.value)}
-                placeholder="Contoh: Rapat Pleno 2 Hadiah Lomba"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Tanggal</label>
-                <input
-                  type="date"
-                  required
-                  value={tanggal}
-                  onChange={(e) => setTanggal(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Waktu</label>
-                <input
-                  type="text"
-                  required
-                  value={waktu}
-                  onChange={(e) => setWaktu(e.target.value)}
-                  placeholder="Contoh: 19:30 - selesai"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wide">Tempat Pertemuan</label>
-              <input
-                type="text"
-                required
-                value={tempat}
-                onChange={(e) => setTempat(e.target.value)}
-                placeholder="Contoh: Rumah Pak RT 12"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
-            >
-              Simpan Jadwal Rapat
-            </button>
-          </form>
-        </div>
-        )}
-
-        {/* Meeting Minutes Editor & List */}
-        <div className={`bg-white/30 border border-slate-200 rounded-2xl p-6 space-y-6 ${isInti ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-red-500" />
-              <span>Notulen Rapat Resmi</span>
-            </h3>
-            <p className="text-xs text-slate-500">Tulis dan edit hasil keputusan koordinasi kepanitiaan di bawah.</p>
-          </div>
-
-          {activeRapatId ? (
-            /* Markdown Editor view */
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-red-400">Menyunting Notulen</span>
-                <span className="text-[10px] text-slate-500">Format teks bebas (mendukung Markdown)</span>
-              </div>
-              <textarea
-                rows={10}
-                value={notulenContent}
-                onChange={(e) => setNotulenContent(e.target.value)}
-                placeholder="Tulis keputusan di sini (e.g. ## Kesepakatan:\n1. Beli soto ayam 200 porsi...)"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-mono"
-              />
-              <div className="flex justify-between items-center">
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploadingImage}
-                    className="flex items-center space-x-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
-                  >
-                    {uploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4 text-blue-500" />}
-                    <span>{uploadingImage ? 'Mengunggah...' : 'Sisipkan Gambar'}</span>
-                  </button>
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => {
-                      setActiveRapatId(null);
-                      setNotulenContent('');
-                    }}
-                    className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-lg text-xs font-bold transition-all"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={handleSaveNotulen}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all"
-                  >
-                    Simpan Notulen
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Meeting List View */
-            <div className="space-y-4">
-              {rapatList.map((r, index) => (
-                <div key={index} className="bg-slate-50/40 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-red-500/10 transition-colors">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="h-3.5 w-3.5 text-slate-500" />
-                      <span className="text-xs text-slate-600 font-semibold">
-                        {new Date(r.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </span>
-                      <span className="text-[9px] bg-slate-200 text-slate-600 border border-slate-300 px-2 py-0.5 rounded-full font-bold">
-                        {r.waktu}
-                      </span>
-                    </div>
-                    <h4 className="text-sm font-bold text-slate-900">{r.agenda}</h4>
-                    <p className="text-xs text-slate-500">Tempat: <span className="text-slate-600 font-medium">{r.tempat}</span></p>
-                  </div>
-
-                  {isInti && (
-                    <button
-                      onClick={() => handleOpenNotulenEditor(r)}
-                      className="px-3.5 py-2 bg-red-600/10 hover:bg-red-600 border border-red-500/20 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all"
-                    >
-                      {r.notulen ? 'Edit Notulen' : 'Tulis Notulen'}
-                    </button>
-                  )}
-                </div>
-              ))}
-              {rapatList.length === 0 && (
-                <p className="text-xs text-slate-500 italic text-center py-6">Belum ada rapat terdaftar.</p>
-              )}
-            </div>
-          )}
         </div>
       </div>
 

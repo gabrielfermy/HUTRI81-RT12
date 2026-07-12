@@ -29,7 +29,7 @@ export default function KepanitiaanRapat() {
       const { data } = await supabase
         .from('rapat')
         .select('*')
-        .order('tanggal', { ascending: false });
+        .order('tanggal', { ascending: true });
       if (data) setRapatList(data);
     } catch (err) {
       console.error('Error loading rapat:', err);
@@ -187,7 +187,7 @@ export default function KepanitiaanRapat() {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
             <FileText className="text-red-500 h-6 w-6" />
-            Manajemen Notulen Rapat
+            Manajemen Jadwal & Notulen Rapat
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Catat hasil rapat dan keputusan penting untuk transparansi panitia.
