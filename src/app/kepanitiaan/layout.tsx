@@ -292,16 +292,35 @@ export default function KepanitiaanLayout({
   const isInti = loggedInUser?.seksi === 'Inti';
   const userAccess = loggedInUser?.akses_menu || '';
 
-  const menuItems = [
-    { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard, key: 'dashboard' },
-    { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
-    { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
-    { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
-    { name: isInti ? 'Manajemen Panitia' : 'Profil & Daftar Panitia', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
-    { name: 'Catatan Penting', href: '/kepanitiaan/catatan', icon: FileText, key: 'catatan' },
-    { name: 'Manajemen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
-    { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
-  ].filter((item) => userAccess.includes(item.key) || item.key === 'panitia');
+  const menuGroups = [
+    {
+      group: 'Utama',
+      items: [
+        { name: 'Dashboard', href: '/kepanitiaan', icon: LayoutDashboard, key: 'dashboard' },
+        { name: 'Audit Log Aktivitas', href: '/kepanitiaan/logs', icon: ShieldAlert, key: 'logs' },
+      ]
+    },
+    {
+      group: 'Manajemen Panitia & Rapat',
+      items: [
+        { name: isInti ? 'Manajemen Panitia' : 'Daftar Panitia', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
+        { name: 'Manajemen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
+      ]
+    },
+    {
+      group: 'Warga & Keuangan',
+      items: [
+        { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
+        { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
+      ]
+    },
+    {
+      group: 'Acara',
+      items: [
+        { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
+      ]
+    }
+  ];
 
   return (
     <div className="flex-grow flex flex-col md:flex-row min-h-[85vh] bg-slate-50 text-slate-900">
@@ -309,30 +328,51 @@ export default function KepanitiaanLayout({
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 shrink-0">
         {/* User Info Header */}
-        <div className="p-6 border-b border-slate-200 bg-slate-50">
+        <div className="p-6 border-b border-slate-200 bg-slate-50 space-y-0.5">
           <div className="text-xs text-red-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
           <div className="font-bold text-slate-900 text-base truncate">{loggedInUser?.nama}</div>
-          <div className="text-[10px] text-slate-500 font-medium truncate">{loggedInUser?.jabatan}</div>
+          <div className="text-[10px] text-slate-500 font-medium truncate pb-3">{loggedInUser?.jabatan}</div>
+          <div className="space-y-2">
+            <Link href="/kepanitiaan/profil" className="inline-flex items-center justify-center w-full px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold transition-all shadow-sm">
+              <UserCheck className="h-3.5 w-3.5 mr-1.5" />
+              Profil Saya
+            </Link>
+            {userAccess.includes('catatan') && (
+              <Link href="/kepanitiaan/catatan" className="inline-flex items-center justify-center w-full px-3 py-1.5 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-lg text-xs font-bold transition-all shadow-sm">
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                Catatan Pribadi
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Sidebar Menus */}
-        <nav className="flex-grow p-4 space-y-1">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
+        <nav className="flex-grow p-4 space-y-4 overflow-y-auto">
+          {menuGroups.map((group, idx) => {
+            const visibleItems = group.items.filter(item => userAccess.includes(item.key) || item.key === 'panitia');
+            if (visibleItems.length === 0) return null;
             return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                  isActive
-                    ? 'bg-red-600 text-white shadow-md shadow-red-600/10 font-bold'
-                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                }`}
-              >
-                <Icon className="h-4.5 w-4.5" />
-                <span>{item.name}</span>
-              </Link>
+              <div key={idx} className="space-y-1">
+                {idx > 0 && <div className="border-t border-slate-200 my-2 pt-2"></div>}
+                {visibleItems.map(item => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                        isActive
+                          ? 'bg-red-600 text-white shadow-md shadow-red-600/10 font-bold'
+                          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                      }`}
+                    >
+                      <Icon className="h-4.5 w-4.5" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             );
           })}
 
@@ -395,30 +435,51 @@ export default function KepanitiaanLayout({
             <X className="h-6 w-6" />
           </button>
           
-          <div className="p-6 border-b border-slate-200 text-center">
+          <div className="p-6 border-b border-slate-200 text-center space-y-1">
             <div className="text-xs text-red-400 font-bold tracking-wider uppercase">{loggedInUser?.seksi}</div>
             <div className="font-bold text-slate-900 text-lg">{loggedInUser?.nama}</div>
-            <div className="text-xs text-slate-500 font-medium">{loggedInUser?.jabatan}</div>
+            <div className="text-xs text-slate-500 font-medium pb-3">{loggedInUser?.jabatan}</div>
+            <div className="space-y-2">
+              <Link href="/kepanitiaan/profil" onClick={() => setSidebarOpen(false)} className="inline-flex items-center justify-center w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-bold transition-all shadow-sm">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Profil Saya
+              </Link>
+              {userAccess.includes('catatan') && (
+                <Link href="/kepanitiaan/catatan" onClick={() => setSidebarOpen(false)} className="inline-flex items-center justify-center w-full px-4 py-2 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-600 hover:text-red-600 rounded-lg text-sm font-bold transition-all shadow-sm">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Catatan Pribadi
+                </Link>
+              )}
+            </div>
           </div>
 
-          <nav className="flex-grow p-6 space-y-2 overflow-y-auto">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
+          <nav className="flex-grow p-6 space-y-4 overflow-y-auto">
+            {menuGroups.map((group, idx) => {
+              const visibleItems = group.items.filter(item => userAccess.includes(item.key) || item.key === 'panitia');
+              if (visibleItems.length === 0) return null;
               return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold transition-all ${
-                    isActive
-                      ? 'bg-red-600 text-white'
-                      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                </Link>
+                <div key={idx} className="space-y-1">
+                  {idx > 0 && <div className="border-t border-slate-200 my-2 pt-2"></div>}
+                  {visibleItems.map(item => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center space-x-4 px-4 py-3 rounded-xl text-base font-bold transition-all ${
+                          isActive
+                            ? 'bg-red-600 text-white'
+                            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                        }`}
+                      >
+                        <Icon className="h-5 w-5" />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
               );
             })}
 
