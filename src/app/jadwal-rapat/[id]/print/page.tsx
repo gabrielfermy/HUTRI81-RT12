@@ -67,7 +67,7 @@ export default function CetakAbsensiPage() {
           });
           
           // Exclude Pelindung & Penasihat if they usually don't need manual signs, but let's just keep them at the bottom.
-          setPanitiaList(pData.filter(p => !['Pelindung', 'Penasihat'].includes(p.seksi)));
+          setPanitiaList(pData.filter((p: any) => !['Pelindung', 'Penasihat'].includes(p.seksi)));
         }
       } catch (err) {
         console.error('Failed to load data:', err);
