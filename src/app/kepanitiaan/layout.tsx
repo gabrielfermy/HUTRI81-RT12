@@ -303,7 +303,7 @@ export default function KepanitiaanLayout({
     {
       group: 'Manajemen Panitia & Rapat',
       items: [
-        { name: isInti ? 'Manajemen Panitia' : 'Daftar Panitia', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
+        { name: isInti ? 'Manajemen Panitia' : 'Buku Kontak (WA)', href: '/kepanitiaan/panitia', icon: UserCheck, key: 'panitia' },
         { name: 'Manajemen Rapat', href: '/kepanitiaan/rapat', icon: FileText, key: 'rapat' },
         { name: 'Rundown & Acara', href: '/kepanitiaan/rundown', icon: Calendar, key: 'rundown' },
       ]

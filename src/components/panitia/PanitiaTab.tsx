@@ -362,86 +362,12 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
 
   // ─── INTI VIEW: Full Management ───────────────────────────
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fadeIn">
+    <div className={`grid grid-cols-1 ${isInti ? "lg:grid-cols-3" : ""} gap-8 animate-fadeIn`}>
 
       {/* ── LEFT: FORM COLUMN ──────────────────────────── */}
+      {isInti && (
       <div className="space-y-6">
-        
-        {!isInti && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
-
-        <div className="text-center space-y-2 border-b border-slate-100 pb-4">
-          <div className="inline-flex p-3 bg-red-50 border border-red-100 rounded-2xl text-red-500 mb-2">
-            <Shield className="h-6 w-6" />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900">Sunting Profil & PIN Keamanan</h2>
-          <p className="text-xs text-slate-500">Anda dapat merubah nama panggil dan kode PIN mandiri di bawah.</p>
-        </div>
-        <form onSubmit={handleProfileSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nama Lengkap</label>
-            <input type="text" required value={profNama} onChange={e => setProfNama(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Nomor WhatsApp</label>
-            <input type="tel" value={profNoWa} onChange={e => setProfNoWa(e.target.value)} placeholder="08xxxxxxxxxx"
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-400" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Seksi</label>
-              <input type="text" disabled value={currentUser?.seksi || ''}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-400 cursor-not-allowed" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">Jabatan</label>
-              <input type="text" disabled value={currentUser?.jabatan || ''}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-400 cursor-not-allowed" />
-            </div>
-          </div>
-          <div className="border-t border-slate-100 pt-4 space-y-4">
-            <div>
-              <h4 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Lock className="h-3.5 w-3.5 text-red-500" /> Ganti PIN Baru
-              </h4>
-              <p className="text-[10px] text-slate-400 mt-0.5">Kosongkan ketiga kotak jika PIN tidak ingin diubah.</p>
-            </div>
-            
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Lama</label>
-              <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
-                value={profOldPin} onChange={e => setProfOldPin(e.target.value)} placeholder="••••"
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">PIN Baru</label>
-                <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
-                  value={profPin} onChange={e => setProfPin(e.target.value)} placeholder="••••"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Konfirmasi PIN</label>
-                <input type="password" maxLength={4} pattern="[0-9]*" inputMode="numeric"
-                  value={profPinConfirm} onChange={e => setProfPinConfirm(e.target.value)} placeholder="••••"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-center font-mono tracking-widest focus:outline-none focus:border-red-400" />
-              </div>
-            </div>
-          </div>
-          {profileSuccess && <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl">{profileSuccess}</div>}
-          {profileError && <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl">{profileError}</div>}
-          <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm rounded-xl transition-all shadow-sm">
-            Simpan Perubahan Profil
-          </button>
-        </form>
-
-          </div>
-        )}
-
-        {isInti && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5 h-fit shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5 h-fit shadow-sm">
         <div>
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
             <Plus className="h-4 w-4 text-red-500" /> Daftarkan Anggota Baru
@@ -577,8 +503,8 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
           </button>
         </form>
       </div>
+        </div>
       )}
-      </div>
 
       {/* ── RIGHT: HIERARCHY VIEW ───────────────────── */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6 shadow-sm">

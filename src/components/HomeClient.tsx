@@ -712,11 +712,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
                       <span className="font-bold text-slate-900 flex items-center">
                         {p.nama}
-                        {p.no_wa && (
-                          <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
-                            <MessageCircle className="h-3.5 w-3.5" />
-                          </a>
-                        )}
                       </span>
                       <span className="text-xs text-purple-400">{p.jabatan !== 'Pelindung' ? p.jabatan : ''}</span>
                     </div>
@@ -732,11 +727,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                     <div key={i} className="flex justify-between items-center py-1.5 border-b border-slate-200/60">
                       <span className="font-bold text-slate-900 flex items-center">
                         {p.nama}
-                        {p.no_wa && (
-                          <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
-                            <MessageCircle className="h-3.5 w-3.5" />
-                          </a>
-                        )}
                       </span>
                       <span className="text-xs text-blue-400">{p.jabatan !== 'Penasihat' ? p.jabatan : ''}</span>
                     </div>
@@ -753,11 +743,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                       <div>
                         <span className="font-bold text-slate-900 flex items-center">
                           {p.nama}
-                          {p.no_wa && (
-                            <a href={`https://wa.me/${p.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${p.nama}`}>
-                              <MessageCircle className="h-3.5 w-3.5" />
-                            </a>
-                          )}
                         </span>
                       </div>
                       <span className="text-xs text-red-400 font-semibold">{p.jabatan}</span>
@@ -779,11 +764,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                           <div className="flex justify-between items-center py-1.5 border-b border-amber-900/30">
                             <span className="font-bold text-slate-900 flex items-center">
                               {koord.nama}
-                              {koord.no_wa && (
-                                <a href={`https://wa.me/${koord.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${koord.nama}`}>
-                                  <MessageCircle className="h-3.5 w-3.5" />
-                                </a>
-                              )}
                             </span>
                             <span className="text-xs text-amber-400 font-semibold">{koord.jabatan || 'Koordinator'}</span>
                           </div>
@@ -793,11 +773,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                               <div className="flex justify-between items-center py-1 border-b border-emerald-900/30">
                                 <span className="font-semibold text-slate-900 opacity-90 text-xs flex items-center">
                                   └ {sk.nama}
-                                  {sk.no_wa && (
-                                    <a href={`https://wa.me/${sk.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${sk.nama}`}>
-                                      <MessageCircle className="h-3 w-3" />
-                                    </a>
-                                  )}
                                 </span>
                                 <span className="text-[10px] text-emerald-400 font-semibold">{sk.jabatan || 'Sub-Koordinator'}</span>
                               </div>
@@ -805,11 +780,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                                 <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
                                   <span className="text-xs text-slate-900 opacity-80 flex items-center">
                                     └ {a.nama}
-                                    {a.no_wa && (
-                                      <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
-                                        <MessageCircle className="h-3 w-3" />
-                                      </a>
-                                    )}
                                   </span>
                                   <span className="text-[10px] text-slate-500">Anggota</span>
                                 </div>
@@ -821,11 +791,6 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                             <div key={ai} className="pl-4 flex justify-between items-center py-0.5">
                               <span className="text-xs text-slate-900 opacity-80 flex items-center">
                                 └ {a.nama}
-                                {a.no_wa && (
-                                  <a href={`https://wa.me/${a.no_wa.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-emerald-500 hover:text-emerald-400" title={`Chat WA ${a.nama}`}>
-                                    <MessageCircle className="h-3 w-3" />
-                                  </a>
-                                )}
                               </span>
                               <span className="text-[10px] text-slate-500">Anggota</span>
                             </div>
