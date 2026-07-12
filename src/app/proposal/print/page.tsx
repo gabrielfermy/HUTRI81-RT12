@@ -161,8 +161,8 @@ export default function ProposalPrintPage() {
               <h2 className="text-xl font-bold tracking-wide italic">"Guyub Rukun Membangun Negeri"</h2>
             </div>
 
-            <div className="my-16 max-w-sm mx-auto p-6 border-2 border-black rounded-lg space-y-2">
-              <Flag className="h-10 w-10 mx-auto text-black" />
+            <div className="my-16 max-w-sm mx-auto p-6 border-2 border-black rounded-lg space-y-4">
+              <img src="/logo.png" alt="Logo HUT RI 81" className="h-24 w-auto mx-auto object-contain" />
               <div className="font-bold text-sm uppercase tracking-wider">Diselenggarakan Oleh:</div>
               <div className="font-extrabold text-base uppercase tracking-widest">PANITIA PESTA RAKYAT RT 12</div>
               <div className="text-xs font-bold uppercase tracking-widest">PELEM KIDUL, BANTUL, YOGYAKARTA</div>

@@ -250,8 +250,10 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             <span>Portal Informasi Warga RT 12 Pelem Kidul</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Pesta Rakyat HUT RI Ke-81
+          <img src="/logo.png" alt="Logo HUT RI 81" className="h-32 sm:h-40 w-auto mx-auto drop-shadow-2xl object-contain animate-fade-in" />
+          
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight drop-shadow-lg">
+            Pesta Rakyat <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">HUT RI 81</span>
           </h1>
           <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-white">
             "Guyub Rukun Membangun Negeri"
