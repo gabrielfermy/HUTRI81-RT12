@@ -20,6 +20,7 @@ export default function KepanitiaanRapat() {
   const [tempat, setTempat] = useState('');
   const [agenda, setAgenda] = useState('');
   const [notulen, setNotulen] = useState('');
+  const [lampiranList, setLampiranList] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -65,6 +66,7 @@ export default function KepanitiaanRapat() {
     setTempat('');
     setAgenda('');
     setNotulen('');
+    setLampiranList([]);
     setEditingId(null);
     setShowForm(false);
   };
@@ -86,7 +88,7 @@ export default function KepanitiaanRapat() {
 
     setUploadingImage(true);
     try {
-      let appendedMarkdown = '';
+      const newAttachments = [];
 
       for (const file of files) {
         const fileExt = file.name.split('.').pop();
@@ -103,22 +105,19 @@ export default function KepanitiaanRapat() {
           .from('rapat-notulen')
           .getPublicUrl(filePath);
 
-        const fileUrl = publicUrlData.publicUrl;
-        const isImage = file.type.startsWith('image/');
-        
-        const fileMarkdown = isImage 
-          ? `\n\n![Lampiran Gambar - ${file.name}](${fileUrl})\n\n`
-          : `\n\n[📥 Unduh Lampiran Dokumen - ${file.name}](${fileUrl})\n\n`;
-
-        appendedMarkdown += fileMarkdown;
+        newAttachments.push({
+          name: file.name,
+          url: publicUrlData.publicUrl,
+          isImage: file.type.startsWith('image/')
+        });
       }
 
-      setNotulen((prev) => prev + appendedMarkdown);
+      setLampiranList(prev => [...prev, ...newAttachments]);
       
       Swal.fire({
         icon: 'success',
         title: 'Berhasil Diunggah!',
-        text: `${files.length} file telah diunggah dan tautannya otomatis ditambahkan ke bagian paling bawah kolom isi notulen.`,
+        text: `${files.length} file telah diunggah dan ditambahkan ke daftar lampiran.`,
         timer: 3500,
         showConfirmButton: true,
         confirmButtonColor: '#dc2626'
@@ -138,6 +137,7 @@ export default function KepanitiaanRapat() {
     setTempat(r.tempat);
     setAgenda(r.agenda);
     setNotulen(r.notulen || '');
+    setLampiranList(r.lampiran || []);
     setEditingId(r.id);
     setShowForm(true);
   };
@@ -153,7 +153,8 @@ export default function KepanitiaanRapat() {
         waktu,
         tempat,
         agenda,
-        notulen
+        notulen,
+        lampiran: lampiranList
       };
 
       if (editingId) {
@@ -308,38 +309,26 @@ export default function KepanitiaanRapat() {
               <p className="text-[9px] text-slate-500 italic">Gunakan *, -, atau angka untuk membuat daftar list.</p>
 
               {/* Attachment Preview */}
-              {(() => {
-                const attachmentRegex = /\[📥 Unduh Lampiran Dokumen(?: - (.*?))?\]\((.*?)\)|!\[Lampiran Gambar(?: - (.*?))?\]\((.*?)\)/g;
-                const matches = [...notulen.matchAll(attachmentRegex)];
-                if (matches.length === 0) return null;
-                
-                return (
-                  <div className="mt-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
-                    <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-2 flex items-center justify-between">
-                      <span>Daftar File Terlampir ({matches.length})</span>
-                      <span className="text-[9px] font-normal normal-case text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">File terbaca dari editor Markdown otomatis</span>
-                    </h4>
-                    <div className="flex flex-col gap-2">
-                      {matches.map((m, i) => {
-                        const name = m[1] || m[3] || 'File Lampiran ' + (i+1);
-                        const url = m[2] || m[4];
-                        const isImg = m[0].startsWith('!');
-                        return (
-                          <div key={i} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded-lg hover:border-slate-300 transition-colors">
-                            <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-red-600 transition-colors truncate">
-                              {isImg ? <ImageIcon className="h-4 w-4 text-emerald-500 shrink-0" /> : <FileText className="h-4 w-4 text-blue-500 shrink-0" />}
-                              <span className="truncate">{name}</span>
-                            </a>
-                            <button type="button" onClick={() => setNotulen(prev => prev.replace(m[0], ''))} className="p-1.5 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 text-slate-400 hover:text-red-600 rounded-lg transition-colors" title="Hapus Lampiran">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
+              {lampiranList.length > 0 && (
+                <div className="mt-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+                  <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-2 flex items-center justify-between">
+                    <span>Daftar File Terlampir ({lampiranList.length})</span>
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {lampiranList.map((att, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded-lg hover:border-slate-300 transition-colors">
+                        <a href={att.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-red-600 transition-colors truncate">
+                          {att.isImage ? <ImageIcon className="h-4 w-4 text-emerald-500 shrink-0" /> : <FileText className="h-4 w-4 text-blue-500 shrink-0" />}
+                          <span className="truncate">{att.name}</span>
+                        </a>
+                        <button type="button" onClick={() => setLampiranList(prev => prev.filter((_, idx) => idx !== i))} className="p-1.5 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 text-slate-400 hover:text-red-600 rounded-lg transition-colors" title="Hapus Lampiran">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                );
-              })()}
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end pt-2">
@@ -387,6 +376,22 @@ export default function KepanitiaanRapat() {
               <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose  max-w-none">
                 {r.notulen || <span className="italic text-slate-500">Belum ada catatan notulen yang disimpan.</span>}
               </div>
+              
+              {/* Render Attachments */}
+              {r.lampiran && r.lampiran.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-slate-200">
+                  <h5 className="text-[10px] font-bold text-slate-500 uppercase mb-2">Lampiran Dokumen</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {r.lampiran.map((att: any, idx: number) => (
+                      <a key={idx} href={att.url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-red-50 hover:text-red-600 border border-slate-200 hover:border-red-200 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+                        {att.isImage ? <ImageIcon className="h-3.5 w-3.5 text-emerald-500" /> : <FileText className="h-3.5 w-3.5 text-blue-500" />}
+                        <span className="truncate max-w-[200px]">{att.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ))}
