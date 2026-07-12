@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2 } from 'lucide-react';
+import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2, Image as ImageIcon } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 import Swal from 'sweetalert2';
 
@@ -306,6 +306,40 @@ export default function KepanitiaanRapat() {
                 placeholder="Tuliskan hasil keputusan rapat di sini (mendukung format Markdown)..."
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
               <p className="text-[9px] text-slate-500 italic">Gunakan *, -, atau angka untuk membuat daftar list.</p>
+
+              {/* Attachment Preview */}
+              {(() => {
+                const attachmentRegex = /\[📥 Unduh Lampiran Dokumen(?: - (.*?))?\]\((.*?)\)|!\[Lampiran Gambar(?: - (.*?))?\]\((.*?)\)/g;
+                const matches = [...notulen.matchAll(attachmentRegex)];
+                if (matches.length === 0) return null;
+                
+                return (
+                  <div className="mt-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase mb-2 flex items-center justify-between">
+                      <span>Daftar File Terlampir ({matches.length})</span>
+                      <span className="text-[9px] font-normal normal-case text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">File terbaca dari editor Markdown otomatis</span>
+                    </h4>
+                    <div className="flex flex-col gap-2">
+                      {matches.map((m, i) => {
+                        const name = m[1] || m[3] || 'File Lampiran ' + (i+1);
+                        const url = m[2] || m[4];
+                        const isImg = m[0].startsWith('!');
+                        return (
+                          <div key={i} className="flex items-center justify-between p-2 bg-slate-50 border border-slate-100 rounded-lg hover:border-slate-300 transition-colors">
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-red-600 transition-colors truncate">
+                              {isImg ? <ImageIcon className="h-4 w-4 text-emerald-500 shrink-0" /> : <FileText className="h-4 w-4 text-blue-500 shrink-0" />}
+                              <span className="truncate">{name}</span>
+                            </a>
+                            <button type="button" onClick={() => setNotulen(prev => prev.replace(m[0], ''))} className="p-1.5 bg-white border border-slate-200 hover:bg-red-50 hover:border-red-200 text-slate-400 hover:text-red-600 rounded-lg transition-colors" title="Hapus Lampiran">
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="flex justify-end pt-2">
