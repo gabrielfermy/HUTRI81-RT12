@@ -73,13 +73,12 @@ export default function ProposalPrintPage() {
     });
   }, []);
 
-  const totalTarget = 12000000;
+  const totalExpenses = rabList.reduce((sum, item) => sum + (item.total_idr || item.kuantitas * item.harga_satuan), 0);
+  const totalTarget = totalExpenses || 12000000;
   const kasRt = 2000000;
   const iuranPerKK = 50000;
   const totalIuranPaid = 80 * iuranPerKK; // Target proposal is 80 KK
-  const totalSponsorTarget = totalTarget - kasRt - totalIuranPaid; // 6.000.000
-
-  const totalExpenses = rabList.reduce((sum, item) => sum + (item.total_idr || item.kuantitas * item.harga_satuan), 0);
+  const totalSponsorTarget = Math.max(0, totalTarget - kasRt - totalIuranPaid);
 
   if (loading) {
     return (

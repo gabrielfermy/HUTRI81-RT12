@@ -202,7 +202,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
   }, []);
 
   // Financial calculations
-  const totalTarget = 12000000;
+  const totalTarget = rabList.reduce((sum: number, r: any) => sum + Number(r.total_idr || r.kuantitas * r.harga_satuan), 0) || 12000000;
   const kasRt = 2000000;
   const iuranPerKK = 50000;
 
