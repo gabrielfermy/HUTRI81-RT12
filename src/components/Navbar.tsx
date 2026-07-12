@@ -27,11 +27,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Title */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative p-1.5 bg-red-600 rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200">
-              <Flag className="h-5 w-5 text-white" />
+          <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group">
+            <div className="relative h-10 w-10 sm:h-12 sm:w-12 bg-white rounded-lg shadow-md flex items-center justify-center p-1 group-hover:scale-105 transition-transform duration-200">
+              <img src="/logo.png" alt="Logo HUT RI 81" className="max-h-full max-w-full object-contain" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-center">
               <span className="font-bold tracking-wider text-sm sm:text-base bg-gradient-to-r from-white via-red-200 to-red-400 bg-clip-text text-transparent">
                 RT 12 PELEM KIDUL
               </span>
