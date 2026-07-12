@@ -19,6 +19,7 @@ export default function KepanitiaanRapat() {
   const [waktu, setWaktu] = useState('');
   const [tempat, setTempat] = useState('');
   const [agenda, setAgenda] = useState('');
+  const [rincianAgenda, setRincianAgenda] = useState('');
   const [notulen, setNotulen] = useState('');
   const [lampiranList, setLampiranList] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -65,6 +66,7 @@ export default function KepanitiaanRapat() {
     setWaktu('');
     setTempat('');
     setAgenda('');
+    setRincianAgenda('');
     setNotulen('');
     setLampiranList([]);
     setEditingId(null);
@@ -136,6 +138,7 @@ export default function KepanitiaanRapat() {
     setWaktu(r.waktu);
     setTempat(r.tempat);
     setAgenda(r.agenda);
+    setRincianAgenda(r.rincian_agenda || '');
     setNotulen(r.notulen || '');
     setLampiranList(r.lampiran || []);
     setEditingId(r.id);
@@ -153,6 +156,7 @@ export default function KepanitiaanRapat() {
         waktu,
         tempat,
         agenda,
+        rincian_agenda: rincianAgenda,
         notulen,
         lampiran: lampiranList
       };
@@ -269,10 +273,17 @@ export default function KepanitiaanRapat() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-500 uppercase">Agenda Utama</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase">Judul Rapat (Agenda Utama)</label>
               <input type="text" required value={agenda} onChange={e => setAgenda(e.target.value)}
                 placeholder="Mis. Rapat Pembentukan Kepanitiaan"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500 font-bold" />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-500 uppercase">Rincian Agenda (Rencana Pembahasan)</label>
+              <textarea rows={4} value={rincianAgenda} onChange={e => setRincianAgenda(e.target.value)}
+                placeholder="Tuliskan poin-poin yang akan dibahas pada saat rapat nanti (mendukung format Markdown)..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500 leading-relaxed" />
             </div>
 
             <div className="space-y-1.5">
@@ -372,9 +383,19 @@ export default function KepanitiaanRapat() {
             </div>
             
             <div className="px-5 pb-5 pt-4 border-t border-slate-200">
-              <div className="text-xs text-slate-500 uppercase tracking-widest font-black mb-2">Hasil & Notulen Rapat</div>
-              <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose  max-w-none">
-                {r.notulen || <span className="italic text-slate-500">Belum ada catatan notulen yang disimpan.</span>}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="text-xs text-slate-500 uppercase tracking-widest font-black mb-2">Rincian Agenda (Rencana)</div>
+                  <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
+                    {r.rincian_agenda || <span className="italic text-slate-500">Belum ada rincian agenda.</span>}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 uppercase tracking-widest font-black mb-2">Hasil & Notulen Rapat</div>
+                  <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
+                    {r.notulen || <span className="italic text-slate-500">Belum ada catatan notulen yang disimpan.</span>}
+                  </div>
+                </div>
               </div>
               
               {/* Render Attachments */}

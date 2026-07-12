@@ -532,13 +532,24 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
                   {isExpanded && (
                     <div className="px-5 pb-5 pt-3 border-t border-slate-200/80 bg-white shadow-sm/20">
-                      <div className="mb-6">
-                        <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
-                          <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
-                          Notulen Rapat
-                        </h4>
-                        <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose prose-invert max-w-none">
-                          {r.notulen || 'Notulen rapat belum dimasukkan.'}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
+                            <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
+                            Rencana Agenda
+                          </h4>
+                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
+                            {r.rincian_agenda || 'Rincian agenda belum dimasukkan.'}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
+                            <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
+                            Notulen Rapat
+                          </h4>
+                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
+                            {r.notulen || 'Notulen rapat belum dimasukkan.'}
+                          </div>
                         </div>
                       </div>
                       
