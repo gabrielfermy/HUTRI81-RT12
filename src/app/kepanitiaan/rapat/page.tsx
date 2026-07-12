@@ -5,10 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { FileText, Plus, Edit2, Trash2, Calendar, Clock, MapPin, X, UploadCloud, Loader2, Image as ImageIcon } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 import Swal from 'sweetalert2';
-import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
-
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false, loading: () => <p className="text-xs text-slate-400 p-4 border rounded-xl">Memuat editor...</p> });
+import RichTextEditor from '@/components/ui/RichTextEditor';
 
 export default function KepanitiaanRapat() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -285,10 +282,9 @@ export default function KepanitiaanRapat() {
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase">Rincian Agenda (Rencana Pembahasan)</label>
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden [&_.ql-toolbar]:border-none [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50 [&_.ql-container]:border-none [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-sm">
-                <ReactQuill theme="snow" value={rincianAgenda} onChange={setRincianAgenda}
-                  placeholder="Tuliskan poin-poin yang akan dibahas pada saat rapat nanti..." />
-              </div>
+              <RichTextEditor value={rincianAgenda} onChange={setRincianAgenda}
+                placeholder="Tuliskan poin-poin yang akan dibahas pada saat rapat nanti..."
+                minHeight="min-h-[150px]" />
             </div>
 
             <div className="space-y-1.5">
@@ -304,10 +300,9 @@ export default function KepanitiaanRapat() {
                   </label>
                 </div>
               </div>
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden [&_.ql-toolbar]:border-none [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50 [&_.ql-container]:border-none [&_.ql-editor]:min-h-[200px] [&_.ql-editor]:text-sm">
-                <ReactQuill theme="snow" value={notulen} onChange={setNotulen}
-                  placeholder="Ketik notulen, hasil rapat, keputusan bersama di sini..." />
-              </div>
+              <RichTextEditor value={notulen} onChange={setNotulen}
+                placeholder="Ketik notulen, hasil rapat, keputusan bersama di sini..."
+                minHeight="min-h-[200px]" />
             </div>
               {/* Attachment Preview */}
               {lampiranList.length > 0 && (
