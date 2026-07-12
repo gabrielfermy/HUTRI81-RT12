@@ -5,8 +5,11 @@ import Swal from 'sweetalert2';
 import {
   Plus, Trash2, Key, Edit2, Check, X, Shield, Lock,
   Crown, Star, User, Users, ChevronRight, ChevronDown,
-  UserCog, AlertCircle, MessageCircle
+  UserCog, AlertCircle, MessageCircle, Download
 } from 'lucide-react';
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 type GroupType = 'Pelindung' | 'Penasihat' | 'Inti' | 'Harian';
 type LevelType = 'Koordinator' | 'Sub-Koordinator' | 'Anggota';
@@ -237,6 +240,94 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
   );
 
   // ─── HANDLERS ─────────────────────────────────────────────
+  const handleExport = (format: 'md' | 'csv' | 'pdf') => {
+    const exportRows: { grup: string, jabatan: string, nama: string, no_wa: string }[] = [];
+    
+    pelindungList.forEach(p => exportRows.push({ grup: 'Pelindung / Pembina', jabatan: p.jabatan || 'Pelindung', nama: p.nama, no_wa: p.no_wa || '-' }));
+    penasihatList.forEach(p => exportRows.push({ grup: 'Penasihat', jabatan: p.jabatan || 'Penasihat', nama: p.nama, no_wa: p.no_wa || '-' }));
+    intiList.forEach(p => exportRows.push({ grup: 'Panitia Inti', jabatan: p.jabatan, nama: p.nama, no_wa: p.no_wa || '-' }));
+    
+    harianSeksiNames.forEach(seksiNama => {
+      const seksiMembers = harianMembers.filter(p => p.seksi === seksiNama);
+      const koordinators = seksiMembers.filter(p => p.level === 'Koordinator');
+      koordinators.forEach(k => {
+        exportRows.push({ grup: `Seksi ${seksiNama}`, jabatan: k.jabatan || 'Koordinator', nama: k.nama, no_wa: k.no_wa || '-' });
+        const subKoords = seksiMembers.filter(p => p.level === 'Sub-Koordinator' && p.parent_id === k.id);
+        subKoords.forEach(sk => {
+          exportRows.push({ grup: `Seksi ${seksiNama}`, jabatan: sk.jabatan || 'Sub-Koordinator', nama: sk.nama, no_wa: sk.no_wa || '-' });
+          const anggotas = seksiMembers.filter(p => p.level === 'Anggota' && p.parent_id === sk.id);
+          anggotas.forEach(a => exportRows.push({ grup: `Seksi ${seksiNama}`, jabatan: a.jabatan || 'Anggota', nama: a.nama, no_wa: a.no_wa || '-' }));
+        });
+        const directAnggota = seksiMembers.filter(p => p.level === 'Anggota' && p.parent_id === k.id);
+        directAnggota.forEach(a => exportRows.push({ grup: `Seksi ${seksiNama}`, jabatan: a.jabatan || 'Anggota', nama: a.nama, no_wa: a.no_wa || '-' }));
+      });
+      const validKoordIds = new Set(koordinators.map(k => k.id));
+      const validSubKoordIds = new Set(seksiMembers.filter(p => p.level === 'Sub-Koordinator' && validKoordIds.has(p.parent_id)).map(sk => sk.id));
+      const orphanedMembers = seksiMembers.filter(p => {
+        if (p.level === 'Koordinator') return false;
+        if (p.level === 'Sub-Koordinator') return !validKoordIds.has(p.parent_id);
+        if (p.level === 'Anggota') return !validKoordIds.has(p.parent_id) && !validSubKoordIds.has(p.parent_id);
+        return true;
+      });
+      orphanedMembers.forEach(o => exportRows.push({ grup: `Seksi ${seksiNama} (Tanpa Atasan)`, jabatan: o.jabatan || o.level, nama: o.nama, no_wa: o.no_wa || '-' }));
+    });
+
+    if (format === 'csv') {
+      const header = 'Grup/Seksi,Jabatan,Nama Lengkap,No WA\n';
+      const csvContent = header + exportRows.map(r => `"${r.grup}","${r.jabatan}","${r.nama}","${r.no_wa}"`).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Susunan_Panitia_HUTRI81.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === 'md') {
+      let mdContent = '# Susunan Kepanitiaan HUT RI Ke-81 RT 12\n\n';
+      let currentGrup = '';
+      exportRows.forEach(r => {
+        if (r.grup !== currentGrup) {
+          mdContent += `\n### ${r.grup}\n\n`;
+          currentGrup = r.grup;
+        }
+        mdContent += `- **${r.nama}** (${r.jabatan}) ${r.no_wa !== '-' ? '- WA: ' + r.no_wa : ''}\n`;
+      });
+      const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Susunan_Panitia_HUTRI81.md';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === 'pdf') {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text('Susunan Kepanitiaan HUT RI Ke-81', 14, 15);
+      doc.setFontSize(10);
+      doc.text('RT 12 Pelem Kidul', 14, 21);
+      
+      const tableData = exportRows.map(r => [r.grup, r.jabatan, r.nama, r.no_wa]);
+      autoTable(doc, {
+        startY: 28,
+        head: [['Grup / Seksi', 'Jabatan', 'Nama Lengkap', 'No WhatsApp']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [220, 38, 38] }, // Red-600
+        styles: { fontSize: 8 },
+        columnStyles: {
+          0: { cellWidth: 50 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 'auto' }
+        },
+      });
+      
+      doc.save('Susunan_Panitia_HUTRI81.pdf');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nama.trim() || submitting) return;
@@ -508,11 +599,25 @@ export const PanitiaTab: React.FC<PanitiaTabProps> = ({
 
       {/* ── RIGHT: HIERARCHY VIEW ───────────────────── */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6 shadow-sm">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <Users className="h-4 w-4 text-red-500" /> Susunan Kepanitiaan
-          </h3>
-          <span className="text-xs text-slate-400 font-semibold">{panitiaList.length} orang terdaftar</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Users className="h-4 w-4 text-red-500" /> Susunan Kepanitiaan
+            </h3>
+            <span className="text-xs text-slate-400 font-semibold">{panitiaList.length} orang terdaftar</span>
+          </div>
+
+          <div className="relative group">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors">
+              <Download className="h-3.5 w-3.5" />
+              <span>Export</span>
+            </button>
+            <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 overflow-hidden">
+              <button onClick={() => handleExport('pdf')} className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-red-50 hover:text-red-600 transition-colors">📄 File PDF</button>
+              <button onClick={() => handleExport('csv')} className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-green-50 hover:text-green-600 transition-colors">📊 File CSV</button>
+              <button onClick={() => handleExport('md')} className="w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">📝 File MD</button>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-6 overflow-y-auto max-h-[70vh] pr-1">
