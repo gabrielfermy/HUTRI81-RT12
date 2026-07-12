@@ -151,26 +151,43 @@ export default function ProposalPrintPage() {
       {printMode === 'proposal' && (
         <div className="space-y-12">
           {/* COVER PAGE */}
-          <div className="text-center min-h-[85vh] flex flex-col justify-between py-12">
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold tracking-widest uppercase">PROPOSAL KEGIATAN</h3>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight border-b-2 border-double border-black pb-4 max-w-2xl mx-auto uppercase">
-                Peringatan Hari Ulang Tahun Ke-81<br />Republik Indonesia
-              </h1>
-              <h2 className="text-xl font-bold tracking-wide italic">"Guyub Rukun Membangun Negeri"</h2>
+          <div className="text-center min-h-[90vh] flex flex-col items-center justify-center py-16 px-8 relative">
+            
+            {/* Top Border */}
+            <div className="absolute top-0 left-0 right-0 h-4 border-t-[6px] border-b-[2px] border-double border-red-700 mx-8"></div>
+            
+            <div className="flex-1 flex flex-col justify-center space-y-10 w-full max-w-3xl">
+              
+              <div className="space-y-6">
+                <img src="/logo.png" alt="Logo Resmi HUT RI 81" className="h-40 w-auto mx-auto object-contain drop-shadow-md" />
+                <h3 className="text-xl font-bold tracking-[0.25em] uppercase text-slate-800">PROPOSAL KEGIATAN</h3>
+              </div>
+
+              <div className="space-y-4 pt-6 pb-8 border-t border-b border-slate-300">
+                <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-red-700 leading-snug uppercase font-serif">
+                  Peringatan Hari Ulang Tahun<br />Ke-81 Republik Indonesia
+                </h1>
+                <h2 className="text-2xl font-bold tracking-widest italic text-slate-700 font-serif">
+                  "Guyub Rukun Membangun Negeri"
+                </h2>
+              </div>
+
+              <div className="space-y-6 pt-12">
+                <div className="font-bold text-base uppercase tracking-[0.2em] text-slate-500">Diajukan Oleh:</div>
+                <div>
+                  <div className="font-black text-2xl uppercase tracking-widest text-slate-900 mb-2">PANITIA PESTA RAKYAT RT 12</div>
+                  <div className="text-sm font-bold uppercase tracking-[0.15em] text-slate-700">DUSUN PELEM KIDUL, KABUPATEN BANTUL</div>
+                  <div className="text-sm font-bold uppercase tracking-[0.15em] text-slate-700">DAERAH ISTIMEWA YOGYAKARTA</div>
+                </div>
+                <div className="text-lg font-bold tracking-widest mt-8 border-t-2 border-black inline-block pt-2">
+                  TAHUN 2026
+                </div>
+              </div>
             </div>
 
-            <div className="my-16 max-w-sm mx-auto p-6 border-2 border-black rounded-lg space-y-4">
-              <img src="/logo.png" alt="Logo HUT RI 81" className="h-24 w-auto mx-auto object-contain" />
-              <div className="font-bold text-sm uppercase tracking-wider">Diselenggarakan Oleh:</div>
-              <div className="font-extrabold text-base uppercase tracking-widest">PANITIA PESTA RAKYAT RT 12</div>
-              <div className="text-xs font-bold uppercase tracking-widest">PELEM KIDUL, BANTUL, YOGYAKARTA</div>
-              <div className="text-xs font-bold tracking-wide mt-2">TAHUN 2026</div>
-            </div>
+            {/* Bottom Border */}
+            <div className="absolute bottom-0 left-0 right-0 h-4 border-t-[2px] border-b-[6px] border-double border-red-700 mx-8"></div>
 
-            <div className="text-xs text-slate-500 font-serif">
-              *Dokumen proposal digital ini diterbitkan secara otomatis oleh Sistem Portal Warga RT 12 Pelem Kidul.
-            </div>
           </div>
 
           {/* PAGE BREAK: CONTENT */}
