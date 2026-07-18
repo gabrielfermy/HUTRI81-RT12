@@ -79,7 +79,7 @@ export default function BackdropPage() {
             const sponsor = bottomSponsors[index];
             if (!sponsor) return <div key={index} className="flex items-center justify-center" />;
             
-            const logoPath = getSponsorLogo(sponsor.nama);
+            const logoPath = sponsor.logo_url || getSponsorLogo(sponsor.nama);
 
             return (
               <div key={index} className="flex items-center justify-center p-1 overflow-hidden text-center">

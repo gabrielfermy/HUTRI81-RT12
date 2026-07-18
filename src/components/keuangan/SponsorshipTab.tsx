@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit, Upload, Image as ImageIcon, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { compressImage } from '@/lib/imageCompression';
 
 interface SponsorshipTabProps {
   sponsorList: any[];
-  onAddSponsor: (nama: string, tipe: string, nominal: number, keterangan: string) => Promise<void>;
-  onEditSponsor: (id: string, nama: string, tipe: string, nominal: number, keterangan: string) => Promise<void>;
+  onAddSponsor: (nama: string, tipe: string, nominal: number, keterangan: string, logoUrl?: string) => Promise<void>;
+  onEditSponsor: (id: string, nama: string, tipe: string, nominal: number, keterangan: string, logoUrl?: string) => Promise<void>;
   onDeleteSponsor: (id: string, nama: string) => Promise<void>;
 }
 
@@ -18,27 +20,71 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
   const [spTipe, setSpTipe] = useState('Platinum');
   const [spNominal, setSpNominal] = useState(0);
   const [spKeterangan, setSpKeterangan] = useState('');
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [existingLogoUrl, setExistingLogoUrl] = useState<string | null>(null);
+  
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!spNama || submitting) return;
+    if (!spNama || submitting || uploading) return;
 
     setSubmitting(true);
+    let logoUrl = existingLogoUrl || '';
+
     try {
+      if (logoFile) {
+        setUploading(true);
+        const fileExt = logoFile.name.split('.').pop()?.toLowerCase() || '';
+        const isSvg = fileExt === 'svg';
+        
+        let fileToUpload: File | Blob = logoFile;
+
+        // Compress if it is PNG/JPEG to keep database fast
+        if (!isSvg && (fileExt === 'png' || fileExt === 'jpg' || fileExt === 'jpeg')) {
+          const compressedBlob = await compressImage(logoFile, 800, 0.85);
+          fileToUpload = new File([compressedBlob], `logo_${logoFile.name}`, { type: logoFile.type });
+        }
+
+        const fileName = `sponsor_logos/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+
+        // Upload to public 'bukti-transaksi' bucket
+        const { error: uploadError } = await supabase.storage
+          .from('bukti-transaksi')
+          .upload(fileName, fileToUpload);
+
+        if (uploadError) {
+          console.error('Logo upload error:', uploadError);
+          alert('Logo gagal diunggah ke storage.');
+        } else {
+          const { data } = supabase.storage.from('bukti-transaksi').getPublicUrl(fileName);
+          logoUrl = data.publicUrl;
+        }
+      }
+
       if (editingId) {
-        await onEditSponsor(editingId, spNama, spTipe, spNominal, spKeterangan);
+        await onEditSponsor(editingId, spNama, spTipe, spNominal, spKeterangan, logoUrl);
         setEditingId(null);
       } else {
-        await onAddSponsor(spNama, spTipe, spNominal, spKeterangan);
+        await onAddSponsor(spNama, spTipe, spNominal, spKeterangan, logoUrl);
       }
+
+      // Reset form states
       setSpNama('');
       setSpNominal(0);
       setSpKeterangan('');
+      setLogoFile(null);
+      setExistingLogoUrl(null);
+      
+      const fileInput = document.getElementById('logoFile') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+
     } catch (err) {
       console.error(err);
     } finally {
+      setUploading(false);
       setSubmitting(false);
     }
   };
@@ -49,6 +95,11 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
     setSpTipe(sponsor.tipe);
     setSpNominal(Number(sponsor.nominal || 0));
     setSpKeterangan(sponsor.keterangan || '');
+    setExistingLogoUrl(sponsor.logo_url || null);
+    setLogoFile(null);
+    
+    const fileInput = document.getElementById('logoFile') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   };
 
   const cancelEdit = () => {
@@ -56,6 +107,11 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
     setSpNama('');
     setSpNominal(0);
     setSpKeterangan('');
+    setExistingLogoUrl(null);
+    setLogoFile(null);
+    
+    const fileInput = document.getElementById('logoFile') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   };
 
   return (
@@ -112,12 +168,63 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Keterangan Tambahan</label>
             <textarea
-              rows={3}
+              rows={2}
               value={spKeterangan}
               onChange={(e) => setSpKeterangan(e.target.value)}
               placeholder="e.g. Dana sisa kas RT tahun lalu..."
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-red-500"
             />
+          </div>
+
+          {/* Logo File Upload Input */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Logo Sponsor (PNG / SVG / JPEG)</label>
+            
+            {existingLogoUrl && !logoFile ? (
+              <div className="flex items-center justify-between bg-white border border-slate-200 rounded-xl p-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 bg-slate-50 rounded border border-slate-200 flex items-center justify-center p-1 overflow-hidden">
+                    <img src={existingLogoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                  </div>
+                  <span className="text-[10px] text-emerald-500 font-bold">Logo Sudah Terunggah</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setExistingLogoUrl(null)}
+                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-red-500 transition-colors"
+                  title="Hapus Logo Sponsor"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-200 hover:border-slate-700 bg-white rounded-xl cursor-pointer transition-colors relative overflow-hidden group">
+                  <div className="flex flex-col items-center justify-center pt-4 pb-4">
+                    {logoFile ? (
+                      <div className="text-center space-y-1">
+                        <ImageIcon className="h-6 w-6 text-emerald-400 mx-auto" />
+                        <p className="text-[10px] font-bold text-slate-900 max-w-[200px] truncate">{logoFile.name}</p>
+                        <p className="text-[8px] text-slate-500">{(logoFile.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <Upload className="h-5 w-5 text-slate-500 group-hover:text-slate-700 mx-auto mb-1 transition-colors" />
+                        <p className="text-[9px] text-slate-500 group-hover:text-slate-650 font-bold transition-colors">Pilih File Logo</p>
+                        <p className="text-[7px] text-slate-600 font-medium">SVG / PNG Transparan disarankan</p>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    id="logoFile"
+                    type="file"
+                    accept="image/png, image/jpeg, image/jpg, image/svg+xml"
+                    onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2">
@@ -132,10 +239,10 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
             )}
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || uploading}
               className="flex-[2] py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
             >
-              {submitting ? 'Menyimpan...' : editingId ? 'Perbarui Pemasukan' : 'Simpan Pemasukan'}
+              {uploading ? 'Mengunggah Logo...' : submitting ? 'Menyimpan...' : editingId ? 'Perbarui Pemasukan' : 'Simpan Pemasukan'}
             </button>
           </div>
         </form>
@@ -148,7 +255,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-white border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
-                <th className="py-3 px-4">Nama Sponsor</th>
+                <th className="py-3 px-4">Nama / Logo</th>
                 <th className="py-3 px-4 text-center">Kasta</th>
                 <th className="py-3 px-4 text-right">Nominal</th>
                 <th className="py-3 px-4 text-center">Keterangan Barang</th>
@@ -158,7 +265,16 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
             <tbody>
               {sponsorList.map((s, idx) => (
                 <tr key={idx} className="border-b border-slate-200 hover:bg-slate-100">
-                  <td className="py-3 px-4 text-slate-900 font-bold">{s.nama}</td>
+                  <td className="py-3 px-4 text-slate-900 font-bold">
+                    <div className="flex items-center gap-2">
+                      {s.logo_url && (
+                        <div className="h-8 w-8 bg-slate-50 rounded border border-slate-150 p-0.5 flex items-center justify-center overflow-hidden">
+                          <img src={s.logo_url} alt="Logo" className="max-h-full max-w-full object-contain" />
+                        </div>
+                      )}
+                      <span>{s.nama}</span>
+                    </div>
+                  </td>
                   <td className="py-3 px-4 text-center">
                     <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
                       s.tipe === 'Platinum' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
