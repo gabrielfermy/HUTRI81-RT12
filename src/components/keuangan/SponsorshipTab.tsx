@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit } from 'lucide-react';
 
 interface SponsorshipTabProps {
   sponsorList: any[];
   onAddSponsor: (nama: string, tipe: string, nominal: number, keterangan: string) => Promise<void>;
+  onEditSponsor: (id: string, nama: string, tipe: string, nominal: number, keterangan: string) => Promise<void>;
   onDeleteSponsor: (id: string, nama: string) => Promise<void>;
 }
 
 export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
   sponsorList,
   onAddSponsor,
+  onEditSponsor,
   onDeleteSponsor
 }) => {
   const [spNama, setSpNama] = useState('');
   const [spTipe, setSpTipe] = useState('Platinum');
   const [spNominal, setSpNominal] = useState(0);
   const [spKeterangan, setSpKeterangan] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +27,12 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
 
     setSubmitting(true);
     try {
-      await onAddSponsor(spNama, spTipe, spNominal, spKeterangan);
+      if (editingId) {
+        await onEditSponsor(editingId, spNama, spTipe, spNominal, spKeterangan);
+        setEditingId(null);
+      } else {
+        await onAddSponsor(spNama, spTipe, spNominal, spKeterangan);
+      }
       setSpNama('');
       setSpNominal(0);
       setSpKeterangan('');
@@ -35,13 +43,30 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
     }
   };
 
+  const startEdit = (sponsor: any) => {
+    setEditingId(sponsor.id);
+    setSpNama(sponsor.nama);
+    setSpTipe(sponsor.tipe);
+    setSpNominal(Number(sponsor.nominal || 0));
+    setSpKeterangan(sponsor.keterangan || '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setSpNama('');
+    setSpNominal(0);
+    setSpKeterangan('');
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fadeIn">
-      {/* Add Sponsor Form */}
+      {/* Add/Edit Sponsor Form */}
       <div className="bg-slate-100/30 border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
         <div className="space-y-1">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Input Pemasukan / Sponsor</h3>
-          <p className="text-[10px] text-slate-500">Mendaftarkan donatur, sponsor, kas internal, atau dana lainnya.</p>
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            {editingId ? 'Edit Pemasukan / Sponsor' : 'Input Pemasukan / Sponsor'}
+          </h3>
+          <p className="text-[10px] text-slate-500">Mendaftarkan atau mengubah donatur, sponsor, kas internal, atau dana lainnya.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,13 +120,24 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
-          >
-            {submitting ? 'Menyimpan...' : 'Simpan Pemasukan'}
-          </button>
+          <div className="flex gap-2">
+            {editingId && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="flex-1 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all"
+              >
+                Batal
+              </button>
+            )}
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-[2] py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+            >
+              {submitting ? 'Menyimpan...' : editingId ? 'Perbarui Pemasukan' : 'Simpan Pemasukan'}
+            </button>
+          </div>
         </form>
       </div>
 
@@ -116,7 +152,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
                 <th className="py-3 px-4 text-center">Kasta</th>
                 <th className="py-3 px-4 text-right">Nominal</th>
                 <th className="py-3 px-4 text-center">Keterangan Barang</th>
-                <th className="py-3 px-4 text-center">Hapus</th>
+                <th className="py-3 px-4 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -137,10 +173,18 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
                     Rp {Number(s.nominal).toLocaleString('id-ID')}
                   </td>
                   <td className="py-3 px-4 text-slate-500 text-xs italic">{s.keterangan || '-'}</td>
-                  <td className="py-3 px-4 text-center">
+                  <td className="py-3 px-4 text-center flex items-center justify-center gap-1">
+                    <button
+                      onClick={() => startEdit(s)}
+                      className="p-1.5 text-slate-650 hover:text-red-400 rounded-lg transition-colors"
+                      title="Edit Sponsor"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
                     <button
                       onClick={() => onDeleteSponsor(s.id, s.nama)}
                       className="p-1.5 text-slate-650 hover:text-red-400 rounded-lg transition-colors"
+                      title="Hapus Sponsor"
                     >
                       <Trash2 className="h-4.5 w-4.5" />
                     </button>
@@ -159,4 +203,3 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
     </div>
   );
 };
-

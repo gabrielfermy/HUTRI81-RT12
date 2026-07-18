@@ -227,6 +227,24 @@ export default function KepanitiaanKeuangan() {
     }
   };
 
+  const handleEditSponsor = async (id: string, nama: string, tipe: string, nominal: number, keterangan: string) => {
+    try {
+      const { error } = await supabase
+        .from('sponsorship')
+        .update({ nama, tipe, nominal, keterangan })
+        .eq('id', id);
+
+      if (!error) {
+        setSponsorList(sponsorList.map(s => s.id === id ? { ...s, nama, tipe, nominal, keterangan } : s).sort((a, b) => b.nominal - a.nominal));
+        await logAudit('Mengubah Sponsor', `Mengubah data sponsor "${nama}" (${tipe}) menjadi Rp ${nominal.toLocaleString('id-ID')}`);
+      } else {
+        alert('Gagal memperbarui sponsor: ' + error.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleDeleteSponsor = async (id: string, name: string) => {
     if (!confirm(`Hapus sponsor "${name}"?`)) return;
 
@@ -389,6 +407,7 @@ export default function KepanitiaanKeuangan() {
         <SponsorshipTab 
           sponsorList={sponsorList}
           onAddSponsor={handleAddSponsor}
+          onEditSponsor={handleEditSponsor}
           onDeleteSponsor={handleDeleteSponsor}
         />
       )}
