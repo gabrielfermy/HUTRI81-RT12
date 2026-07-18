@@ -135,15 +135,63 @@ export default function KepanitiaanDashboard() {
 
     loadDashboardData();
 
-    const channel = supabase
-      .channel('kepanitiaan-dashboard-changes')
-      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+    const channelPanitia = supabase
+      .channel('kepanitiaan-dash-panitia')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'panitia' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelWarga = supabase
+      .channel('kepanitiaan-dash-warga')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'warga' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelSponsor = supabase
+      .channel('kepanitiaan-dash-sponsor')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sponsorship' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelPengeluaran = supabase
+      .channel('kepanitiaan-dash-pengeluaran')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pengeluaran' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelRapat = supabase
+      .channel('kepanitiaan-dash-rapat')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rapat' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelRab = supabase
+      .channel('kepanitiaan-dash-rab')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rab' }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    const channelRundown = supabase
+      .channel('kepanitiaan-dash-rundown')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rundown' }, () => {
         loadDashboardData();
       })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(channelPanitia);
+      supabase.removeChannel(channelWarga);
+      supabase.removeChannel(channelSponsor);
+      supabase.removeChannel(channelPengeluaran);
+      supabase.removeChannel(channelRapat);
+      supabase.removeChannel(channelRab);
+      supabase.removeChannel(channelRundown);
     };
   }, []);
 

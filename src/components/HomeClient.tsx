@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { PaymentGatewayModal } from './keuangan/PaymentGatewayModal';
 
 // Static Fallback Data
 const fallbackPanitia = [
@@ -122,6 +123,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
   // Tab Navigation State
   const [activeTab, setActiveTab] = useState<'keuangan' | 'jadwal' | 'panitia' | 'notulen'>(initialTab as any);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Countdown timer logic to August 9, 2026
   useEffect(() => {
@@ -364,6 +366,16 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   <span>Sponsorship & Donatur:</span>
                   <span className="font-semibold text-slate-900">Rp {totalSponsorCollected.toLocaleString('id-ID')}</span>
                 </div>
+              </div>
+
+              <div className="pt-2">
+                <button 
+                  onClick={() => setShowPaymentModal(true)}
+                  className="w-full py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold shadow-lg shadow-red-600/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <DollarSign className="h-4 w-4" />
+                  <span>Bayar Iuran / Donasi Online</span>
+                </button>
               </div>
             </div>
 
@@ -881,8 +893,8 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             </div>
           </div>
         )}
-
       </div>
+      {showPaymentModal && <PaymentGatewayModal onClose={() => setShowPaymentModal(false)} wargaList={wargaList} />}
     </div>
   );
 }

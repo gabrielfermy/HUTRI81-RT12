@@ -46,15 +46,23 @@ export default function KepanitiaanPanitia() {
 
     loadData();
 
-    const channel = supabase
-      .channel('kepanitiaan-panitia-seksi-changes')
-      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+    const channelPanitia = supabase
+      .channel('kepanitiaan-panitia-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'panitia' }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    const channelSeksi = supabase
+      .channel('kepanitiaan-seksi-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'seksi' }, () => {
         loadData();
       })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(channelPanitia);
+      supabase.removeChannel(channelSeksi);
     };
   }, []);
 

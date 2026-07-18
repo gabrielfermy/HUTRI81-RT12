@@ -63,7 +63,7 @@ export default function KepanitiaanRundown() {
 
     const channel = supabase
       .channel('rundown-list-changes')
-      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rundown' }, () => {
         loadRundown();
       })
       .subscribe();
