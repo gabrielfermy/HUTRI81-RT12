@@ -15,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dashboard Warga RT 12 Pelem Kidul - HUT RI Ke-81",
+  title: {
+    template: "%s - Aplikasi HUT RI ke-81 RT 12 Pelem Kidul",
+    default: "Aplikasi HUT RI ke-81 RT 12 Pelem Kidul",
+  },
   description: "Aplikasi transparansi dan koordinasi panitia HUT RI Ke-81 RT 12 Pelem Kidul.",
 };
 
