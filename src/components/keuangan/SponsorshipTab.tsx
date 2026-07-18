@@ -95,7 +95,7 @@ export const SponsorshipTab: React.FC<SponsorshipTabProps> = ({
                 <option value="Platinum">Sponsor Platinum (Besar)</option>
                 <option value="Gold">Sponsor Gold (Sedang)</option>
                 <option value="Silver">Sponsor Silver (Kecil)</option>
-                <option value="Donatur Warga">Donatur Warga Luar</option>
+                <option value="Donatur Warga">Donatur Warga</option>
               </select>
             </div>
             <div className="space-y-1.5">
