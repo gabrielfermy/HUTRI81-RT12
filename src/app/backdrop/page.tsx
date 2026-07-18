@@ -74,7 +74,7 @@ export default function BackdropPage() {
       >
         
         {/* Grid Overlay for the 12 Sponsor Boxes at the Bottom (Exactly aligned to backdrop image template) */}
-        <div className="absolute left-[6.8%] right-[6.8%] top-[76.8%] bottom-[5.5%] grid grid-cols-6 grid-rows-2 gap-x-[1.8%] gap-y-[6%]">
+        <div className="absolute left-[7.5%] right-[7.5%] top-[77.9%] bottom-[6.5%] grid grid-cols-6 grid-rows-2 gap-x-[2.2%] gap-y-[8%]">
           {Array.from({ length: 12 }).map((_, index) => {
             const sponsor = bottomSponsors[index];
             if (!sponsor) return <div key={index} className="flex items-center justify-center" />;
