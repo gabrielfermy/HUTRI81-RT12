@@ -205,13 +205,14 @@ export default function KepanitiaanKeuangan() {
   };
 
   // Tab 3: Sponsor Handlers
-  const handleAddSponsor = async (nama: string, tipe: string, nominal: number, keterangan: string) => {
+  const handleAddSponsor = async (nama: string, tipe: string, nominal: number, keterangan: string, logoUrl?: string) => {
     const newSponsor = {
       nama,
       tipe,
       nominal,
       keterangan,
       is_paid: true,
+      logo_url: logoUrl || null
     };
 
     try {
@@ -227,15 +228,20 @@ export default function KepanitiaanKeuangan() {
     }
   };
 
-  const handleEditSponsor = async (id: string, nama: string, tipe: string, nominal: number, keterangan: string) => {
+  const handleEditSponsor = async (id: string, nama: string, tipe: string, nominal: number, keterangan: string, logoUrl?: string) => {
     try {
+      const updateData: any = { nama, tipe, nominal, keterangan };
+      if (logoUrl !== undefined) {
+        updateData.logo_url = logoUrl || null;
+      }
+
       const { error } = await supabase
         .from('sponsorship')
-        .update({ nama, tipe, nominal, keterangan })
+        .update(updateData)
         .eq('id', id);
 
       if (!error) {
-        setSponsorList(sponsorList.map(s => s.id === id ? { ...s, nama, tipe, nominal, keterangan } : s).sort((a, b) => b.nominal - a.nominal));
+        setSponsorList(sponsorList.map(s => s.id === id ? { ...s, ...updateData } : s).sort((a, b) => b.nominal - a.nominal));
         await logAudit('Mengubah Sponsor', `Mengubah data sponsor "${nama}" (${tipe}) menjadi Rp ${nominal.toLocaleString('id-ID')}`);
       } else {
         alert('Gagal memperbarui sponsor: ' + error.message);
