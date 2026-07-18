@@ -366,6 +366,12 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   <span>Sponsorship & Donatur:</span>
                   <span className="font-semibold text-slate-900">Rp {totalSponsorCollected.toLocaleString('id-ID')}</span>
                 </div>
+                <div className="flex justify-between border-t border-dashed border-slate-200 pt-2 font-medium">
+                  <span>Sisa Kebutuhan Dana:</span>
+                  <span className={`font-bold ${totalTarget - totalCollected > 0 ? 'text-[#D97706]' : 'text-emerald-600'}`}>
+                    {totalTarget - totalCollected > 0 ? `Rp ${(totalTarget - totalCollected).toLocaleString('id-ID')}` : 'Terpenuhi'}
+                  </span>
+                </div>
               </div>
 
               <div className="pt-2">
@@ -415,8 +421,9 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
 
               <div className="pt-4 border-t border-slate-200 flex justify-between items-center text-xs">
                 <span className="text-slate-500">Total Belanja Riil Saat Ini:</span>
-                <span className="text-base font-black text-red-400">
-                  Rp {totalSpent.toLocaleString('id-ID')}
+                <span className="text-base font-black">
+                  <span className="text-red-600">Rp {totalSpent.toLocaleString('id-ID')}</span>
+                  <span className="text-slate-400 font-semibold text-xs ml-1">/ Rp {totalTarget.toLocaleString('id-ID')} (RAB)</span>
                 </span>
               </div>
             </div>
