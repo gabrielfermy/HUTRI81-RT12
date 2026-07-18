@@ -111,6 +111,24 @@ export default function KepanitiaanLayout({
     }
   }, [pathname, isLoggedIn, loggedInUser, loading, router]);
 
+  // Dynamically set page title in browser tab
+  useEffect(() => {
+    let pageTitle = 'Portal Panitia';
+    if (pathname === '/kepanitiaan') pageTitle = 'Dashboard Panitia';
+    else if (pathname.startsWith('/kepanitiaan/rundown')) pageTitle = 'Rundown & Acara';
+    else if (pathname.startsWith('/kepanitiaan/warga')) pageTitle = 'Manajemen Warga';
+    else if (pathname.startsWith('/kepanitiaan/keuangan')) pageTitle = 'Keuangan & Sponsor';
+    else if (pathname.startsWith('/kepanitiaan/laporan')) pageTitle = 'Laporan & LPJ';
+    else if (pathname.startsWith('/kepanitiaan/panitia')) pageTitle = 'Manajemen Panitia';
+    else if (pathname.startsWith('/kepanitiaan/catatan')) pageTitle = 'Catatan Pribadi';
+    else if (pathname.startsWith('/kepanitiaan/logs')) pageTitle = 'Audit Log';
+    else if (pathname.startsWith('/kepanitiaan/rapat')) pageTitle = 'Manajemen Rapat';
+    else if (pathname.startsWith('/kepanitiaan/baksos')) pageTitle = 'Bakti Sosial';
+    else if (pathname.startsWith('/kepanitiaan/profil')) pageTitle = 'Profil Saya';
+
+    document.title = `${pageTitle} - Aplikasi HUT RI ke-81 RT 12 Pelem Kidul`;
+  }, [pathname]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
