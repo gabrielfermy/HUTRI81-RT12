@@ -130,7 +130,7 @@ export const handlePrintReceipt = (warga: { id: string; nama: string; blok: stri
         <div class="text-center" style="font-size: 8pt; margin-top: 4mm;">
           Terima kasih atas partisipasi<br/>
           dan sumbangsih Anda!<br/>
-          <span class="bold">Guyub Rukun Membangun Negeri</span>
+          <span class="bold">Satu Hati Untuk Indonesia</span>
         </div>
         
         <script>

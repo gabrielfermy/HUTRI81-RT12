@@ -168,7 +168,7 @@ export default function ProposalPrintPage() {
                   Peringatan Hari Ulang Tahun<br />Ke-81 Republik Indonesia
                 </h1>
                 <h2 className="text-2xl font-bold tracking-widest italic text-slate-700 font-serif">
-                  "Guyub Rukun Membangun Negeri"
+                  "Satu Hati Untuk Indonesia"
                 </h2>
               </div>
 
@@ -204,10 +204,10 @@ export default function ProposalPrintPage() {
           <div className="space-y-6">
             <h3 className="text-lg font-bold border-b border-black pb-1 uppercase tracking-wider">II. TEMA KEGIATAN</h3>
             <p className="text-sm font-bold italic text-center text-lg">
-              "Guyub Rukun Membangun Negeri"
+              "Satu Hati Untuk Indonesia"
             </p>
             <p className="text-sm text-justify">
-              Tema ini bermakna bahwa persatuan dan kerukunan warga di tingkat terkecil (RT) adalah pondasi utama yang kokoh dalam mewujudkan kemajuan pembangunan negeri secara nasional.
+              Tema ini bermakna bahwa ketulusan satu hati dari seluruh elemen warga di tingkat RT adalah modal dasar utama untuk membangun kejayaan bangsa Indonesia secara keseluruhan.
             </p>
           </div>
 

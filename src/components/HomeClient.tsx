@@ -60,7 +60,7 @@ const fallbackRapat = [
     waktu: '19:30 - 21:30',
     tempat: 'Rumah Ketua RT 12',
     agenda: 'Rapat Koordinasi Perdana & Pembentukan Panitia',
-    notulen: '### Hasil Rapat Perdana HUT RI 81\n1. **Ketua Panitia terpilih**: Gabriel Fermy Aswinta.\n2. **Tema Acara**: "Guyub Rukun Membangun Negeri".\n3. **Anggaran**: Target Rp 12.000.000, kas awal RT Rp 2.000.000.'
+    notulen: '### Hasil Rapat Perdana HUT RI 81\n1. **Ketua Panitia terpilih**: Gabriel Fermy Aswinta.\n2. **Tema Acara**: "Satu Hati Untuk Indonesia".\n3. **Anggaran**: Target Rp 12.000.000, kas awal RT Rp 2.000.000.'
   }
 ];
 
@@ -257,7 +257,7 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             Pesta Rakyat <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">HUT RI 81</span>
           </h1>
           <p className="text-xl sm:text-3xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-400 to-white">
-            "Guyub Rukun Membangun Negeri"
+            "Satu Hati Untuk Indonesia"
           </p>
           <p className="max-w-2xl mx-auto text-slate-300 text-sm sm:text-base leading-relaxed">
             Portal transparansi publik resmi. Memuat jadwal acara teraktual, susunan kepanitiaan, hingga pelaporan kas masuk dan realisasi belanja aktual secara real-time.
