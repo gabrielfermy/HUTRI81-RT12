@@ -64,17 +64,17 @@ export default function BackdropPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-0 m-0 overflow-hidden font-sans">
-      {/* Main Backdrop Canvas with 5:3 Aspect Ratio (Mathematically sized to prevent cropping/stretching) */}
+      {/* Main Backdrop Canvas with 16:9 Aspect Ratio (5 x 2.81 meters) */}
       <div 
-        className="relative w-[100vw] h-[60vw] max-h-[100vh] max-w-[166.67vh] bg-contain bg-no-repeat bg-center shadow-2xl select-none"
+        className="relative w-[100vw] h-[56.25vw] max-h-[100vh] max-w-[177.78vh] bg-contain bg-no-repeat bg-center shadow-2xl select-none"
         style={{ 
           backgroundImage: "url('/backdrop_bg.png')",
           containerType: 'inline-size'
         }}
       >
         
-        {/* Grid Overlay for the 12 Sponsor Boxes at the Bottom (Exactly aligned to backdrop image template) */}
-        <div className="absolute left-[7.5%] right-[7.5%] top-[77.9%] bottom-[6.5%] grid grid-cols-6 grid-rows-2 gap-x-[2.2%] gap-y-[8%]">
+        {/* Grid Overlay for the 12 Sponsor Boxes at the Bottom (Exactly aligned to backdrop 16:9 image template) */}
+        <div className="absolute left-[7.5%] right-[7.5%] top-[78.6%] bottom-[5.8%] grid grid-cols-6 grid-rows-2 gap-x-[2.0%] gap-y-[8%]">
           {Array.from({ length: 12 }).map((_, index) => {
             const sponsor = bottomSponsors[index];
             if (!sponsor) return <div key={index} className="flex items-center justify-center" />;
@@ -82,7 +82,7 @@ export default function BackdropPage() {
             const logoPath = sponsor.logo_url || getSponsorLogo(sponsor.nama);
 
             return (
-              <div key={index} className="flex items-center justify-center p-1 overflow-hidden text-center">
+              <div key={index} className="flex items-center justify-center p-1.5 overflow-hidden text-center">
                 {logoPath ? (
                   <img 
                     src={logoPath} 
@@ -106,7 +106,7 @@ export default function BackdropPage() {
       {/* Dimension Label (Hidden on print) */}
       <div className="absolute bottom-3 text-center w-full print:hidden z-10">
         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900/60 px-3.5 py-1.5 rounded-full border border-slate-800/40 backdrop-blur-sm">
-          Dimensi Banner Fisik: 5 x 3 Meter (Rasio Aspek 5:3)
+          Dimensi Banner Fisik: 5 x 2.81 Meter (Rasio Aspek 16:9)
         </span>
       </div>
     </div>
