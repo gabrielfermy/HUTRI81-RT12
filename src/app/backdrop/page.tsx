@@ -102,6 +102,13 @@ export default function BackdropPage() {
           })}
         </div>
       </div>
+
+      {/* Dimension Label (Hidden on print) */}
+      <div className="absolute bottom-3 text-center w-full print:hidden z-10">
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-900/60 px-3.5 py-1.5 rounded-full border border-slate-800/40 backdrop-blur-sm">
+          Dimensi Banner Fisik: 5 x 3 Meter (Rasio Aspek 5:3)
+        </span>
+      </div>
     </div>
   );
 }
