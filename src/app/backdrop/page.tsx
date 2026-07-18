@@ -64,13 +64,16 @@ export default function BackdropPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-0 m-0 overflow-hidden font-sans">
-      {/* Main Backdrop Canvas with 5:3 Aspect Ratio */}
+      {/* Main Backdrop Canvas with 5:3 Aspect Ratio (Mathematically sized to prevent cropping/stretching) */}
       <div 
-        className="relative w-full max-h-screen aspect-[5/3] bg-cover bg-center shadow-2xl mx-auto select-none"
-        style={{ backgroundImage: "url('/backdrop_bg.png')" }}
+        className="relative w-[100vw] h-[60vw] max-h-[100vh] max-w-[166.67vh] bg-contain bg-no-repeat bg-center shadow-2xl select-none"
+        style={{ 
+          backgroundImage: "url('/backdrop_bg.png')",
+          containerType: 'inline-size'
+        }}
       >
         
-        {/* Grid Overlay for the 12 Sponsor Boxes at the Bottom */}
+        {/* Grid Overlay for the 12 Sponsor Boxes at the Bottom (Exactly aligned to backdrop image template) */}
         <div className="absolute left-[6.8%] right-[6.8%] top-[76.8%] bottom-[5.5%] grid grid-cols-6 grid-rows-2 gap-x-[1.8%] gap-y-[6%]">
           {Array.from({ length: 12 }).map((_, index) => {
             const sponsor = bottomSponsors[index];
@@ -79,7 +82,7 @@ export default function BackdropPage() {
             const logoPath = getSponsorLogo(sponsor.nama);
 
             return (
-              <div key={index} className="flex items-center justify-center p-1.5 overflow-hidden text-center">
+              <div key={index} className="flex items-center justify-center p-1 overflow-hidden text-center">
                 {logoPath ? (
                   <img 
                     src={logoPath} 
@@ -87,7 +90,10 @@ export default function BackdropPage() {
                     className="max-w-full max-h-full object-contain"
                   />
                 ) : (
-                  <span className="font-extrabold text-slate-800 uppercase tracking-wide leading-tight select-none break-words text-[1.1vw] sm:text-[1.2vw] md:text-[1.3vw] lg:text-[1.4vw] xl:text-[1.5vw]">
+                  <span 
+                    className="font-extrabold text-slate-800 uppercase tracking-wide leading-tight select-none break-words"
+                    style={{ fontSize: '2.1cqw' }}
+                  >
                     {sponsor.nama}
                   </span>
                 )}

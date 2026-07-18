@@ -30,7 +30,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="text-center md:text-right">
-          <p className="text-red-100/80 text-xs font-medium">© 2026 RT 12 Pelem Kidul. Guyub Rukun Membangun Negeri.</p>
+          <p className="text-red-100/80 text-xs font-medium">© 2026 RT 12 Pelem Kidul. Satu Hati Untuk Indonesia.</p>
           <p className="text-red-200/50 text-[10px] mt-0.5">Dikembangkan oleh Ashvin Labs Indonesia untuk RT 12 Pelem Kidul</p>
         </div>
       </div>
