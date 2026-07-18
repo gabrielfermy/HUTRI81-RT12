@@ -7,6 +7,7 @@ import { ExpensesTab } from '@/components/keuangan/ExpensesTab';
 import { WargaTab } from '@/components/keuangan/WargaTab';
 import { SponsorshipTab } from '@/components/keuangan/SponsorshipTab';
 import { RabTab } from '@/components/keuangan/RabTab';
+import { VerifikasiTab } from '@/components/keuangan/VerifikasiTab';
 import { PaymentModal } from '@/components/warga/PaymentModal';
 import { logAuditActivity } from '@/lib/logger';
 
@@ -15,7 +16,7 @@ export default function KepanitiaanKeuangan() {
   const [loading, setLoading] = useState(true);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'expenses' | 'warga' | 'sponsorship' | 'rab' | ''>('');
+  const [activeTab, setActiveTab] = useState<'verifikasi' | 'expenses' | 'warga' | 'sponsorship' | 'rab' | ''>('');
 
   // Database lists
   const [rabList, setRabList] = useState<any[]>([]);
@@ -79,15 +80,39 @@ export default function KepanitiaanKeuangan() {
     }
     loadData();
 
-    const channel = supabase
-      .channel('keuangan-data-changes')
-      .on('postgres_changes', { event: '*', schema: 'public' }, () => {
+    const channelRab = supabase
+      .channel('keuangan-rab-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rab' }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    const channelWarga = supabase
+      .channel('keuangan-warga-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'warga' }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    const channelSponsor = supabase
+      .channel('keuangan-sponsor-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sponsorship' }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    const channelPengeluaran = supabase
+      .channel('keuangan-pengeluaran-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pengeluaran' }, () => {
         loadData();
       })
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(channelRab);
+      supabase.removeChannel(channelWarga);
+      supabase.removeChannel(channelSponsor);
+      supabase.removeChannel(channelPengeluaran);
     };
   }, []);
 
@@ -283,6 +308,7 @@ export default function KepanitiaanKeuangan() {
     const accessArray = userAccess.split(',');
     const hasFullAccess = accessArray.includes('keuangan');
     return [
+      { id: 'verifikasi', label: 'Verifikasi Pembayaran', icon: ShieldAlert, key: 'keuangan_verifikasi' },
       { id: 'expenses', label: '1. Pengeluaran Riil', icon: DollarSign, key: 'keuangan_pengeluaran' },
       { id: 'warga', label: '2. Iuran Warga', icon: Users, key: 'keuangan_iuran' },
       { id: 'sponsorship', label: '3. Pemasukan Lain & Sponsor', icon: Award, key: 'keuangan_sponsor' },
@@ -335,6 +361,13 @@ export default function KepanitiaanKeuangan() {
       )}
 
       {/* Tab Panels */}
+      {activeTab === 'verifikasi' && (
+        <VerifikasiTab 
+          currentUser={currentUser}
+          wargaList={wargaList}
+        />
+      )}
+
       {activeTab === 'expenses' && (
         <ExpensesTab 
           rabList={rabList}
