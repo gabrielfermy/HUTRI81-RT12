@@ -249,19 +249,17 @@ export default function KepanitiaanWarga() {
       const familyList = Object.keys(families).map(kkNum => {
         const fam = families[kkNum];
         // Parse block / house no
-        let blok = 'Blok A';
+        let blok = 'Rosella';
         if (fam.address) {
           const matchNo = fam.address.match(/(?:No\.?\s*(\d+[A-Za-z]?)|No\s*(\d+[A-Za-z]?))/i);
           const houseNo = matchNo ? (matchNo[1] || matchNo[2]) : '';
-          const matchBlok = fam.address.match(/Blok\s*([A-D])/i);
+          const matchDawis = fam.address.match(/(Rosella|Tulip|Melati)/i);
 
-          if (matchBlok) {
-            blok = `Blok ${matchBlok[1].toUpperCase()}`;
-          } else if (houseNo) {
-            blok = `Blok A (No. ${houseNo})`;
+          if (matchDawis) {
+            blok = matchDawis[1];
           } else {
-            const blocks = ['Blok A', 'Blok B', 'Blok C', 'Blok D'];
-            blok = blocks[Number(kkNum) % 4];
+            const dawisList = ['Rosella', 'Tulip', 'Melati'];
+            blok = dawisList[Number(kkNum) % 3];
           }
         }
 
@@ -405,7 +403,7 @@ export default function KepanitiaanWarga() {
             </span>
             <input
               type="text"
-              placeholder="Cari nama kepala keluarga atau blok..."
+              placeholder="Cari nama kepala keluarga atau dawis..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
@@ -418,11 +416,10 @@ export default function KepanitiaanWarga() {
               onChange={(e) => setFilterBlok(e.target.value)}
               className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-red-500"
             >
-              <option value="ALL">Semua Blok</option>
-              <option value="Blok A">Blok A</option>
-              <option value="Blok B">Blok B</option>
-              <option value="Blok C">Blok C</option>
-              <option value="Blok D">Blok D</option>
+              <option value="ALL">Semua Dawis</option>
+              <option value="Rosella">Rosella</option>
+              <option value="Tulip">Tulip</option>
+              <option value="Melati">Melati</option>
             </select>
 
             <select
@@ -443,7 +440,7 @@ export default function KepanitiaanWarga() {
             <thead>
               <tr className="bg-white border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
                 <th className="py-3.5 px-4">Nama Kepala Keluarga</th>
-                <th className="py-3.5 px-4 text-center">Blok</th>
+                <th className="py-3.5 px-4 text-center">Dawis</th>
                 <th className="py-3.5 px-4 text-right">Nominal Iuran</th>
                 <th className="py-3.5 px-4 text-center">Status</th>
                 <th className="py-3.5 px-4 text-center">Tanggal Pembayaran</th>
@@ -481,7 +478,7 @@ export default function KepanitiaanWarga() {
                         className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:text-slate-900 rounded-lg transition-colors flex items-center space-x-1 font-bold text-[10px]"
                       >
                         <DollarSign className="h-3 w-3 text-emerald-400" />
-                        <span>Pembayaran</span>
+                        <span>{w.is_paid ? 'Ubah Pembayaran' : 'Pembayaran'}</span>
                       </button>
                       {w.is_paid && (
                         <button

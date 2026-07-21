@@ -49,7 +49,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, warga, onClo
         </div>
         
         <div className="p-3 bg-white/60 border border-slate-200 rounded-xl space-y-1">
-          <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wide">Nama Warga / Blok</span>
+          <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wide">Nama Warga / Dawis</span>
           <span className="block text-xs text-slate-900 font-bold">{warga.nama}</span>
           <span className="block text-[10px] text-slate-500 font-semibold">{warga.blok}</span>
         </div>

@@ -90,7 +90,7 @@ export const handlePrintReceipt = (warga: { id: string; nama: string; blok: stri
             <td>: ${warga.nama}</td>
           </tr>
           <tr>
-            <td>Blok</td>
+            <td>Dawis</td>
             <td>: ${warga.blok}</td>
           </tr>
         </table>

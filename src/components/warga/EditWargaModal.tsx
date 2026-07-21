@@ -10,7 +10,7 @@ interface EditWargaModalProps {
 
 export const EditWargaModal: React.FC<EditWargaModalProps> = ({ isOpen, warga, onClose, onSave }) => {
   const [nama, setNama] = useState('');
-  const [blok, setBlok] = useState('Blok A');
+  const [blok, setBlok] = useState('Rosella');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -62,16 +62,15 @@ export const EditWargaModal: React.FC<EditWargaModalProps> = ({ isOpen, warga, o
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Blok Rumah</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kelompok Dawis</label>
             <select
               value={blok}
               onChange={(e) => setBlok(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-350 focus:outline-none focus:border-red-500"
             >
-              <option value="Blok A">Blok A</option>
-              <option value="Blok B">Blok B</option>
-              <option value="Blok C">Blok C</option>
-              <option value="Blok D">Blok D</option>
+              <option value="Rosella">Rosella</option>
+              <option value="Tulip">Tulip</option>
+              <option value="Melati">Melati</option>
             </select>
           </div>
 
