@@ -1,0 +1,38 @@
+name: Daily Database Backup
+
+on:
+  schedule:
+    # Berjalan setiap hari pada jam 00:00 UTC (07:00 WIB)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Memungkinkan backup dijalankan manual dari GitHub tab Actions
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install PostgreSQL Client
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y postgresql-client
+
+    - name: Run pg_dump
+      env:
+        DB_CONNECTION_STRING: ${{ secrets.SUPABASE_DB_CONNECTION_STRING }}
+      run: |
+        mkdir -p backups
+        # Melakukan dump database ke file SQL terkompresi (.sql.gz)
+        pg_dump "$DB_CONNECTION_STRING" | gzip > backups/backup-$(date +%Y-%m-%d).sql.gz
+
+    - name: Commit & Push Backup
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add backups/
+        git commit -m "chore: daily database backup $(date +%Y-%m-%d)" || exit 0
+        git push
