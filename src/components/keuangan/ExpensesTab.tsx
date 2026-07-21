@@ -35,8 +35,8 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Lightbox Modal state
-  const [activePreviewUrl, setActivePreviewUrl] = useState<string | null>(null);
+  // Detail Modal state
+  const [selectedDetailExpense, setSelectedDetailExpense] = useState<any | null>(null);
 
   // Monitoring/History Modal states
   const [monitoringExpenseId, setMonitoringExpenseId] = useState<string | null>(null);
@@ -334,16 +334,13 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
                           </span>
                         )}
                       </div>
-                      {/* Show photo preview button if receipt url exists */}
-                      {e.bukti_nota_url && (
-                        <button
-                          onClick={() => setActivePreviewUrl(e.bukti_nota_url)}
-                          title="Lihat Bukti Kwitansi"
-                          className="p-1 text-red-400 bg-red-500/10 border border-red-500/10 hover:bg-red-500/25 rounded-md transition-colors"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => setSelectedDetailExpense(e)}
+                        title="Lihat Detail Transaksi"
+                        className="p-1 text-red-400 bg-red-500/10 border border-red-500/10 hover:bg-red-500/25 rounded-md transition-colors"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </button>
                     </div>
                   </td>
                   <td className="py-3 px-4 text-center text-slate-350">
@@ -393,28 +390,77 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
         </div>
       </div>
 
-      {/* Lightbox Receipt Modal */}
-      {activePreviewUrl && (
+      {/* Detail Transaksi Modal */}
+      {selectedDetailExpense && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/80 backdrop-blur-sm animate-fadeIn">
-          <div className="relative max-w-2xl w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4">
+          <div className="relative max-w-xl w-full bg-slate-100 border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4 animate-scaleUp">
             <div className="flex justify-between items-center border-b border-slate-200 pb-3">
               <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
                 <ImageIcon className="h-4 w-4 text-red-500" />
-                <span>Bukti Kwitansi / Struk Pembelian</span>
+                <span>Detail Transaksi Belanja</span>
               </h4>
               <button
-                onClick={() => setActivePreviewUrl(null)}
+                onClick={() => setSelectedDetailExpense(null)}
                 className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition-all"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex justify-center bg-white p-2.5 rounded-xl border border-slate-200 max-h-[70vh] overflow-y-auto">
-              <img
-                src={activePreviewUrl}
-                alt="Bukti Kwitansi Belanja"
-                className="max-w-full h-auto rounded-lg object-contain"
-              />
+            
+            <div className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Nama Barang / Belanja</p>
+                  <p className="font-bold text-slate-900 text-sm mt-0.5">{selectedDetailExpense.item_pembelian}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Nominal Transaksi</p>
+                  <p className="font-bold text-red-600 text-sm mt-0.5">Rp {Number(selectedDetailExpense.nominal_riil).toLocaleString('id-ID')}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Seksi Penanggung Jawab</p>
+                  <p className="font-semibold text-slate-800 mt-0.5">{selectedDetailExpense.seksi_pj}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">PIC Pengeluaran</p>
+                  <p className="font-semibold text-slate-800 mt-0.5">{selectedDetailExpense.pic}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Tanggal Pembelian</p>
+                  <p className="font-semibold text-slate-800 mt-0.5">
+                    {new Date(selectedDetailExpense.tanggal_pembelian).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Alokasi Anggaran (RAB)</p>
+                  <p className="font-semibold text-slate-800 mt-0.5">
+                    {selectedDetailExpense.rab_id 
+                      ? rabList.find(r => r.id === selectedDetailExpense.rab_id)?.item || 'Terhubung'
+                      : 'Pos Belanja Umum (Tanpa RAB)'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-bold text-slate-500 uppercase">Bukti Nota / Struk Pembelian</p>
+                {selectedDetailExpense.bukti_nota_url ? (
+                  <div className="flex justify-center bg-white p-2.5 rounded-xl border border-slate-200 max-h-[40vh] overflow-y-auto">
+                    <img
+                      src={selectedDetailExpense.bukti_nota_url}
+                      alt="Bukti Kwitansi Belanja"
+                      className="max-w-full h-auto rounded-lg object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="text-center py-6 bg-white border border-slate-200 rounded-xl text-slate-400 italic">
+                    Tidak ada bukti nota / struk yang diunggah untuk transaksi ini.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
