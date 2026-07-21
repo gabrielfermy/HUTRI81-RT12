@@ -248,7 +248,25 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
     return categories.map(cat => {
       const planned = rabList.filter((r: any) => r.kategori === cat).reduce((sum: number, r: any) => sum + Number(r.total_idr || r.kuantitas * r.harga_satuan), 0);
       const matchedRabIds = rabList.filter((r: any) => r.kategori === cat).map((r: any) => r.id);
-      const actual = pengeluaranList.filter((e: any) => matchedRabIds.includes(e.rab_id)).reduce((sum: number, e: any) => sum + Number(e.nominal_riil), 0);
+      const actual = pengeluaranList
+        .filter((e: any) => {
+          if (e.rab_id) {
+            return matchedRabIds.includes(e.rab_id);
+          }
+          if (e.seksi_pj) {
+            if (cat.toLowerCase().includes(e.seksi_pj.toLowerCase())) {
+              return true;
+            }
+            if (e.seksi_pj === 'Inti' && cat === 'Operasional Umum (Kestari)') {
+              return true;
+            }
+            if (e.seksi_pj === 'Humas & Dana' && cat === 'Dana Cadangan & Lainnya') {
+              return true;
+            }
+          }
+          return false;
+        })
+        .reduce((sum: number, e: any) => sum + Number(e.nominal_riil || 0), 0);
       return { category: cat, planned, actual };
     });
   };

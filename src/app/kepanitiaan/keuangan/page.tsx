@@ -23,6 +23,7 @@ export default function KepanitiaanKeuangan() {
   const [wargaList, setWargaList] = useState<any[]>([]);
   const [sponsorList, setSponsorList] = useState<any[]>([]);
   const [expensesList, setExpensesList] = useState<any[]>([]);
+  const [panitiaList, setPanitiaList] = useState<any[]>([]);
 
   // Detailed Payment Modal States
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -68,6 +69,9 @@ export default function KepanitiaanKeuangan() {
         const { data: eData } = await supabase.from('pengeluaran').select('*').order('tanggal_pembelian', { ascending: false });
         if (eData) setExpensesList(eData);
 
+        const { data: pData } = await supabase.from('panitia').select('*').order('nama', { ascending: true });
+        if (pData) setPanitiaList(pData);
+
         // Audit log akses baca (sensitive page)
         if (sessionUser) {
           logAuditActivity('Akses Baca', 'Membuka dan melihat data Keuangan', sessionUser);
@@ -108,11 +112,19 @@ export default function KepanitiaanKeuangan() {
       })
       .subscribe();
 
+    const channelPanitia = supabase
+      .channel('keuangan-panitia-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'panitia' }, () => {
+        loadData();
+      })
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channelRab);
       supabase.removeChannel(channelWarga);
       supabase.removeChannel(channelSponsor);
       supabase.removeChannel(channelPengeluaran);
+      supabase.removeChannel(channelPanitia);
     };
   }, []);
 
@@ -125,14 +137,14 @@ export default function KepanitiaanKeuangan() {
   // ACTION DISPATCHERS (Supabase API interactions)
   // ==========================================
 
-  const handleAddExpense = async (item: string, nominal: number, tanggal: string, seksi: string, rabId: string, buktiUrl?: string) => {
+  const handleAddExpense = async (item: string, nominal: number, tanggal: string, seksi: string, rabId: string, pic: string, buktiUrl?: string) => {
     const newExpense = {
       rab_id: rabId || null,
       item_pembelian: item,
       nominal_riil: nominal,
       tanggal_pembelian: tanggal,
       seksi_pj: seksi,
-      pic: currentUser?.nama || 'Anonim',
+      pic: pic || currentUser?.nama || 'Anonim',
       bukti_nota_url: buktiUrl || null,
     };
 
@@ -141,9 +153,48 @@ export default function KepanitiaanKeuangan() {
       if (data && !error) {
         setExpensesList([data[0], ...expensesList]);
         const rabMatch = rabList.find(r => r.id === rabId);
-        await logAudit('Mencatat Pengeluaran', `Membeli: "${item}" senilai Rp ${nominal.toLocaleString('id-ID')} (RAB: ${rabMatch?.item || 'Umum'})${buktiUrl ? ' [Dengan Bukti Kwitansi]' : ''}`);
+        await logAudit('Mencatat Pengeluaran', `Membeli: "${item}" senilai Rp ${nominal.toLocaleString('id-ID')} (RAB: ${rabMatch?.item || 'Umum'}) [ID: ${data[0].id}]${buktiUrl ? ' [Dengan Bukti Kwitansi]' : ''}`);
       } else {
         alert('Gagal menambahkan pengeluaran: ' + (error?.message || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEditExpense = async (id: string, item: string, nominal: number, tanggal: string, seksi: string, rabId: string, pic: string, buktiUrl?: string) => {
+    const oldExpense = expensesList.find(e => e.id === id);
+    if (!oldExpense) return;
+
+    const updatedExpense: any = {
+      rab_id: rabId || null,
+      item_pembelian: item,
+      nominal_riil: nominal,
+      tanggal_pembelian: tanggal,
+      seksi_pj: seksi,
+      pic: pic || 'Anonim',
+    };
+    if (buktiUrl !== undefined) {
+      updatedExpense.bukti_nota_url = buktiUrl || null;
+    }
+
+    try {
+      const { error } = await supabase.from('pengeluaran').update(updatedExpense).eq('id', id);
+      if (!error) {
+        setExpensesList(expensesList.map(e => e.id === id ? { ...e, ...updatedExpense } : e));
+        
+        // Log details
+        const changes: string[] = [];
+        if (oldExpense.item_pembelian !== item) changes.push(`item: "${oldExpense.item_pembelian}" -> "${item}"`);
+        if (Number(oldExpense.nominal_riil) !== nominal) changes.push(`nominal: Rp ${Number(oldExpense.nominal_riil).toLocaleString('id-ID')} -> Rp ${nominal.toLocaleString('id-ID')}`);
+        if (oldExpense.tanggal_pembelian !== tanggal) changes.push(`tanggal: ${oldExpense.tanggal_pembelian} -> ${tanggal}`);
+        if (oldExpense.seksi_pj !== seksi) changes.push(`seksi: ${oldExpense.seksi_pj} -> ${seksi}`);
+        if (oldExpense.pic !== pic) changes.push(`PIC: ${oldExpense.pic} -> ${pic}`);
+        if (buktiUrl && oldExpense.bukti_nota_url !== buktiUrl) changes.push(`bukti kwitansi diubah`);
+
+        await logAudit('Mengubah Pengeluaran', `Mengubah belanja "${oldExpense.item_pembelian}" [${changes.join(', ')}] [ID: ${id}]`);
+      } else {
+        alert('Gagal mengubah pengeluaran: ' + error.message);
       }
     } catch (err) {
       console.error(err);
@@ -157,7 +208,7 @@ export default function KepanitiaanKeuangan() {
       const { error } = await supabase.from('pengeluaran').delete().eq('id', id);
       if (!error) {
         setExpensesList(expensesList.filter(e => e.id !== id));
-        await logAudit('Menghapus Pengeluaran', `Menghapus catatan belanja "${name}" senilai Rp ${nominal.toLocaleString('id-ID')}`);
+        await logAudit('Menghapus Pengeluaran', `Menghapus catatan belanja "${name}" senilai Rp ${nominal.toLocaleString('id-ID')} [ID: ${id}]`);
       } else {
         alert('Gagal menghapus pengeluaran: ' + error.message);
       }
@@ -397,7 +448,9 @@ export default function KepanitiaanKeuangan() {
           rabList={rabList}
           expensesList={expensesList}
           currentUser={currentUser}
+          panitiaList={panitiaList}
           onAddExpense={handleAddExpense}
+          onEditExpense={handleEditExpense}
           onDeleteExpense={handleDeleteExpense}
         />
       )}
