@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight, MessageCircle } from 'lucide-react';
+import { Calendar, Users, DollarSign, Flag, Award, Clock, FileText, CheckCircle2, AlertCircle, Heart, ArrowUpRight, MessageCircle, Search } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { PaymentGatewayModal } from './keuangan/PaymentGatewayModal';
 
@@ -114,6 +114,26 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
   const [rapatList, setRapatList] = useState<any[]>([]);
   const [pengeluaranList, setPengeluaranList] = useState<any[]>([]);
   const [kehadiranList, setKehadiranList] = useState<any[]>([]);
+
+  // Public warga checklist states
+  const [wargaSearchQuery, setWargaSearchQuery] = useState('');
+  const [wargaFilterBlok, setWargaFilterBlok] = useState('ALL');
+  const [wargaFilterStatus, setWargaFilterStatus] = useState('ALL');
+
+  const filteredWargaPublic = useMemo(() => {
+    return wargaList.filter((w) => {
+      const matchesSearch = w.nama.toLowerCase().includes(wargaSearchQuery.toLowerCase()) || 
+                            w.blok.toLowerCase().includes(wargaSearchQuery.toLowerCase());
+      
+      const matchesBlok = wargaFilterBlok === 'ALL' || w.blok === wargaFilterBlok;
+      
+      const matchesStatus = wargaFilterStatus === 'ALL' || 
+                            (wargaFilterStatus === 'LUNAS' && w.is_paid) || 
+                            (wargaFilterStatus === 'BELUM' && !w.is_paid);
+
+      return matchesSearch && matchesBlok && matchesStatus;
+    });
+  }, [wargaList, wargaSearchQuery, wargaFilterBlok, wargaFilterStatus]);
 
   // Expanded Notulen
   const [expandedRapatId, setExpandedRapatId] = useState<string | null>(null);
@@ -866,8 +886,47 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
               </span>
             </div>
 
+            {/* Filter controls */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-grow">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <Search className="h-3.5 w-3.5" />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Cari nama atau kelompok dawis..."
+                  value={wargaSearchQuery}
+                  onChange={(e) => setWargaSearchQuery(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <select
+                  value={wargaFilterBlok}
+                  onChange={(e) => setWargaFilterBlok(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-red-500"
+                >
+                  <option value="ALL">Semua Dawis</option>
+                  <option value="Rosella">Rosella</option>
+                  <option value="Tulip">Tulip</option>
+                  <option value="Melati">Melati</option>
+                </select>
+
+                <select
+                  value={wargaFilterStatus}
+                  onChange={(e) => setWargaFilterStatus(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-red-500"
+                >
+                  <option value="ALL">Semua Status</option>
+                  <option value="LUNAS">Lunas</option>
+                  <option value="BELUM">Belum Lunas</option>
+                </select>
+              </div>
+            </div>
+
             <div className="overflow-y-auto flex-grow border border-slate-200/60 rounded-xl p-2 bg-white shadow-sm/20 space-y-2">
-              {wargaList.map((w) => (
+              {filteredWargaPublic.map((w) => (
                 <div
                   key={w.id}
                   className={`flex items-center justify-between p-3 rounded-lg border text-sm transition-all ${
@@ -890,6 +949,9 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                   </div>
                 </div>
               ))}
+              {filteredWargaPublic.length === 0 && wargaList.length > 0 && (
+                <p className="text-xs text-slate-500 italic p-4 text-center">Tidak ada warga terdaftar yang sesuai filter.</p>
+              )}
               {wargaList.length === 0 && (
                 <p className="text-xs text-slate-500 italic p-4 text-center">Menghubungkan data warga...</p>
               )}
