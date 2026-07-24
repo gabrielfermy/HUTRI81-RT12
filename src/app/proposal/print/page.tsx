@@ -114,13 +114,40 @@ export default function ProposalPrintPage() {
             <option value="proposal">1. Cetak Proposal Resmi (Public)</option>
             <option value="internal_rundown">2. Cetak Rundown Pegangan Panitia</option>
           </select>
+          
           <button
             onClick={() => window.print()}
-            className="flex items-center space-x-1.5 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all"
+            className="flex items-center space-x-1.5 px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all"
+            title="Cetak atau simpan sebagai PDF"
           >
             <Printer className="h-4 w-4" />
-            <span>Cetak</span>
+            <span>Cetak PDF</span>
           </button>
+
+          {printMode === 'proposal' && (
+            <button
+              onClick={() => {
+                const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Proposal HUT RI 81</title><style>body { font-family: 'Times New Roman', Times, serif; } table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; } th, td { border: 1px solid black; padding: 6px; } .page-break { page-break-before: always; } .text-center { text-align: center; } .text-justify { text-align: justify; }</style></head><body>";
+                const footer = "</body></html>";
+                const element = document.getElementById('proposal-content');
+                if (!element) return;
+                const html = header + element.innerHTML + footer;
+                const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'proposal_hut_ri_81.doc';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all"
+              title="Unduh format Microsoft Word (.doc)"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Unduh Word</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -149,7 +176,7 @@ export default function ProposalPrintPage() {
       {/* MODE 1: PROPOSAL RESMI */}
       {/* =================================================== */}
       {printMode === 'proposal' && (
-        <div className="space-y-12">
+        <div id="proposal-content" className="space-y-12">
           {/* COVER PAGE */}
           <div className="text-center min-h-[90vh] flex flex-col items-center justify-center py-16 px-8 relative">
             
@@ -382,7 +409,7 @@ export default function ProposalPrintPage() {
               <div className="space-y-16">
                 <div>Mengetahui,</div>
                 <div className="space-y-1">
-                  <div className="font-bold underline">[Nama Ketua RT]</div>
+                  <div className="font-bold underline">BAPAK YULIANTO RAHARJO</div>
                   <div>Ketua RT 12 Pelem Kidul</div>
                 </div>
               </div>

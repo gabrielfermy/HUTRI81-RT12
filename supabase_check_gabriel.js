@@ -11,7 +11,7 @@ envFile.split('\n').forEach(line => {
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 async function run() {
-  const { data, error } = await supabase.from('panitia').select('nama, seksi, jabatan, level').eq('nama', 'Gabriel Fermy Aswinta');
+  const { data, error } = await supabase.from('panitia').select('nama, seksi, jabatan, level');
   console.log(JSON.stringify(data, null, 2));
 }
 run();
