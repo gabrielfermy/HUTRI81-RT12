@@ -177,17 +177,15 @@ export default function KepanitiaanRundown() {
 
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tanggal Acara</label>
-              <select
+              <input
+                type="date"
                 required
+                min="2026-08-01"
+                max="2026-08-31"
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              >
-                <option value="">-- Pilih Tanggal --</option>
-                <option value="2026-08-09">9 Agustus 2026 (Senam & Lomba)</option>
-                <option value="2026-08-15">15 Agustus 2026 (Gotong Royong & Perkap)</option>
-                <option value="2026-08-16">16 Agustus 2026 (Malam Tirakatan)</option>
-              </select>
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -214,15 +212,14 @@ export default function KepanitiaanRundown() {
 
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kategori</label>
-              <select
+              <input
+                type="text"
+                required
                 value={kategori}
                 onChange={(e) => setKategori(e.target.value)}
+                placeholder="e.g. Utama, Lomba Anak, Lomba Dewasa"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              >
-                <option value="Utama">Utama (Umum)</option>
-                <option value="Lomba Anak">Lomba Anak-Anak</option>
-                <option value="Lomba Dewasa">Lomba Dewasa</option>
-              </select>
+              />
             </div>
 
             <div className="space-y-1">

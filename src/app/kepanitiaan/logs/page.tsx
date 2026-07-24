@@ -34,17 +34,65 @@ export default function KepanitiaanLogs() {
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedKategori, setSelectedKategori] = useState('Semua Kategori');
+  const [limit, setLimit] = useState(100);
+  const [hasMore, setHasMore] = useState(false);
 
-  async function loadLogs() {
+  async function loadLogs(currentLimit = 100) {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('audit_log')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false });
+
+      if (selectedKategori !== 'Semua Kategori') {
+        if (selectedKategori === 'Warga') {
+          query = query.or('aksi.ilike.%warga%,aksi.ilike.%impor%');
+        } else if (selectedKategori === 'Keuangan') {
+          query = query.or('aksi.ilike.%iuran%,aksi.ilike.%pengeluaran%,aksi.ilike.%sponsor%,aksi.ilike.%rab%');
+        } else if (selectedKategori === 'Acara & Rundown') {
+          query = query.or('aksi.ilike.%rundown%,aksi.ilike.%acara%');
+        } else if (selectedKategori === 'Rapat & Notulen') {
+          query = query.or('aksi.ilike.%rapat%,aksi.ilike.%notulen%,aksi.ilike.%kehadiran%');
+        } else if (selectedKategori === 'Kepanitiaan') {
+          query = query.or('aksi.ilike.%panitia%,aksi.ilike.%seksi%,aksi.ilike.%profil%');
+        } else if (selectedKategori === 'Keamanan & Sistem') {
+          query = query.or('aksi.ilike.%akses%,aksi.ilike.%sistem%,aksi.ilike.%database%,aksi.ilike.%inisialisasi%');
+        } else if (selectedKategori === 'Lainnya') {
+          query = query
+            .not('aksi', 'ilike', '%warga%')
+            .not('aksi', 'ilike', '%impor%')
+            .not('aksi', 'ilike', '%iuran%')
+            .not('aksi', 'ilike', '%pengeluaran%')
+            .not('aksi', 'ilike', '%sponsor%')
+            .not('aksi', 'ilike', '%rab%')
+            .not('aksi', 'ilike', '%rundown%')
+            .not('aksi', 'ilike', '%acara%')
+            .not('aksi', 'ilike', '%rapat%')
+            .not('aksi', 'ilike', '%notulen%')
+            .not('aksi', 'ilike', '%kehadiran%')
+            .not('aksi', 'ilike', '%panitia%')
+            .not('aksi', 'ilike', '%seksi%')
+            .not('aksi', 'ilike', '%profil%')
+            .not('aksi', 'ilike', '%akses%')
+            .not('aksi', 'ilike', '%sistem%')
+            .not('aksi', 'ilike', '%database%')
+            .not('aksi', 'ilike', '%inisialisasi%');
+        }
+      }
+
+      if (searchQuery.trim()) {
+        const q = `%${searchQuery.trim()}%`;
+        query = query.or(`detail.ilike.${q},aksi.ilike.${q},nama_panitia.ilike.${q}`);
+      }
+
+      query = query.range(0, currentLimit - 1);
+
+      const { data, count, error } = await query;
 
       if (data && !error) {
         setLogs(data);
+        setHasMore(count ? count > data.length : data.length >= currentLimit);
       }
     } catch (err) {
       console.error('Error loading audit logs:', err);
@@ -53,22 +101,19 @@ export default function KepanitiaanLogs() {
     }
   }
 
+  // Reset limit back to 100 when search query or category changes
   useEffect(() => {
-    loadLogs();
-  }, []);
+    setLimit(100);
+  }, [searchQuery, selectedKategori]);
 
-  const filteredLogs = logs.filter((log) => {
-    const matchesSearch = 
-      (log.nama_panitia?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-      (log.detail?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-      (log.aksi?.toLowerCase() || '').includes(searchQuery.toLowerCase());
-      
-    const matchesKategori = 
-      selectedKategori === 'Semua Kategori' || 
-      determineKategori(log.aksi) === selectedKategori;
+  // Load logs with debounce for search typing
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      loadLogs(limit);
+    }, 300);
 
-    return matchesSearch && matchesKategori;
-  });
+    return () => clearTimeout(delayDebounceFn);
+  }, [limit, searchQuery, selectedKategori]);
 
   return (
     <div className="space-y-8">
@@ -82,7 +127,7 @@ export default function KepanitiaanLogs() {
           <p className="text-xs text-slate-500 mt-1">Daftar rekaman perubahan data penting, akses sensitif, dan jejak audit secara real-time.</p>
         </div>
         <button
-          onClick={loadLogs}
+          onClick={() => loadLogs(limit)}
           className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-white bg-slate-900 border border-slate-200 hover:border-slate-700 px-4 py-2.5 rounded-xl transition-all shrink-0 shadow-sm hover:shadow-md"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -119,18 +164,16 @@ export default function KepanitiaanLogs() {
         </div>
       </div>
 
-      {loading ? (
+      {loading && logs.length === 0 ? (
         <div className="py-20 flex flex-col items-center text-center space-y-4">
           <RefreshCw className="h-8 w-8 text-red-500 animate-spin" />
           <span className="text-xs text-slate-500 italic">Memuat jejak audit dari database...</span>
         </div>
       ) : (
         <div className="max-w-5xl mx-auto space-y-4">
-          {filteredLogs.map((log) => {
+          {logs.map((log) => {
             const kategori = determineKategori(log.aksi);
-            // Parse User Agent to a readable format minimally
             const isMobile = (log.user_agent || '').toLowerCase().includes('mobile');
-            const uaString = (log.user_agent || 'Unknown').substring(0, 40) + ((log.user_agent?.length > 40) ? '...' : '');
 
             return (
               <div
@@ -191,11 +234,27 @@ export default function KepanitiaanLogs() {
             );
           })}
           
-          {filteredLogs.length === 0 && !loading && (
+          {logs.length === 0 && !loading && (
             <div className="py-20 text-center flex flex-col items-center justify-center bg-slate-50 border border-slate-200 border-dashed rounded-2xl">
               <ShieldAlert className="h-8 w-8 text-slate-300 mb-3" />
               <p className="text-sm font-bold text-slate-500">Tidak ada log aktivitas.</p>
               <p className="text-xs text-slate-400 mt-1">Coba ubah kata kunci pencarian atau filter kategori Anda.</p>
+            </div>
+          )}
+
+          {hasMore && (
+            <div className="flex justify-center pt-6">
+              <button
+                onClick={() => setLimit((prev) => prev + 100)}
+                disabled={loading}
+                className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-white bg-slate-900 border border-slate-200 hover:border-slate-700 px-6 py-3 rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+              >
+                {loading ? (
+                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <span>Muat Lebih Banyak Log</span>
+                )}
+              </button>
             </div>
           )}
         </div>
