@@ -25,6 +25,17 @@ export default function KepanitiaanRundown() {
   const [seksiPj, setSeksiPj] = useState<string[]>([]);
   const [instruksiInternal, setInstruksiInternal] = useState('');
 
+  // Inline edit state for instructions
+  const [editingInstructionsId, setEditingInstructionsId] = useState<string | null>(null);
+  const [tempInstructions, setTempInstructions] = useState('');
+
+  // Permission helper: Only 'Acara' or 'Inti' can manage events
+  const canManageEvents = currentUser && (
+    currentUser.seksi === 'Acara' || 
+    currentUser.seksi === 'Inti' || 
+    currentUser.level === 'Inti'
+  );
+
   // Database lists
   const [seksiList, setSeksiList] = useState<any[]>([]);
 
@@ -189,6 +200,23 @@ export default function KepanitiaanRundown() {
     }
   };
 
+  const handleSaveInstructions = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('rundown')
+        .update({ instruksi_internal: tempInstructions })
+        .eq('id', id);
+
+      if (!error) {
+        setRundownList(rundownList.map((r) => r.id === id ? { ...r, instruksi_internal: tempInstructions } : r));
+        setEditingInstructionsId(null);
+        await logAudit('Mengubah Panduan Internal', `Mengubah panduan internal untuk acara ID: ${id}`);
+      }
+    } catch (err) {
+      console.error('Error saving instructions:', err);
+    }
+  };
+
   return (
     <div className="space-y-10">
       <div className="border-b border-slate-900 pb-4">
@@ -196,10 +224,11 @@ export default function KepanitiaanRundown() {
         <p className="text-xs text-slate-500 mt-1">Mengelola poin susunan acara secara dinamis dan mendetail untuk panitia.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className={canManageEvents ? "grid grid-cols-1 lg:grid-cols-3 gap-8" : "max-w-4xl mx-auto"}>
         
         {/* Form Add Rundown */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
+        {canManageEvents && (
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
               {editingId ? <Edit className="h-4.5 w-4.5 text-blue-500" /> : <Plus className="h-4.5 w-4.5 text-red-500" />}
@@ -328,9 +357,10 @@ export default function KepanitiaanRundown() {
             </div>
           </form>
         </div>
+        )}
 
         {/* Rundown List View */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <div className={`bg-white border border-slate-200 rounded-2xl p-6 space-y-6 ${canManageEvents ? 'lg:col-span-2' : 'w-full'}`}>
           <div className="flex justify-between items-center">
             <div className="space-y-1">
               <h3 className="text-base font-bold text-slate-900">Daftar Rundown Terjadwal</h3>
@@ -365,29 +395,31 @@ export default function KepanitiaanRundown() {
                     <h4 className="text-base font-bold text-slate-900">{r.kegiatan}</h4>
                   </div>
                   
-                  <div className="flex items-center space-x-1.5 shrink-0">
-                    <button
-                      onClick={() => handleEditTrigger(r)}
-                      title="Edit Acara"
-                      className="p-2 border border-slate-200 hover:border-blue-500/30 text-slate-500 hover:text-blue-500 rounded-lg transition-colors"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleCopyTrigger(r)}
-                      title="Salin ke Form Baru"
-                      className="p-2 border border-slate-200 hover:border-emerald-500/30 text-slate-500 hover:text-emerald-500 rounded-lg transition-colors"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteRundown(r.id, r.kegiatan)}
-                      title="Hapus Acara"
-                      className="p-2 border border-slate-200 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
+                  {canManageEvents && (
+                    <div className="flex items-center space-x-1.5 shrink-0">
+                      <button
+                        onClick={() => handleEditTrigger(r)}
+                        title="Edit Acara"
+                        className="p-2 border border-slate-200 hover:border-blue-500/30 text-slate-500 hover:text-blue-500 rounded-lg transition-colors"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleCopyTrigger(r)}
+                        title="Salin ke Form Baru"
+                        className="p-2 border border-slate-200 hover:border-emerald-500/30 text-slate-500 hover:text-emerald-500 rounded-lg transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRundown(r.id, r.kegiatan)}
+                        title="Hapus Acara"
+                        className="p-2 border border-slate-200 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-xs space-y-2 border-t border-slate-900 pt-3">
@@ -396,12 +428,52 @@ export default function KepanitiaanRundown() {
                     <p className="text-slate-600 leading-relaxed">{r.keterangan || 'Tidak ada keterangan umum.'}</p>
                   </div>
 
-                  {r.instruksi_internal && (
-                    <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3">
-                      <span className="text-red-400 font-bold uppercase text-[9px] tracking-wider block mb-0.5">⚠️ Panduan Internal Panitia:</span>
-                      <p className="text-slate-350 leading-relaxed font-medium">{r.instruksi_internal}</p>
+                  <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-red-400 font-bold uppercase text-[9px] tracking-wider">⚠️ Panduan Internal Panitia:</span>
+                      {editingInstructionsId !== r.id ? (
+                        <button
+                          onClick={() => {
+                            setEditingInstructionsId(r.id);
+                            setTempInstructions(r.instruksi_internal || '');
+                          }}
+                          className="text-[10px] text-blue-500 hover:underline font-bold"
+                        >
+                          Ubah Panduan
+                        </button>
+                      ) : null}
                     </div>
-                  )}
+
+                    {editingInstructionsId === r.id ? (
+                      <div className="space-y-2 mt-1">
+                        <textarea
+                          rows={3}
+                          value={tempInstructions}
+                          onChange={(e) => setTempInstructions(e.target.value)}
+                          placeholder="Tulis instruksi internal panitia..."
+                          className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"
+                        />
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => setEditingInstructionsId(null)}
+                            className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold rounded"
+                          >
+                            Batal
+                          </button>
+                          <button
+                            onClick={() => handleSaveInstructions(r.id)}
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded"
+                          >
+                            Simpan
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-slate-350 leading-relaxed font-medium font-serif">
+                        {r.instruksi_internal || <span className="text-slate-500 italic text-[11px]">Belum ada panduan internal. Klik "Ubah Panduan" untuk menambahkan.</span>}
+                      </p>
+                    )}
+                  </div>
 
                   {r.seksi_pj && r.seksi_pj.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 items-center pt-2">
