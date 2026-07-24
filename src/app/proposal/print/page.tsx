@@ -388,6 +388,41 @@ export default function ProposalPrintPage() {
               </div>
             </div>
           </div>
+
+          {/* LEMBAR DONASI KOSONG UNTUK TULIS MANUAL */}
+          <div className="space-y-6 page-break pt-8">
+            <h3 className="text-lg font-bold border-b border-black pb-1 uppercase tracking-wider text-center">
+              LEMBAR TANDA TERIMA DONASI & SPONSORSHIP
+            </h3>
+            <p className="text-xs text-justify italic">
+              Lembar ini digunakan untuk mencatat secara manual kontribusi atau sumbangan dari warga/donatur/sponsor pada saat penyerahan dana atau barang kepada panitia HUT RI Ke-81 RT 12 Pelem Kidul.
+            </p>
+            
+            <table className="w-full text-left border-collapse text-xs border border-black mt-4">
+              <thead>
+                <tr className="bg-slate-100 border-b border-black font-bold uppercase text-center">
+                  <th className="py-3 px-2 border border-black w-8">No</th>
+                  <th className="py-3 px-3 border border-black w-24">Tanggal</th>
+                  <th className="py-3 px-3 border border-black w-48">Nama Donatur / Instansi</th>
+                  <th className="py-3 px-3 border border-black w-36">Jumlah (Nominal/Barang)</th>
+                  <th className="py-3 px-3 border border-black w-28">Paraf<br />Penyumbang</th>
+                  <th className="py-3 px-3 border border-black w-28">Paraf<br />Penerima (Panitia)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <tr key={i} className="border-b border-black h-12">
+                    <td className="py-2 px-2 border border-black text-center text-slate-400">{i + 1}</td>
+                    <td className="py-2 px-3 border border-black text-center text-slate-350 text-[10px] align-bottom pb-1">... / ... / 2026</td>
+                    <td className="py-2 px-3 border border-black"></td>
+                    <td className="py-2 px-3 border border-black"></td>
+                    <td className="py-2 px-3 border border-black text-slate-350 text-[10px] text-center align-bottom pb-1">Paraf: .........</td>
+                    <td className="py-2 px-3 border border-black text-slate-350 text-[10px] text-center align-bottom pb-1">Paraf: .........</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
