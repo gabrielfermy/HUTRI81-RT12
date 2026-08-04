@@ -434,11 +434,18 @@ export default function KepanitiaanWarga() {
           </div>
         </div>
 
+        <div className="flex justify-between items-center text-xs text-slate-500 font-medium">
+          <div>
+            Menampilkan <span className="font-bold text-slate-900">{filteredWarga.length}</span> dari <span className="font-bold text-slate-900">{wargaList.length}</span> warga
+          </div>
+        </div>
+
         {/* Warga Table */}
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-white border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                <th className="py-3.5 px-4 text-center w-12">No</th>
                 <th className="py-3.5 px-4">Nama Kepala Keluarga</th>
                 <th className="py-3.5 px-4 text-center">Dawis</th>
                 <th className="py-3.5 px-4 text-right">Nominal Iuran</th>
@@ -448,8 +455,9 @@ export default function KepanitiaanWarga() {
               </tr>
             </thead>
             <tbody>
-              {filteredWarga.map((w) => (
+              {filteredWarga.map((w, index) => (
                 <tr key={w.id} className="border-b border-slate-200 hover:bg-slate-100">
+                  <td className="py-3.5 px-4 text-center text-slate-500 font-semibold">{index + 1}</td>
                   <td className="py-3.5 px-4 text-slate-900 font-bold">{w.nama}</td>
                   <td className="py-3.5 px-4 text-center text-slate-500 font-semibold">{w.blok}</td>
                   <td className="py-3.5 px-4 text-right text-slate-900 font-bold">
@@ -509,7 +517,7 @@ export default function KepanitiaanWarga() {
               ))}
               {filteredWarga.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500 italic">Tidak ada warga terdaftar yang sesuai filter.</td>
+                  <td colSpan={7} className="py-8 text-center text-slate-500 italic">Tidak ada warga terdaftar yang sesuai filter.</td>
                 </tr>
               )}
             </tbody>

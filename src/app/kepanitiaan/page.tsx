@@ -73,6 +73,7 @@ export default function KepanitiaanDashboard() {
   const [totalSpent, setTotalSpent] = useState(0);
   const [lunasCount, setLunasCount] = useState(0);
   const [totalWarga, setTotalWarga] = useState(0);
+  const [rabTarget, setRabTarget] = useState(13000000);
   
   // Database Empty States
   const [rabCount, setRabCount] = useState(-1);
@@ -123,8 +124,12 @@ export default function KepanitiaanDashboard() {
         const { count: rabC } = await supabase.from('rab').select('*', { count: 'exact', head: true });
         if (rabC !== null) setRabCount(rabC);
 
-        const { count: rundownC } = await supabase.from('rundown').select('*', { count: 'exact', head: true });
-        if (rundownC !== null) setRundownCount(rundownC);
+        // Fetch RAB items to calculate target dynamically
+        const { data: rabItems } = await supabase.from('rab').select('total_idr');
+        if (rabItems && rabItems.length > 0) {
+          const totalRab = rabItems.reduce((sum: number, r: any) => sum + Number(r.total_idr || 0), 0);
+          setRabTarget(totalRab);
+        }
 
       } catch (err) {
         console.error('Error loading dashboard stats:', err);
@@ -305,7 +310,7 @@ export default function KepanitiaanDashboard() {
             <DollarSign className="h-4.5 w-4.5 text-emerald-400" />
           </div>
           <div className="text-xl sm:text-2xl font-black text-slate-900">Rp {totalCollected.toLocaleString('id-ID')}</div>
-          <div className="text-[10px] text-slate-500 font-semibold">Target: Rp 12.000.000 | Total Pemasukan</div>
+          <div className="text-[10px] text-slate-500 font-semibold">Target: Rp {rabTarget.toLocaleString('id-ID')} | Total Pemasukan</div>
         </div>
 
         <div className="bg-white/20 border border-slate-200/80 rounded-2xl p-5 space-y-4">

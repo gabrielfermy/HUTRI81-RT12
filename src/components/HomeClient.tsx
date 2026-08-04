@@ -510,38 +510,43 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+          {/* Timeline View */}
+          <div className="relative border-l border-slate-200 ml-4 md:ml-40 space-y-6 py-4 animate-fadeIn">
             {filteredRundownList.map((item, index) => (
-              <div key={index} className="bg-white border border-slate-200 shadow-sm/80 rounded-2xl p-6 space-y-4 hover:border-red-500/20 transition-all duration-300">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-red-400 bg-red-600/10 border border-red-500/20 px-3 py-1 rounded-full uppercase tracking-wider">
-                    {new Date(item.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })}
-                  </span>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-semibold bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
-                    <Clock className="h-3.5 w-3.5 text-red-500" />
-                    <span>{item.jam_mulai} - {item.jam_selesai} WIB</span>
-                  </div>
+              <div key={index} className="relative pl-6 md:pl-8 group">
+                {/* Timeline dot */}
+                <div className="absolute -left-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-red-500 bg-white group-hover:bg-red-500 transition-all duration-300"></div>
+                
+                {/* Time Indicator - Placed to the left on desktop, above the content on mobile */}
+                <div className="md:absolute md:right-full md:mr-8 md:top-1 flex items-center space-x-1.5 text-xs text-slate-500 font-bold md:text-right md:justify-end mb-2 md:mb-0 whitespace-nowrap">
+                  <Clock className="h-3.5 w-3.5 text-red-500 shrink-0" />
+                  <span>{item.jam_mulai} - {item.jam_selesai} WIB</span>
                 </div>
 
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-slate-900 transition-colors">{item.kegiatan}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{item.keterangan}</p>
-                </div>
-
-                {item.seksi_pj && item.seksi_pj.length > 0 && (
-                  <div className="pt-3 border-t border-slate-200/50 flex flex-wrap gap-1.5 items-center">
-                    <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mr-1">Penanggung Jawab:</span>
-                    {item.seksi_pj.map((pj: string, i: number) => (
-                      <span key={i} className="text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-md">
-                        {pj}
-                      </span>
-                    ))}
+                {/* Event Details Card */}
+                <div className="bg-white border border-slate-200/80 shadow-sm/50 rounded-2xl p-5 space-y-3 hover:border-red-500/20 transition-all duration-300">
+                  <div className="space-y-1">
+                    <h3 className="text-base font-extrabold text-slate-900 group-hover:text-red-500 transition-colors">{item.kegiatan}</h3>
+                    {item.keterangan && (
+                      <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">{item.keterangan}</p>
+                    )}
                   </div>
-                )}
+
+                  {item.seksi_pj && item.seksi_pj.length > 0 && (
+                    <div className="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5 items-center">
+                      <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mr-1">Penanggung Jawab:</span>
+                      {item.seksi_pj.map((pj: string, i: number) => (
+                        <span key={i} className="text-[10px] font-medium text-slate-600 bg-slate-100 border border-slate-250 px-2 py-0.5 rounded-md">
+                          {pj}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
             {filteredRundownList.length === 0 && (
-              <p className="text-xs text-slate-500 italic text-center py-6 col-span-2">Tidak ada kegiatan di tanggal ini.</p>
+              <p className="text-xs text-slate-500 italic text-center py-6">Tidak ada kegiatan di tanggal ini.</p>
             )}
           </div>
         </section>
@@ -596,18 +601,20 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                             <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
                             Rencana Agenda
                           </h4>
-                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                            {r.rincian_agenda || 'Rincian agenda belum dimasukkan.'}
-                          </div>
+                          <div 
+                            className="text-slate-600 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                            dangerouslySetInnerHTML={{ __html: r.rincian_agenda || 'Rincian agenda belum dimasukkan.' }}
+                          />
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
                             <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
                             Notulen Rapat
                           </h4>
-                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                            {r.notulen || 'Notulen rapat belum dimasukkan.'}
-                          </div>
+                          <div 
+                            className="text-slate-600 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                            dangerouslySetInnerHTML={{ __html: r.notulen || 'Notulen rapat belum dimasukkan.' }}
+                          />
                         </div>
                       </div>
                       

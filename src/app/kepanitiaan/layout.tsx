@@ -58,7 +58,7 @@ export default function KepanitiaanLayout({
             .from('seksi')
             .select('akses_menu')
             .eq('nama', user.seksi)
-            .single();
+            .maybeSingle();
 
           if (user.seksi === 'Inti') {
             user.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat,baksos';
@@ -162,7 +162,7 @@ export default function KepanitiaanLayout({
           .from('seksi')
           .select('akses_menu')
           .eq('nama', searchName)
-          .single();
+          .maybeSingle();
 
         if (matched.jabatan === 'Ketua Panitia') {
           sessionData.akses_menu = 'dashboard,rundown,warga,keuangan,panitia,catatan,logs,proposal,backdrop,rapat,baksos';

@@ -80,11 +80,25 @@ export const ExpensesTab: React.FC<ExpensesTabProps> = ({
     setMonitoringExpenseItem(itemName);
     setLoadingHistory(true);
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('audit_log')
         .select('*')
         .ilike('detail', `%[ID: ${expenseId}]%`)
         .order('created_at', { ascending: false });
+
+      if (data && data.length === 0 && itemName) {
+        // Fallback for older transactions that were logged without the [ID: ...] prefix
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('audit_log')
+          .select('*')
+          .ilike('detail', `%${itemName}%`)
+          .order('created_at', { ascending: false });
+        
+        if (fallbackData && !fallbackError) {
+          data = fallbackData;
+        }
+      }
+
       if (data && !error) {
         setHistoryLogs(data);
       } else {

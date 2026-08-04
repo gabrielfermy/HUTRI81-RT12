@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { Calendar, Plus, Trash2, Clock, MapPin, AlignLeft, Users } from 'lucide-react';
+import { Calendar, Plus, Trash2, Clock, MapPin, AlignLeft, Users, Edit, Copy } from 'lucide-react';
 import { RundownTaskList } from '@/components/rundown/RundownTaskList';
 import { logAuditActivity } from '@/lib/logger';
 
@@ -15,6 +15,7 @@ export default function KepanitiaanRundown() {
   const [rundownList, setRundownList] = useState<any[]>([]);
 
   // Form states
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [tanggal, setTanggal] = useState('');
   const [jamMulai, setJamMulai] = useState('');
   const [jamSelesai, setJamSelesai] = useState('');
@@ -23,6 +24,17 @@ export default function KepanitiaanRundown() {
   const [kategori, setKategori] = useState('Utama');
   const [seksiPj, setSeksiPj] = useState<string[]>([]);
   const [instruksiInternal, setInstruksiInternal] = useState('');
+
+  // Inline edit state for instructions
+  const [editingInstructionsId, setEditingInstructionsId] = useState<string | null>(null);
+  const [tempInstructions, setTempInstructions] = useState('');
+
+  // Permission helper: Only 'Acara' or 'Inti' can manage events
+  const canManageEvents = currentUser && (
+    currentUser.seksi === 'Acara' || 
+    currentUser.seksi === 'Inti' || 
+    currentUser.level === 'Inti'
+  );
 
   // Database lists
   const [seksiList, setSeksiList] = useState<any[]>([]);
@@ -107,18 +119,32 @@ export default function KepanitiaanRundown() {
     };
 
     try {
-      const { data, error } = await supabase.from('rundown').insert([newItem]).select();
-      if (data && !error) {
-        setRundownList([...rundownList, data[0]].sort((a, b) => a.tanggal.localeCompare(b.tanggal) || a.jam_mulai.localeCompare(b.jam_mulai)));
-        await logAudit('Menambah Rundown Baru', `Menambahkan rundown "${kegiatan}" pada ${tanggal} jam ${jamMulai}`);
+      if (editingId) {
+        const { error } = await supabase.from('rundown').update(newItem).eq('id', editingId);
+        if (!error) {
+          setRundownList(rundownList.map((r) => r.id === editingId ? { ...r, ...newItem } : r).sort((a, b) => a.tanggal.localeCompare(b.tanggal) || a.jam_mulai.localeCompare(b.jam_mulai)));
+          await logAudit('Mengubah Rundown', `Mengubah rundown "${kegiatan}" pada ${tanggal} jam ${jamMulai}`);
+        }
       } else {
-        setRundownList([...rundownList, { ...newItem, id: String(Date.now()) }]);
+        const { data, error } = await supabase.from('rundown').insert([newItem]).select();
+        if (data && !error) {
+          setRundownList([...rundownList, data[0]].sort((a, b) => a.tanggal.localeCompare(b.tanggal) || a.jam_mulai.localeCompare(b.jam_mulai)));
+          await logAudit('Menambah Rundown Baru', `Menambahkan rundown "${kegiatan}" pada ${tanggal} jam ${jamMulai}`);
+        } else {
+          setRundownList([...rundownList, { ...newItem, id: String(Date.now()) }]);
+        }
       }
     } catch (err) {
-      setRundownList([...rundownList, { ...newItem, id: String(Date.now()) }]);
+      if (!editingId) {
+        setRundownList([...rundownList, { ...newItem, id: String(Date.now()) }]);
+      }
     }
 
     // Reset Form
+    handleCancelEdit();
+  };
+
+  const handleCancelEdit = () => {
     setTanggal('');
     setJamMulai('');
     setJamSelesai('');
@@ -127,6 +153,37 @@ export default function KepanitiaanRundown() {
     setKategori('Utama');
     setSeksiPj([]);
     setInstruksiInternal('');
+    setEditingId(null);
+  };
+
+  const handleEditTrigger = (r: any) => {
+    setEditingId(r.id);
+    setTanggal(r.tanggal);
+    setJamMulai(r.jam_mulai || '');
+    setJamSelesai(r.jam_selesai || '');
+    setKegiatan(r.kegiatan || '');
+    setKeterangan(r.keterangan || '');
+    setKategori(r.kategori || 'Utama');
+    setSeksiPj(r.seksi_pj || []);
+    setInstruksiInternal(r.instruksi_internal || '');
+    
+    // Scroll to form smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCopyTrigger = (r: any) => {
+    setEditingId(null); // new item
+    setTanggal(r.tanggal);
+    setJamMulai(r.jam_mulai || '');
+    setJamSelesai(r.jam_selesai || '');
+    setKegiatan(`${r.kegiatan} (Copy)`);
+    setKeterangan(r.keterangan || '');
+    setKategori(r.kategori || 'Utama');
+    setSeksiPj(r.seksi_pj || []);
+    setInstruksiInternal(r.instruksi_internal || '');
+    
+    // Scroll to form smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDeleteRundown = async (id: string, name: string) => {
@@ -143,6 +200,23 @@ export default function KepanitiaanRundown() {
     }
   };
 
+  const handleSaveInstructions = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('rundown')
+        .update({ instruksi_internal: tempInstructions })
+        .eq('id', id);
+
+      if (!error) {
+        setRundownList(rundownList.map((r) => r.id === id ? { ...r, instruksi_internal: tempInstructions } : r));
+        setEditingInstructionsId(null);
+        await logAudit('Mengubah Panduan Internal', `Mengubah panduan internal untuk acara ID: ${id}`);
+      }
+    } catch (err) {
+      console.error('Error saving instructions:', err);
+    }
+  };
+
   return (
     <div className="space-y-10">
       <div className="border-b border-slate-900 pb-4">
@@ -150,16 +224,19 @@ export default function KepanitiaanRundown() {
         <p className="text-xs text-slate-500 mt-1">Mengelola poin susunan acara secara dinamis dan mendetail untuk panitia.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className={canManageEvents ? "grid grid-cols-1 lg:grid-cols-3 gap-8" : "max-w-4xl mx-auto"}>
         
         {/* Form Add Rundown */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
+        {canManageEvents && (
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 h-fit">
           <div className="space-y-1">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Plus className="h-4.5 w-4.5 text-red-500" />
-              <span>Tambah Acara Baru</span>
+              {editingId ? <Edit className="h-4.5 w-4.5 text-blue-500" /> : <Plus className="h-4.5 w-4.5 text-red-500" />}
+              <span>{editingId ? 'Edit Detail Acara' : 'Tambah Acara Baru'}</span>
             </h3>
-            <p className="text-xs text-slate-500">Isi detail jadwal, penanggung jawab, dan persiapan internal.</p>
+            <p className="text-xs text-slate-500">
+              {editingId ? 'Sesuaikan detail jadwal, penanggung jawab, dan persiapan internal.' : 'Isi detail jadwal, penanggung jawab, dan persiapan internal.'}
+            </p>
           </div>
 
           <form onSubmit={handleAddRundown} className="space-y-4">
@@ -177,17 +254,15 @@ export default function KepanitiaanRundown() {
 
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tanggal Acara</label>
-              <select
+              <input
+                type="date"
                 required
+                min="2026-08-01"
+                max="2026-08-31"
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              >
-                <option value="">-- Pilih Tanggal --</option>
-                <option value="2026-08-09">9 Agustus 2026 (Senam & Lomba)</option>
-                <option value="2026-08-15">15 Agustus 2026 (Gotong Royong & Perkap)</option>
-                <option value="2026-08-16">16 Agustus 2026 (Malam Tirakatan)</option>
-              </select>
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -214,15 +289,14 @@ export default function KepanitiaanRundown() {
 
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Kategori</label>
-              <select
+              <input
+                type="text"
+                required
                 value={kategori}
                 onChange={(e) => setKategori(e.target.value)}
+                placeholder="e.g. Utama, Lomba Anak, Lomba Dewasa"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-red-500"
-              >
-                <option value="Utama">Utama (Umum)</option>
-                <option value="Lomba Anak">Lomba Anak-Anak</option>
-                <option value="Lomba Dewasa">Lomba Dewasa</option>
-              </select>
+              />
             </div>
 
             <div className="space-y-1">
@@ -264,17 +338,29 @@ export default function KepanitiaanRundown() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl transition-all"
-            >
-              Simpan Rundown Acara
-            </button>
+            <div className="flex gap-2">
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="w-1/3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+                >
+                  Batal
+                </button>
+              )}
+              <button
+                type="submit"
+                className={`py-2.5 font-bold text-xs rounded-xl transition-all ${editingId ? 'w-2/3 bg-blue-600 hover:bg-blue-500 text-white' : 'w-full bg-red-600 hover:bg-red-500 text-white'}`}
+              >
+                {editingId ? 'Perbarui Acara' : 'Simpan Rundown Acara'}
+              </button>
+            </div>
           </form>
         </div>
+        )}
 
         {/* Rundown List View */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:col-span-2 space-y-6">
+        <div className={`bg-white border border-slate-200 rounded-2xl p-6 space-y-6 ${canManageEvents ? 'lg:col-span-2' : 'w-full'}`}>
           <div className="flex justify-between items-center">
             <div className="space-y-1">
               <h3 className="text-base font-bold text-slate-900">Daftar Rundown Terjadwal</h3>
@@ -309,12 +395,31 @@ export default function KepanitiaanRundown() {
                     <h4 className="text-base font-bold text-slate-900">{r.kegiatan}</h4>
                   </div>
                   
-                  <button
-                    onClick={() => handleDeleteRundown(r.id, r.kegiatan)}
-                    className="p-2 border border-slate-200 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="h-4.5 w-4.5" />
-                  </button>
+                  {canManageEvents && (
+                    <div className="flex items-center space-x-1.5 shrink-0">
+                      <button
+                        onClick={() => handleEditTrigger(r)}
+                        title="Edit Acara"
+                        className="p-2 border border-slate-200 hover:border-blue-500/30 text-slate-500 hover:text-blue-500 rounded-lg transition-colors"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleCopyTrigger(r)}
+                        title="Salin ke Form Baru"
+                        className="p-2 border border-slate-200 hover:border-emerald-500/30 text-slate-500 hover:text-emerald-500 rounded-lg transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRundown(r.id, r.kegiatan)}
+                        title="Hapus Acara"
+                        className="p-2 border border-slate-200 hover:border-red-500/30 text-slate-500 hover:text-red-400 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-xs space-y-2 border-t border-slate-900 pt-3">
@@ -323,12 +428,52 @@ export default function KepanitiaanRundown() {
                     <p className="text-slate-600 leading-relaxed">{r.keterangan || 'Tidak ada keterangan umum.'}</p>
                   </div>
 
-                  {r.instruksi_internal && (
-                    <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3">
-                      <span className="text-red-400 font-bold uppercase text-[9px] tracking-wider block mb-0.5">⚠️ Panduan Internal Panitia:</span>
-                      <p className="text-slate-350 leading-relaxed font-medium">{r.instruksi_internal}</p>
+                  <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-red-400 font-bold uppercase text-[9px] tracking-wider">⚠️ Panduan Internal Panitia:</span>
+                      {editingInstructionsId !== r.id ? (
+                        <button
+                          onClick={() => {
+                            setEditingInstructionsId(r.id);
+                            setTempInstructions(r.instruksi_internal || '');
+                          }}
+                          className="text-[10px] text-blue-500 hover:underline font-bold"
+                        >
+                          Ubah Panduan
+                        </button>
+                      ) : null}
                     </div>
-                  )}
+
+                    {editingInstructionsId === r.id ? (
+                      <div className="space-y-2 mt-1">
+                        <textarea
+                          rows={3}
+                          value={tempInstructions}
+                          onChange={(e) => setTempInstructions(e.target.value)}
+                          placeholder="Tulis instruksi internal panitia..."
+                          className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-red-500"
+                        />
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => setEditingInstructionsId(null)}
+                            className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold rounded"
+                          >
+                            Batal
+                          </button>
+                          <button
+                            onClick={() => handleSaveInstructions(r.id)}
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded"
+                          >
+                            Simpan
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-slate-350 leading-relaxed font-medium font-serif">
+                        {r.instruksi_internal || <span className="text-slate-500 italic text-[11px]">Belum ada panduan internal. Klik "Ubah Panduan" untuk menambahkan.</span>}
+                      </p>
+                    )}
+                  </div>
 
                   {r.seksi_pj && r.seksi_pj.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 items-center pt-2">

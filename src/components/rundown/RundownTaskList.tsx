@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { CheckSquare, Square, Trash2, Plus, Users, Clock } from 'lucide-react';
+import { CheckSquare, Square, Trash2, Plus, Users, Clock, Edit2 } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -21,6 +21,11 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [newDescription, setNewDescription] = useState('');
+  
+  // Inline task edit and double submit prevention states
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Default new PIC to the first section assigned, or 'Semua Panitia'
   const [newPic, setNewPic] = useState('Semua Panitia');
@@ -71,8 +76,9 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
 
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDescription.trim()) return;
+    if (!newDescription.trim() || isSubmitting) return;
 
+    setIsSubmitting(true);
     try {
       const { error } = await supabase
         .from('rundown_tasks')
@@ -85,7 +91,26 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
 
       if (!error) {
         setNewDescription('');
-        loadTasks();
+        await loadTasks();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSaveTask = async (taskId: string) => {
+    if (!editingText.trim()) return;
+    try {
+      const { error } = await supabase
+        .from('rundown_tasks')
+        .update({ deskripsi: editingText.trim() })
+        .eq('id', taskId);
+
+      if (!error) {
+        setTasks(tasks.map(t => t.id === taskId ? { ...t, deskripsi: editingText.trim() } : t));
+        setEditingTaskId(null);
       }
     } catch (err) {
       console.error(err);
@@ -165,8 +190,9 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
                   <div className="flex items-center space-x-2 min-w-0 flex-grow">
                     <button 
                       type="button"
+                      disabled={isSubmitting}
                       onClick={() => handleToggleTask(t)}
-                      className="text-slate-400 hover:text-emerald-400 transition-colors shrink-0"
+                      className="text-slate-400 hover:text-emerald-400 transition-colors shrink-0 disabled:opacity-50"
                     >
                       {t.is_completed ? (
                         <CheckSquare className="h-4 w-4 text-emerald-400" />
@@ -174,18 +200,49 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
                         <Square className="h-4 w-4" />
                       )}
                     </button>
-                    <span className={`block text-xs leading-relaxed min-w-0 flex-grow ${t.is_completed ? 'line-through text-slate-500 font-medium' : 'text-slate-200 font-semibold'}`}>
-                      {t.deskripsi}
-                    </span>
+                    {editingTaskId === t.id ? (
+                      <input
+                        type="text"
+                        value={editingText}
+                        onChange={(e) => setEditingText(e.target.value)}
+                        className="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-xs text-white focus:outline-none focus:border-red-500 w-full font-semibold"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveTask(t.id);
+                          if (e.key === 'Escape') setEditingTaskId(null);
+                        }}
+                        onBlur={() => handleSaveTask(t.id)}
+                      />
+                    ) : (
+                      <span className={`block text-xs leading-relaxed min-w-0 flex-grow ${t.is_completed ? 'line-through text-slate-500 font-medium' : 'text-slate-200 font-semibold'}`}>
+                        {t.deskripsi}
+                      </span>
+                    )}
                   </div>
 
-                  <button 
-                    type="button" 
-                    onClick={() => handleDeleteTask(t.id)}
-                    className="text-slate-750 hover:text-red-400 p-1 rounded-md transition-colors shrink-0"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </button>
+                  <div className="flex items-center space-x-1 shrink-0">
+                    {editingTaskId !== t.id && (
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          setEditingTaskId(t.id);
+                          setEditingText(t.deskripsi);
+                        }}
+                        className="text-slate-700 hover:text-blue-450 p-1 rounded-md transition-colors"
+                        title="Edit Tugas"
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </button>
+                    )}
+                    <button 
+                      type="button" 
+                      onClick={() => handleDeleteTask(t.id)}
+                      className="text-slate-750 hover:text-red-400 p-1 rounded-md transition-colors shrink-0"
+                      title="Hapus Tugas"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -201,16 +258,18 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
         <input
           type="text"
           required
-          placeholder="Tugas baru (e.g. Siapkan 10 obor)"
+          disabled={isSubmitting}
+          placeholder={isSubmitting ? "Menambahkan..." : "Tugas baru (e.g. Siapkan 10 obor)"}
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
-          className="sm:col-span-2 bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-red-500"
+          className="sm:col-span-2 bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-red-500 disabled:opacity-50"
         />
         <div className="flex gap-1.5">
           <select
             value={newPic}
+            disabled={isSubmitting}
             onChange={(e) => setNewPic(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-850 rounded-lg px-1.5 py-1.5 text-[11px] text-white focus:outline-none focus:border-red-500"
+            className="w-full bg-slate-950 border border-slate-850 rounded-lg px-1.5 py-1.5 text-[11px] text-white focus:outline-none focus:border-red-500 disabled:opacity-50"
           >
             <option value="Semua Panitia">Semua PJ</option>
             {seksiPj.map((sec) => (
@@ -219,7 +278,8 @@ export const RundownTaskList: React.FC<RundownTaskListProps> = ({ rundownId, eve
           </select>
           <button
             type="submit"
-            className="p-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors shrink-0 flex items-center justify-center"
+            disabled={isSubmitting}
+            className="p-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors shrink-0 flex items-center justify-center disabled:opacity-50"
           >
             <Plus className="h-4.5 w-4.5" />
           </button>

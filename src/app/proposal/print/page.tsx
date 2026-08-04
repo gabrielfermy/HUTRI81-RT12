@@ -42,6 +42,7 @@ export default function ProposalPrintPage() {
   const [rundownList, setRundownList] = useState<any[]>([]);
   const [rabList, setRabList] = useState<any[]>([]);
   const [sponsorList, setSponsorList] = useState<any[]>([]);
+  const [allTasks, setAllTasks] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadData() {
@@ -57,6 +58,9 @@ export default function ProposalPrintPage() {
 
         const { data: spData } = await supabase.from('sponsorship').select('*').order('nominal', { ascending: false });
         if (spData) setSponsorList(spData);
+
+        const { data: tData } = await supabase.from('rundown_tasks').select('*').order('created_at', { ascending: true });
+        if (tData) setAllTasks(tData);
       } catch (err) {
         console.error('Failed to load print data:', err);
       } finally {
@@ -114,13 +118,40 @@ export default function ProposalPrintPage() {
             <option value="proposal">1. Cetak Proposal Resmi (Public)</option>
             <option value="internal_rundown">2. Cetak Rundown Pegangan Panitia</option>
           </select>
+          
           <button
             onClick={() => window.print()}
-            className="flex items-center space-x-1.5 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all"
+            className="flex items-center space-x-1.5 px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all"
+            title="Cetak atau simpan sebagai PDF"
           >
             <Printer className="h-4 w-4" />
-            <span>Cetak</span>
+            <span>Cetak PDF</span>
           </button>
+
+          {printMode === 'proposal' && (
+            <button
+              onClick={() => {
+                const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Proposal HUT RI 81</title><style>body { font-family: 'Times New Roman', Times, serif; } table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; } th, td { border: 1px solid black; padding: 6px; } .page-break { page-break-before: always; } .text-center { text-align: center; } .text-justify { text-align: justify; }</style></head><body>";
+                const footer = "</body></html>";
+                const element = document.getElementById('proposal-content');
+                if (!element) return;
+                const html = header + element.innerHTML + footer;
+                const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'proposal_hut_ri_81.doc';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
+              className="flex items-center space-x-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-all"
+              title="Unduh format Microsoft Word (.doc)"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Unduh Word</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -149,7 +180,7 @@ export default function ProposalPrintPage() {
       {/* MODE 1: PROPOSAL RESMI */}
       {/* =================================================== */}
       {printMode === 'proposal' && (
-        <div className="space-y-12">
+        <div id="proposal-content" className="space-y-12">
           {/* COVER PAGE */}
           <div className="text-center min-h-[90vh] flex flex-col items-center justify-center py-16 px-8 relative">
             
@@ -382,71 +413,200 @@ export default function ProposalPrintPage() {
               <div className="space-y-16">
                 <div>Mengetahui,</div>
                 <div className="space-y-1">
-                  <div className="font-bold underline">[Nama Ketua RT]</div>
+                  <div className="font-bold underline">BAPAK YULIANTO RAHARJO</div>
                   <div>Ketua RT 12 Pelem Kidul</div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* LEMBAR DONASI KOSONG UNTUK TULIS MANUAL (HALAMAN 1 & 2) */}
+          {[1, 2].map((pageNo) => (
+            <div key={pageNo} className="space-y-6 page-break pt-8">
+              <h3 className="text-lg font-bold border-b border-black pb-1 uppercase tracking-wider text-center">
+                LEMBAR TANDA TERIMA DONASI & SPONSORSHIP (HALAMAN {pageNo})
+              </h3>
+              <p className="text-xs text-justify italic">
+                Lembar ini digunakan untuk mencatat secara manual kontribusi atau sumbangan dari warga/donatur/sponsor pada saat penyerahan dana atau barang kepada panitia HUT RI Ke-81 RT 12 Pelem Kidul.
+              </p>
+              
+              <table className="w-full text-left border-collapse text-xs border border-black mt-4">
+                <thead>
+                  <tr className="bg-slate-100 border-b border-black font-bold uppercase text-center">
+                    <th className="py-3 px-2 border border-black w-8">No</th>
+                    <th className="py-3 px-3 border border-black w-24">Tanggal</th>
+                    <th className="py-3 px-3 border border-black w-48">Nama Donatur / Instansi</th>
+                    <th className="py-3 px-3 border border-black w-36">Jumlah (Nominal/Barang)</th>
+                    <th className="py-3 px-3 border border-black w-28">Paraf<br />Penyumbang</th>
+                    <th className="py-3 px-3 border border-black w-28">Paraf<br />Penerima (Panitia)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: 12 }).map((_, i) => {
+                    const rowNo = (pageNo - 1) * 12 + i + 1;
+                    return (
+                      <tr key={i} className="border-b border-black h-12">
+                        <td className="py-2 px-2 border border-black text-center text-slate-400">{rowNo}</td>
+                        <td className="py-2 px-3 border border-black text-center text-slate-350 text-[10px] align-bottom pb-1">... / ... / 2026</td>
+                        <td className="py-2 px-3 border border-black"></td>
+                        <td className="py-2 px-3 border border-black"></td>
+                        <td className="py-2 px-3 border border-black text-slate-350 text-[10px] text-center align-bottom pb-1">Paraf: .........</td>
+                        <td className="py-2 px-3 border border-black text-slate-350 text-[10px] text-center align-bottom pb-1">Paraf: .........</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))}
         </div>
       )}
 
       {/* =================================================== */}
       {/* MODE 2: RUNDOWN PEGANGAN PANITIA */}
       {/* =================================================== */}
-      {printMode === 'internal_rundown' && (
-        <div className="space-y-8">
-          <div className="text-center space-y-2 border-b-2 border-black pb-4">
-            <h1 className="text-2xl font-black uppercase tracking-wider">RUNDOWN PANDUAN KERJA PANITIA</h1>
-            <h2 className="text-base font-bold italic">HUT RI Ke-81 RT 12 Pelem Kidul — Edisi Taktis Lapangan</h2>
-            <p className="text-[10px] text-slate-500 font-serif">Dicetak pada tanggal: {new Date().toLocaleString('id-ID')} WIB</p>
-          </div>
+      {printMode === 'internal_rundown' && (() => {
+        // Group by tanggal
+        const groupedRundown = rundownList.reduce((acc: any, r: any) => {
+          const tgl = r.tanggal;
+          if (!acc[tgl]) acc[tgl] = [];
+          acc[tgl].push(r);
+          return acc;
+        }, {});
 
-          <table className="w-full text-left border-collapse text-xs border border-black">
-            <thead>
-              <tr className="bg-slate-100 border-b border-black font-bold uppercase">
-                <th className="py-2.5 px-3 border border-black w-24">Tanggal / Waktu</th>
-                <th className="py-2.5 px-3 border border-black w-40">Nama Acara</th>
-                <th className="py-2.5 px-3 border border-black w-24">Penanggung Jawab</th>
-                <th className="py-2.5 px-3 border border-black">⚠️ Instruksi Kerja & Persiapan Teknis</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rundownList.map((r, idx) => (
-                <tr key={idx} className="border-b border-black align-top hover:bg-slate-55/10">
-                  <td className="py-2.5 px-3 border border-black font-bold">
-                    <span className="block text-[10px] text-slate-600">
-                      {new Date(r.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })}
-                    </span>
-                    <span className="block text-xs font-black">{r.jam_mulai} - {r.jam_selesai}</span>
-                  </td>
-                  <td className="py-2.5 px-3 border border-black">
-                    <span className="font-extrabold text-sm block">{r.kegiatan}</span>
-                    <span className="text-[10px] text-slate-550 block italic mt-0.5">{r.keterangan || '-'}</span>
-                  </td>
-                  <td className="py-2.5 px-3 border border-black font-bold uppercase text-[9px]">
-                    {r.seksi_pj && r.seksi_pj.length > 0 ? r.seksi_pj.join(', ') : 'Belum Ditunjuk'}
-                  </td>
-                  <td className="py-2.5 px-3 border border-black text-slate-900 bg-slate-50 font-medium">
-                    {r.instruksi_internal || (
-                      <span className="text-slate-400 italic">Tidak ada instruksi khusus. Siap siaga di lapangan.</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        return (
+          <div className="space-y-10">
+            <div className="text-center space-y-2 border-b-2 border-black pb-4">
+              <h1 className="text-2xl font-black uppercase tracking-wider font-serif">RUNDOWN & CHEKLIST KERJA PANITIA</h1>
+              <h2 className="text-base font-bold italic">HUT RI Ke-81 RT 12 Pelem Kidul — Edisi Taktis Lapangan</h2>
+              <p className="text-[10px] text-slate-500 font-serif">Dicetak pada tanggal: {new Date().toLocaleDateString('id-ID')} WIB</p>
+            </div>
 
-          <div className="p-4 border border-black rounded-lg text-xs space-y-2 mt-8">
-            <h4 className="font-black uppercase tracking-wider text-center">Catatan Koordinasi Lapangan:</h4>
-            <ol className="list-decimal pl-5 space-y-1 text-slate-800">
-              <li>Semua seksi wajib standby dengan HT/alat komunikasi di area minimal **30 menit** sebelum poin acara dimulai.</li>
-              <li>Perubahan mendadak akibat kondisi cuaca atau kendala teknis akan langsung diumumkan oleh Ketua Panitia/Seksi Acara.</li>
-              <li>Pastikan kebersihan lapangan setelah sesi acara selesai adalah tanggung jawab bersama seluruh panitia.</li>
-            </ol>
+            {Object.keys(groupedRundown).map((tanggal) => {
+              const items = groupedRundown[tanggal];
+              const dateObj = new Date(tanggal);
+              const formattedDate = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+              return (
+                <div key={tanggal} className="space-y-4 page-break pt-4">
+                  <div className="bg-slate-100 border-l-4 border-black py-2.5 px-4">
+                    <h3 className="text-sm font-black uppercase tracking-wide font-serif">{formattedDate}</h3>
+                  </div>
+
+                  <table className="w-full text-left border-collapse text-xs border border-black font-serif">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-black font-bold uppercase text-[9px] text-center">
+                        <th className="py-2.5 px-3 border border-black w-24">Waktu</th>
+                        <th className="py-2.5 px-3 border border-black w-72 text-left">Detail Acara & Panduan</th>
+                        <th className="py-2.5 px-3 border border-black text-left">Tugas Persiapan Per Seksi & Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((r: any, idx: number) => {
+                        const itemTasks = allTasks.filter(t => t.rundown_id === r.id);
+                        
+                        const pjSections = r.seksi_pj && r.seksi_pj.length > 0 ? r.seksi_pj : [];
+                        const displaySections = pjSections.includes('Semua Panitia') ? pjSections : ['Semua Panitia', ...pjSections];
+                        
+                        const groupedItemTasks = displaySections.map((sec: string) => ({
+                          sectionName: sec,
+                          tasks: itemTasks.filter(t => t.pic === sec)
+                        })).filter((group: any) => group.tasks.length > 0 || r.seksi_pj?.includes(group.sectionName));
+
+                        const assignedPics = displaySections;
+                        const otherTasks = itemTasks.filter(t => !assignedPics.includes(t.pic));
+                        if (otherTasks.length > 0) {
+                          groupedItemTasks.push({
+                            sectionName: 'Lainnya',
+                            tasks: otherTasks
+                          });
+                        }
+
+                        return (
+                          <tr key={idx} className="border-b border-black align-top hover:bg-slate-50/10">
+                            {/* WAKTU */}
+                            <td className="py-3 px-3 border border-black text-center font-bold w-24">
+                              <span className="block text-sm font-black">{r.jam_mulai}</span>
+                              <span className="text-[9px] text-slate-500 font-medium block my-0.5">s.d.</span>
+                              <span className="block text-sm font-black">{r.jam_selesai ? r.jam_selesai : 'Selesai'}</span>
+                            </td>
+
+                            {/* DETAIL ACARA */}
+                            <td className="py-3 px-3 border border-black space-y-2 w-72">
+                              <div>
+                                <span className="font-extrabold text-sm block leading-tight">{r.kegiatan}</span>
+                                {r.keterangan && (
+                                  <span className="text-[10px] text-slate-650 block italic mt-0.5">{r.keterangan}</span>
+                                )}
+                              </div>
+                              
+                              {r.instruksi_internal && (
+                                <div className="bg-slate-50 border border-slate-300 p-2 rounded text-[10px] text-black">
+                                  <strong className="block text-red-750 text-[8px] uppercase tracking-wide mb-0.5">⚠️ Panduan Panitia:</strong>
+                                  <span className="font-medium leading-relaxed block text-justify">{r.instruksi_internal}</span>
+                                </div>
+                              )}
+                              
+                              {r.seksi_pj && r.seksi_pj.length > 0 && (
+                                <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">
+                                  PJ Utama: {r.seksi_pj.join(', ')}
+                                </div>
+                              )}
+                            </td>
+
+                            {/* CHEKLIST TUGAS PER SEKSI */}
+                            <td className="py-3 px-3 border border-black bg-slate-50/10">
+                              {groupedItemTasks.length > 0 ? (
+                                <div className="space-y-3">
+                                  {groupedItemTasks.map((group: any, gi: number) => (
+                                    <div key={gi} className="space-y-1">
+                                      <span className="block text-[8px] text-red-700 font-black uppercase tracking-wider border-b border-slate-300 pb-0.5">
+                                        {group.sectionName === 'Semua Panitia' ? 'Umum / Semua PJ' : `Seksi ${group.sectionName}`}
+                                      </span>
+                                      
+                                      <div className="space-y-1 pl-1">
+                                        {group.tasks.length > 0 ? (
+                                          group.tasks.map((task: any) => (
+                                            <div key={task.id} className="flex items-start space-x-1.5 text-[10px] leading-relaxed">
+                                              <span className="font-mono font-bold select-none shrink-0 text-slate-700">
+                                                {task.is_completed ? '[✔]' : '[  ]'}
+                                              </span>
+                                              <span className={task.is_completed ? 'line-through text-slate-400 font-medium' : 'text-slate-900 font-semibold'}>
+                                                {task.deskripsi}
+                                              </span>
+                                            </div>
+                                          ))
+                                        ) : (
+                                          <span className="text-[9px] text-slate-400 italic block pl-1">Belum ada checklist tugas khusus.</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-slate-400 italic block text-center py-2">Tidak ada checklist persiapan khusus.</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })}
+
+            <div className="p-4 border border-black rounded-lg text-xs space-y-2 mt-8 page-break font-serif">
+              <h4 className="font-black uppercase tracking-wider text-center">Catatan Koordinasi Lapangan:</h4>
+              <ol className="list-decimal pl-5 space-y-1 text-slate-800">
+                <li>Semua seksi wajib standby dengan HT/alat komunikasi di area minimal **30 menit** sebelum poin acara dimulai.</li>
+                <li>Perubahan mendadak akibat kondisi cuaca atau kendala teknis akan langsung diumumkan oleh Ketua Panitia/Seksi Acara.</li>
+                <li>Pastikan kebersihan lapangan setelah sesi acara selesai adalah tanggung jawab bersama seluruh panitia.</li>
+              </ol>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
     </div>
   );
