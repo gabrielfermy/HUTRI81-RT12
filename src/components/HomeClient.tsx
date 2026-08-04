@@ -601,18 +601,20 @@ export default function HomeClient({ initialTab = 'keuangan' }: { initialTab?: s
                             <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
                             Rencana Agenda
                           </h4>
-                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                            {r.rincian_agenda || 'Rincian agenda belum dimasukkan.'}
-                          </div>
+                          <div 
+                            className="text-slate-600 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                            dangerouslySetInnerHTML={{ __html: r.rincian_agenda || 'Rincian agenda belum dimasukkan.' }}
+                          />
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-slate-900 mb-2 flex items-center">
                             <FileText className="h-4 w-4 mr-1.5 text-slate-400" />
                             Notulen Rapat
                           </h4>
-                          <div className="text-slate-600 text-sm leading-relaxed whitespace-pre-line prose max-w-none">
-                            {r.notulen || 'Notulen rapat belum dimasukkan.'}
-                          </div>
+                          <div 
+                            className="text-slate-600 text-sm leading-relaxed prose max-w-none prose-sm marker:text-slate-400 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+                            dangerouslySetInnerHTML={{ __html: r.notulen || 'Notulen rapat belum dimasukkan.' }}
+                          />
                         </div>
                       </div>
                       
