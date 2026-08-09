@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle, Package } from 'lucide-react';
+import { Lock, LogOut, LayoutDashboard, Calendar, DollarSign, Users, UserCheck, ShieldAlert, FileText, MonitorPlay, Menu, X, ArrowLeft, AlertCircle, Package, Gift } from 'lucide-react';
 import { logAuditActivity } from '@/lib/logger';
 
 export default function KepanitiaanLayout({
@@ -97,6 +97,7 @@ export default function KepanitiaanLayout({
       if (pathname === '/kepanitiaan') pathKey = 'dashboard';
       else if (pathname.startsWith('/kepanitiaan/rundown')) pathKey = 'rundown';
       else if (pathname.startsWith('/kepanitiaan/warga')) pathKey = 'warga';
+      else if (pathname.startsWith('/kepanitiaan/doorprize')) pathKey = 'warga';
       else if (pathname.startsWith('/kepanitiaan/keuangan')) pathKey = 'keuangan';
       else if (pathname.startsWith('/kepanitiaan/laporan')) pathKey = 'keuangan';
       else if (pathname.startsWith('/kepanitiaan/panitia')) pathKey = 'panitia';
@@ -117,6 +118,7 @@ export default function KepanitiaanLayout({
     if (pathname === '/kepanitiaan') pageTitle = 'Dashboard Panitia';
     else if (pathname.startsWith('/kepanitiaan/rundown')) pageTitle = 'Rundown & Acara';
     else if (pathname.startsWith('/kepanitiaan/warga')) pageTitle = 'Manajemen Warga';
+    else if (pathname.startsWith('/kepanitiaan/doorprize')) pageTitle = 'Presensi Doorprize';
     else if (pathname.startsWith('/kepanitiaan/keuangan')) pageTitle = 'Keuangan & Sponsor';
     else if (pathname.startsWith('/kepanitiaan/laporan')) pageTitle = 'Laporan & LPJ';
     else if (pathname.startsWith('/kepanitiaan/panitia')) pageTitle = 'Manajemen Panitia';
@@ -342,6 +344,7 @@ export default function KepanitiaanLayout({
       items: [
         { name: 'Manajemen Warga', href: '/kepanitiaan/warga', icon: Users, key: 'warga' },
         { name: 'Bakti Sosial (Sembako)', href: '/kepanitiaan/baksos', icon: Package, key: 'baksos' },
+        { name: 'Presensi Doorprize', href: '/kepanitiaan/doorprize', icon: Gift, key: 'warga' },
         { name: 'Keuangan & Sponsor', href: '/kepanitiaan/keuangan', icon: DollarSign, key: 'keuangan' },
         { name: 'Laporan & LPJ', href: '/kepanitiaan/laporan', icon: FileText, key: 'keuangan' },
       ]
