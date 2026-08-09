@@ -47,6 +47,7 @@ export default function DoorprizePage() {
   const [winnerModalOpen, setWinnerModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [vipMode, setVipMode] = useState(false);
   const [tempDrawName, setTempDrawName] = useState('SIAP DIKOCOK!');
 
   // Ref pointers
@@ -946,6 +947,18 @@ export default function DoorprizePage() {
                   {/* Right side controls */}
                   <div className="flex items-center space-x-2">
                     <button
+                      disabled={isDrawing}
+                      onClick={() => setVipMode(!vipMode)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                        vipMode
+                          ? 'bg-yellow-500 border-yellow-400 text-slate-950 font-black shadow-md shadow-yellow-500/20'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
+                      }`}
+                      title="Toggle Tombol VIP"
+                    >
+                      👑 Mode VIP
+                    </button>
+                    <button
                       onClick={() => setSoundEnabled(!soundEnabled)}
                       className="p-2.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 rounded-xl text-slate-300 hover:text-white transition-colors"
                       title={soundEnabled ? 'Matikan Suara' : 'Aktifkan Suara'}
@@ -1017,18 +1030,38 @@ export default function DoorprizePage() {
                   </div>
                 </div>
 
-                {/* Trigger Button & Pool Count */}
-                <div className="flex flex-col items-center z-10">
-                  <button
-                    disabled={isDrawing}
-                    onClick={handleSpinDraw}
-                    className={`group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-800 disabled:to-slate-900 text-white font-black text-lg md:text-xl tracking-widest uppercase py-4 px-12 rounded-2xl shadow-xl hover:shadow-red-600/20 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-950 flex items-center space-x-3 ${
-                      isDrawing ? 'animate-pulse' : ''
-                    }`}
-                  >
-                    <Play className="h-5 w-5 fill-current" />
-                    <span>{isDrawing ? 'MEMILIH NAMA...' : 'MUTAR DOOPRIZE'}</span>
-                  </button>
+                 {/* Trigger Button & Pool Count */}
+                <div className="flex flex-col items-center z-10 w-full">
+                  {vipMode ? (
+                    // Giant 3D Red Button for VIP
+                    <div className="relative my-4 flex items-center justify-center">
+                      {/* Ripple waves */}
+                      <div className="absolute inset-0 h-36 w-36 bg-red-600/30 rounded-full animate-ping pointer-events-none" />
+                      <div className="absolute inset-0 h-28 w-28 bg-red-500/20 rounded-full animate-pulse pointer-events-none" />
+                      
+                      <button
+                        disabled={isDrawing}
+                        onClick={handleSpinDraw}
+                        className={`relative h-28 w-28 bg-gradient-to-b from-red-500 to-red-700 active:from-red-600 active:to-red-850 text-white rounded-full font-black text-xs tracking-wider uppercase flex flex-col items-center justify-center shadow-[0_10px_0_#991b1b,0_12px_15px_rgba(0,0,0,0.5)] active:translate-y-[8px] active:shadow-[0_2px_0_#991b1b,0_6px_8px_rgba(0,0,0,0.5)] border-4 border-red-400/30 transition-all select-none hover:scale-105 active:scale-95 disabled:from-slate-800 disabled:to-slate-900 disabled:shadow-none disabled:translate-y-0 disabled:scale-100 disabled:border-slate-950 flex-shrink-0 z-20`}
+                      >
+                        <Sparkles className="h-5 w-5 mb-0.5 text-yellow-300 animate-bounce" />
+                        <span className="text-[11px] font-black">TEKAN</span>
+                        <span className="text-[8px] font-bold text-red-200 tracking-widest leading-none mt-0.5">DOORPRIZE</span>
+                      </button>
+                    </div>
+                  ) : (
+                    // Standard trigger button
+                    <button
+                      disabled={isDrawing}
+                      onClick={handleSpinDraw}
+                      className={`group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-800 disabled:to-slate-900 text-white font-black text-lg md:text-xl tracking-widest uppercase py-4 px-12 rounded-2xl shadow-xl hover:shadow-red-600/20 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-950 flex items-center space-x-3 ${
+                        isDrawing ? 'animate-pulse' : ''
+                      }`}
+                    >
+                      <Play className="h-5 w-5 fill-current" />
+                      <span>{isDrawing ? 'MEMILIH NAMA...' : 'MUTAR DOOPRIZE'}</span>
+                    </button>
+                  )}
                   
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-4 bg-slate-900 border border-slate-800/80 px-4 py-1.5 rounded-full select-none">
                     Peserta Aktif di Pool: <span className="text-red-400 font-extrabold">{eligiblePool.length}</span> dari {attendees.length} Orang
