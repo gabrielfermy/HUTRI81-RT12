@@ -67,6 +67,7 @@ export default function NumberDoorprizePage() {
   const animationFrameRefs = useRef<NodeJS.Timeout[]>([]);
   const isDrawingRef = useRef(false);
   const soundEnabledRef = useRef(true);
+  const clearBoardTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync sound setting ref
   useEffect(() => {
@@ -295,6 +296,11 @@ export default function NumberDoorprizePage() {
   const handleSpinDraw = () => {
     if (isDrawing) return;
 
+    if (clearBoardTimeoutRef.current) {
+      clearTimeout(clearBoardTimeoutRef.current);
+      clearBoardTimeoutRef.current = null;
+    }
+
     const count = activePrize.id === 'bebas' ? customDrawCount : activePrize.drawCountPerClick;
     if (eligiblePool.length < count) {
       alert(`Pool angka tidak cukup! Sisa angka di pool: ${eligiblePool.length}`);
@@ -469,9 +475,15 @@ export default function NumberDoorprizePage() {
         playVictoryFanfare();
         triggerConfetti();
         
+        // Clear any old timeout
+        if (clearBoardTimeoutRef.current) {
+          clearTimeout(clearBoardTimeoutRef.current);
+        }
+
         // Auto-clear board after 3.5 seconds to return to welcome/prize selector screen
-        setTimeout(() => {
+        clearBoardTimeoutRef.current = setTimeout(() => {
           setCurrentSlots([]);
+          clearBoardTimeoutRef.current = null;
         }, 3500);
       }
       
@@ -786,6 +798,10 @@ export default function NumberDoorprizePage() {
                     key={p.id}
                     disabled={isDrawing || currentSlots.some(s => s.status === 'PENDING')}
                     onClick={() => {
+                      if (clearBoardTimeoutRef.current) {
+                        clearTimeout(clearBoardTimeoutRef.current);
+                        clearBoardTimeoutRef.current = null;
+                      }
                       setSelectedPrizeId(p.id);
                       setCurrentSlots([]);
                     }}
@@ -928,7 +944,13 @@ export default function NumberDoorprizePage() {
             <div className="flex flex-col items-center w-full mt-4">
               {currentSlots.length > 0 && !isDrawing && currentSlots.every(s => s.status === 'SAH') ? (
                 <button
-                  onClick={() => setCurrentSlots([])}
+                  onClick={() => {
+                    if (clearBoardTimeoutRef.current) {
+                      clearTimeout(clearBoardTimeoutRef.current);
+                      clearBoardTimeoutRef.current = null;
+                    }
+                    setCurrentSlots([]);
+                  }}
                   className="group relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl active:scale-95 transition-all select-none border-b-4 border-emerald-800 flex items-center space-x-3 cursor-pointer"
                 >
                   <CheckCircle className="h-5.5 w-5.5 fill-current" />
