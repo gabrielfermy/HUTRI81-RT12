@@ -177,6 +177,11 @@ export default function NumberDoorprizePage() {
   useEffect(() => {
     if (isDrawing) return;
 
+    // If we have active slots in drawing/resolution phase, do NOT clear or override them
+    if (currentSlots.length > 0 && currentSlots.some(s => s.status === 'PENDING' || s.status === 'GUGUR')) {
+      return;
+    }
+
     if (isQuotaMet) {
       const prizeWinners = history
         .filter(h => h.prizeName === activePrize.name && h.status === 'SAH')
@@ -199,7 +204,7 @@ export default function NumberDoorprizePage() {
     } else {
       setCurrentSlots([]);
     }
-  }, [selectedPrizeId, history, activePrize, isQuotaMet, isDrawing]);
+  }, [selectedPrizeId, history, activePrize, isQuotaMet]);
 
 
   const loadHistory = async () => {
@@ -419,7 +424,10 @@ export default function NumberDoorprizePage() {
     logWinnerToDB(slot.number, activePrize.name, 'SAH');
     
     setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, status: 'SAH' } : s));
-    playSynthTone(1000, 'sine', 0.2, 0.1);
+    
+    // Trigger celebratory fanfare and confetti on Sah winner validation!
+    playVictoryFanfare();
+    triggerConfetti();
   };
 
   // Disqualify / Gugur a slot
