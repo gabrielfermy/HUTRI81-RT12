@@ -65,6 +65,13 @@ export default function NumberDoorprizePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const animationFrameRefs = useRef<NodeJS.Timeout[]>([]);
+  const isDrawingRef = useRef(false);
+  const soundEnabledRef = useRef(true);
+
+  // Sync sound setting ref
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   const activePrize = useMemo(() => {
     return PRIZES.find(p => p.id === selectedPrizeId) || PRIZES[0];
@@ -80,7 +87,7 @@ export default function NumberDoorprizePage() {
 
   // Audio effects synthesizer engine
   const playSynthTone = (freq: number, type: OscillatorType = 'triangle', duration = 0.3, volume = 0.15, detune = 0) => {
-    if (!soundEnabled) return;
+    if (!soundEnabledRef.current) return;
     try {
       if (!audioCtxRef.current) {
         audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -110,14 +117,14 @@ export default function NumberDoorprizePage() {
 
   // Chunky jackpot mechanical spin tick
   const playSpinTick = () => {
-    if (!soundEnabled) return;
+    if (!soundEnabledRef.current) return;
     // Ultra short high-to-low sweep representing mechanical reel teeth click
     playSynthTone(600, 'sawtooth', 0.015, 0.08, 0);
   };
 
   // Additive synthesis slot machine bell/chime (harmonic + inharmonic frequencies)
   const playBellChime = (freq: number) => {
-    if (!soundEnabled) return;
+    if (!soundEnabledRef.current) return;
     const partials = [1, 2, 2.5, 3, 4.07, 5.6];
     const volumes = [0.18, 0.08, 0.06, 0.05, 0.03, 0.01];
     partials.forEach((mult, idx) => {
@@ -135,7 +142,7 @@ export default function NumberDoorprizePage() {
 
   // Majestic detuned multi-voice synth victory fanfare (unison chorus effect)
   const playVictoryFanfare = () => {
-    if (!soundEnabled) return;
+    if (!soundEnabledRef.current) return;
     
     // Upbeat casino winner song notes: [freq, duration_ms]
     const melody = [
@@ -295,6 +302,7 @@ export default function NumberDoorprizePage() {
     }
 
     setIsDrawing(true);
+    isDrawingRef.current = true;
     
     // Choose random unique numbers from the pool
     const selectedNumbers: number[] = [];
@@ -387,10 +395,13 @@ export default function NumberDoorprizePage() {
         setTimeout(() => {
           setCurrentSlots(prev => {
             const anySpinning = prev.some(s => s.isSpinning1 || s.isSpinning2 || s.isSpinning3);
-            if (!anySpinning && isDrawing) {
+            if (!anySpinning) {
               setIsDrawing(false);
-              playVictoryFanfare();
-              triggerConfetti();
+              if (isDrawingRef.current) {
+                isDrawingRef.current = false;
+                playVictoryFanfare();
+                triggerConfetti();
+              }
             }
             return prev;
           });
