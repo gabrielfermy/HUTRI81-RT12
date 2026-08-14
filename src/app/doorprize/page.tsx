@@ -73,8 +73,8 @@ export default function NumberDoorprizePage() {
     return totalNumbers.filter(n => !drawnNumbers.has(n));
   }, [history]);
 
-  // Audio effects
-  const playSound = (freq = 440, type: OscillatorType = 'sine', duration = 0.08, gainVal = 0.05) => {
+  // Audio effects synthesizer engine
+  const playSynthTone = (freq: number, type: OscillatorType = 'triangle', duration = 0.3, volume = 0.15, detune = 0) => {
     if (!soundEnabled) return;
     try {
       if (!audioCtxRef.current) {
@@ -86,28 +86,61 @@ export default function NumberDoorprizePage() {
       const osc = ctx.createOscillator();
       const gainNode = ctx.createGain();
 
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      osc.detune.setValueAtTime(detune, ctx.currentTime);
+
       osc.connect(gainNode);
       gainNode.connect(ctx.destination);
 
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      
-      gainNode.gain.setValueAtTime(gainVal, ctx.currentTime);
+      gainNode.gain.setValueAtTime(volume, ctx.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + duration);
 
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch (e) {
-      console.warn('Audio feedback failed:', e);
+      console.warn('Audio failed:', e);
     }
   };
 
-  const playVictory = () => {
-    const tones = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-    tones.forEach((t, i) => {
+  // Chunky jackpot mechanical spin tick
+  const playSpinTick = () => {
+    if (!soundEnabled) return;
+    // Detuned sawtooth wave for heavy mechanical slot roll sound
+    playSynthTone(140 + Math.random() * 80, 'sawtooth', 0.05, 0.18);
+  };
+
+  // Loud bell chime chord when a slot resolves/stops
+  const playSlotStopChime = () => {
+    if (!soundEnabled) return;
+    // C-major chord interval (C5, E5, G5) detuned for rich chime
+    const notes = [523.25, 659.25, 783.99];
+    notes.forEach(f => {
+      playSynthTone(f, 'triangle', 0.4, 0.15, -5);
+      playSynthTone(f, 'sine', 0.4, 0.15, 0);
+      playSynthTone(f, 'triangle', 0.4, 0.15, 5);
+    });
+  };
+
+  // Majestic detuned multi-voice synth victory fanfare (unison chorus effect)
+  const playVictoryFanfare = () => {
+    if (!soundEnabled) return;
+    const chords = [
+      { delay: 0, notes: [261.63, 329.63, 392.00], duration: 0.25 },     // C4, E4, G4
+      { delay: 180, notes: [329.63, 392.00, 523.25], duration: 0.25 },   // E4, G4, C5
+      { delay: 360, notes: [392.00, 523.25, 659.25], duration: 0.25 },   // G4, C5, E5
+      { delay: 540, notes: [523.25, 659.25, 783.99, 1046.50], duration: 1.5 } // C5, E5, G5, C6 (Grand Finale)
+    ];
+
+    chords.forEach(chord => {
       setTimeout(() => {
-        playSound(t, 'triangle', 0.4, 0.1);
-      }, i * 120);
+        chord.notes.forEach(note => {
+          // Play fat detuned unison chorus sawtooth/triangle layers
+          playSynthTone(note, 'sawtooth', chord.duration, 0.15, -12);
+          playSynthTone(note, 'triangle', chord.duration, 0.22, 0);
+          playSynthTone(note, 'sawtooth', chord.duration, 0.15, 12);
+        });
+      }, chord.delay);
     });
   };
 
@@ -258,21 +291,21 @@ export default function NumberDoorprizePage() {
         // Random 3 digit number for ticker
         const randomTicker = Math.floor(Math.random() * 200) + 1;
         setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, number: randomTicker } : s));
-        playSound(400 + Math.random() * 200, 'sine', 0.04, 0.02);
+        playSpinTick();
         
         const timeout = setTimeout(run, intervalTime);
         animationFrameRefs.current.push(timeout);
       } else {
         // Resolve slot
         setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, number: finalNumber, isSpinning: false } : s));
-        playSound(880, 'triangle', 0.15, 0.06);
+        playSlotStopChime();
 
         // Check if all finished
         setCurrentSlots(prev => {
           const stillSpinning = prev.some(s => s.isSpinning && s.index !== slotIndex);
           if (!stillSpinning && isDrawing) {
             setIsDrawing(false);
-            playVictory();
+            playVictoryFanfare();
             triggerConfetti();
           }
           return prev;
@@ -313,7 +346,7 @@ export default function NumberDoorprizePage() {
     logWinnerToDB(slot.number, activePrize.name, 'SAH');
     
     setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, status: 'SAH' } : s));
-    playSound(1000, 'sine', 0.2, 0.05);
+    playSynthTone(1000, 'sine', 0.2, 0.1);
   };
 
   // Disqualify / Gugur a slot
@@ -324,7 +357,7 @@ export default function NumberDoorprizePage() {
     logWinnerToDB(slot.number, activePrize.name, 'GUGUR');
     
     setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, status: 'GUGUR' } : s));
-    playSound(300, 'sawtooth', 0.3, 0.05);
+    playSynthTone(220, 'sawtooth', 0.35, 0.15);
   };
 
   // Save drawing logs to Supabase and LocalStorage history state
