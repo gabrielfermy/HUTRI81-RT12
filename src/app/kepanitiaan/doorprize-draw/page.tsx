@@ -228,8 +228,6 @@ export default function NumberDoorprizePage() {
           isSpinning3: false,
         };
       }));
-    } else {
-      setCurrentSlots([]);
     }
   }, [selectedPrizeId, history, activePrize, isQuotaMet]);
 
