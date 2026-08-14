@@ -125,23 +125,20 @@ export default function NumberDoorprizePage() {
   // Majestic detuned multi-voice synth victory fanfare (unison chorus effect)
   const playVictoryFanfare = () => {
     if (!soundEnabled) return;
-    const chords = [
-      { delay: 0, notes: [261.63, 329.63, 392.00], duration: 0.25 },     // C4, E4, G4
-      { delay: 180, notes: [329.63, 392.00, 523.25], duration: 0.25 },   // E4, G4, C5
-      { delay: 360, notes: [392.00, 523.25, 659.25], duration: 0.25 },   // G4, C5, E5
-      { delay: 540, notes: [523.25, 659.25, 783.99, 1046.50], duration: 1.5 } // C5, E5, G5, C6 (Grand Finale)
-    ];
-
-    chords.forEach(chord => {
-      setTimeout(() => {
-        chord.notes.forEach(note => {
-          // Play fat detuned unison chorus sawtooth/triangle layers
-          playSynthTone(note, 'sawtooth', chord.duration, 0.15, -12);
-          playSynthTone(note, 'triangle', chord.duration, 0.22, 0);
-          playSynthTone(note, 'sawtooth', chord.duration, 0.15, 12);
-        });
-      }, chord.delay);
-    });
+    // Casino jackpot arpeggiator tones (C5, E5, G5, C6, G5, E5) playing in a fast loop
+    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25];
+    const delayStep = 75; // very fast retro arcade casino payout tempo
+    
+    for (let loop = 0; loop < 5; loop++) {
+      notes.forEach((freq, idx) => {
+        const timeOffset = (loop * notes.length + idx) * delayStep;
+        setTimeout(() => {
+          // Play fat square waves for authentic arcade coin sound
+          playSynthTone(freq, 'square', 0.12, 0.15, -6);
+          playSynthTone(freq, 'square', 0.12, 0.15, 6);
+        }, timeOffset);
+      });
+    }
   };
 
   // Load Draw History from Supabase & LocalStorage
@@ -684,16 +681,23 @@ export default function NumberDoorprizePage() {
                     return (
                       <div 
                         key={slot.index}
-                        className={`relative border-4 rounded-[2.5rem] p-10 md:p-14 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[340px] border-slate-800 transition-all ${
+                        className={`relative border-4 rounded-[2.5rem] p-6 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[340px] border-slate-800 transition-all ${
                           slot.status === 'SAH' ? 'border-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.35)]' : 
                           slot.status === 'GUGUR' ? 'border-red-500/70 ring-4 ring-red-500/10 opacity-60' : 
                           slot.isSpinning ? 'border-yellow-500/80 ring-4 ring-yellow-500/15 shadow-[0_0_30px_rgba(245,158,11,0.25)]' : ''
                         }`}
                         style={{ background: 'linear-gradient(to bottom, #0f172a, #020617)' }}
                       >
-                        {/* Number Display - Jackpot Reel Style */}
-                        {slot.isSpinning ? (
-                          <div className="h-[140px] overflow-hidden relative w-full flex items-center justify-center bg-slate-950/60 border-y-4 border-slate-900 rounded-2xl px-6 py-2">
+                        {/* Number Display - 3D Jackpot Cylinder Reel Style */}
+                        <div className="h-[150px] overflow-hidden relative w-full flex items-center justify-center bg-slate-950/90 border-y-4 border-slate-900 rounded-2xl px-6 py-2 shadow-inner">
+                          {/* 3D Cylinder curve shadow overlays */}
+                          <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" />
+                          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
+                          
+                          {/* Center horizontal red win payline */}
+                          <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[3px] bg-red-600/70 z-20 pointer-events-none shadow-[0_0_10px_rgba(239,68,68,0.6)] animate-pulse" />
+
+                          {slot.isSpinning ? (
                             <div 
                               className="animate-slot-roll flex flex-col items-center justify-center"
                               style={{
@@ -703,25 +707,34 @@ export default function NumberDoorprizePage() {
                                 gap: '2.5rem',
                               }}
                             >
-                              <span className="font-mono font-black text-6xl opacity-20 select-none" style={{ color: '#F87171' }}>
+                              <span className="font-mono font-black text-6xl opacity-15 select-none" style={{ color: '#F87171' }}>
                                 {((slot.number - 1 + 200) % 200 || 200).toString().padStart(3, '0')}
                               </span>
                               <span className="font-mono font-black text-8xl select-none" style={{ color: '#FBBF24' }}>
                                 {slot.number.toString().padStart(3, '0')}
                               </span>
-                              <span className="font-mono font-black text-6xl opacity-20 select-none" style={{ color: '#F87171' }}>
+                              <span className="font-mono font-black text-6xl opacity-15 select-none" style={{ color: '#F87171' }}>
                                 {((slot.number + 1) % 200 || 1).toString().padStart(3, '0')}
                               </span>
                             </div>
-                          </div>
-                        ) : (
-                          <div 
-                            className="font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest"
-                            style={numberStyle}
-                          >
-                            {displayNum}
-                          </div>
-                        )}
+                          ) : (
+                            <div className="flex flex-col items-center justify-center z-0">
+                              {/* Show subtle background numbers slightly visible on top/bottom for cylinder look */}
+                              <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mt-8" style={{ color: '#64748B' }}>
+                                {((slot.number - 1 + 200) % 200 || 200).toString().padStart(3, '0')}
+                              </span>
+                              <div 
+                                className="font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest my-2 select-all"
+                                style={numberStyle}
+                              >
+                                {displayNum}
+                              </div>
+                              <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mb-8" style={{ color: '#64748B' }}>
+                                {((slot.number + 1) % 200 || 1).toString().padStart(3, '0')}
+                              </span>
+                            </div>
+                          )}
+                        </div>
 
                         {/* Interactive Status Badges/Controls */}
                         {!slot.isSpinning && (
@@ -731,14 +744,14 @@ export default function NumberDoorprizePage() {
                                 <div className="grid grid-cols-2 gap-2">
                                   <button
                                     onClick={() => handleConfirmSlot(slot.index)}
-                                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider"
+                                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
                                   >
                                     <CheckCircle className="h-3.5 w-3.5" />
                                     <span>Sah</span>
                                   </button>
                                   <button
                                     onClick={() => handleDisqualifySlot(slot.index)}
-                                    className="bg-red-950/60 border border-red-900 hover:bg-red-900/60 text-red-300 font-bold text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider"
+                                    className="bg-red-950/60 border border-red-900 hover:bg-red-900/60 text-red-300 font-bold text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
                                   >
                                     <AlertTriangle className="h-3.5 w-3.5" />
                                     <span>Gugur</span>
@@ -746,19 +759,28 @@ export default function NumberDoorprizePage() {
                                 </div>
                                 <button
                                   onClick={() => handleRedrawSlot(slot.index)}
-                                  className="w-full bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:text-white text-slate-400 font-extrabold text-[9px] py-1.5 rounded-lg flex items-center justify-center space-x-1 transition-colors uppercase tracking-widest"
+                                  className="w-full bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:text-white text-slate-400 font-extrabold text-[9px] py-1.5 rounded-lg flex items-center justify-center space-x-1 transition-colors uppercase tracking-widest cursor-pointer"
                                 >
                                   <RotateCcw className="h-3 w-3" />
                                   <span>Undi Ulang Slot Ini</span>
                                 </button>
                               </>
                             ) : (
-                              <div className="flex items-center justify-center py-1">
+                              <div className="flex flex-col items-center justify-center space-y-2.5 w-full">
                                 <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${
                                   slot.status === 'SAH' ? 'bg-emerald-950/50 text-emerald-400 border border-emerald-900' : 'bg-red-950/30 text-red-400 border border-red-950'
                                 }`}>
                                   {slot.status === 'SAH' ? '✓ SAH MENANG' : '✗ DISKUALIFIKASI'}
                                 </span>
+                                {slot.status === 'GUGUR' && (
+                                  <button
+                                    onClick={() => handleRedrawSlot(slot.index)}
+                                    className="w-full mt-1 bg-red-600 hover:bg-red-500 text-white font-black text-[10px] py-2 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition-all active:scale-95 shadow-md cursor-pointer uppercase tracking-wider"
+                                  >
+                                    <RotateCcw className="h-3.5 w-3.5" />
+                                    <span>Kocok Ulang Slot Ini</span>
+                                  </button>
+                                )}
                               </div>
                             )}
                           </div>
