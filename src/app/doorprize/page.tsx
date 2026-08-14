@@ -735,8 +735,11 @@ export default function NumberDoorprizePage() {
                 return (
                   <button
                     key={p.id}
-                    disabled={isDrawing || (currentSlots.length > 0 && !isQuotaMet)}
-                    onClick={() => setSelectedPrizeId(p.id)}
+                    disabled={isDrawing || currentSlots.some(s => s.status === 'PENDING')}
+                    onClick={() => {
+                      setSelectedPrizeId(p.id);
+                      setCurrentSlots([]);
+                    }}
                     className={`relative p-3.5 rounded-xl border flex flex-col items-center justify-between text-center transition-all ${
                       isSelected 
                         ? `bg-gradient-to-b ${p.colorClass} text-white font-extrabold shadow-lg` 
