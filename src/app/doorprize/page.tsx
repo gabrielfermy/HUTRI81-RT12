@@ -589,23 +589,36 @@ export default function NumberDoorprizePage() {
                   <p className="text-slate-400 text-sm">Pilih jenis hadiah di atas, kemudian tekan tombol kocok untuk mengundi nomor pemenang!</p>
                 </div>
               ) : (
-                <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-4xl">
+                <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-6xl">
                   {currentSlots.map(slot => {
                     const displayNum = slot.number.toString().padStart(3, '0');
+                    
+                    // Direct inline style colors to bypass global light mode CSS overrides
+                    let numberStyle: React.CSSProperties = { color: '#FBBF24' }; // default pending (amber-400)
+                    if (slot.isSpinning) {
+                      numberStyle = { color: '#F87171' }; // spinning (red-400)
+                    } else if (slot.status === 'SAH') {
+                      numberStyle = { color: '#34D399' }; // sah (emerald-400)
+                    } else if (slot.status === 'GUGUR') {
+                      numberStyle = { color: '#64748B', textDecoration: 'line-through' }; // gugur (slate-500)
+                    }
+
                     return (
                       <div 
                         key={slot.index}
-                        className={`relative bg-gradient-to-b from-slate-900 to-slate-950 border-4 rounded-[2rem] p-6 md:p-8 shadow-2xl flex flex-col items-center min-w-[150px] md:min-w-[190px] border-slate-800 transition-all ${
-                          slot.status === 'SAH' ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 
-                          slot.status === 'GUGUR' ? 'border-red-500/70 ring-2 ring-red-500/10 opacity-60' : ''
+                        className={`relative border-4 rounded-[2.5rem] p-10 md:p-14 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[340px] border-slate-800 transition-all ${
+                          slot.status === 'SAH' ? 'border-emerald-500 ring-4 ring-emerald-500/20' : 
+                          slot.status === 'GUGUR' ? 'border-red-500/70 ring-4 ring-red-500/10 opacity-60' : ''
                         }`}
+                        style={{ background: 'linear-gradient(to bottom, #0f172a, #020617)' }}
                       >
                         {/* Number Display */}
-                        <div className={`font-mono font-black text-5xl md:text-7xl tracking-widest ${
-                          slot.isSpinning ? 'text-red-400 animate-pulse' : 
-                          slot.status === 'SAH' ? 'text-emerald-400' :
-                          slot.status === 'GUGUR' ? 'text-slate-500 line-through' : 'text-white'
-                        }`}>
+                        <div 
+                          className={`font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest ${
+                            slot.isSpinning ? 'animate-pulse' : ''
+                          }`}
+                          style={numberStyle}
+                        >
                           {displayNum}
                         </div>
 
