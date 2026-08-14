@@ -111,39 +111,66 @@ export default function NumberDoorprizePage() {
   // Chunky jackpot mechanical spin tick
   const playSpinTick = () => {
     if (!soundEnabled) return;
-    // Detuned sawtooth wave for heavy mechanical slot roll sound
-    playSynthTone(140 + Math.random() * 80, 'sawtooth', 0.05, 0.18);
+    // Ultra short high-to-low sweep representing mechanical reel teeth click
+    playSynthTone(600, 'sawtooth', 0.015, 0.08, 0);
   };
 
-  // Loud bell chime chord when a slot resolves/stops
-  const playSlotStopChime = () => {
+  // Additive synthesis slot machine bell/chime (harmonic + inharmonic frequencies)
+  const playBellChime = (freq: number) => {
     if (!soundEnabled) return;
-    // C-major chord interval (C5, E5, G5) detuned for rich chime
-    const notes = [523.25, 659.25, 783.99];
-    notes.forEach(f => {
-      playSynthTone(f, 'triangle', 0.4, 0.15, -5);
-      playSynthTone(f, 'sine', 0.4, 0.15, 0);
-      playSynthTone(f, 'triangle', 0.4, 0.15, 5);
+    const partials = [1, 2, 2.5, 3, 4.07, 5.6];
+    const volumes = [0.18, 0.08, 0.06, 0.05, 0.03, 0.01];
+    partials.forEach((mult, idx) => {
+      // sine wave partials create realistic metallic ring
+      playSynthTone(freq * mult, 'sine', 0.45, volumes[idx]);
     });
+  };
+
+  // Ascending slot stop chime based on reel position (1, 2, or 3)
+  const playSlotStopChime = (reelIndex: number) => {
+    const scale = [523.25, 659.25, 783.99]; // C5, E5, G5 chimes
+    const freq = scale[reelIndex - 1] || 523.25;
+    playBellChime(freq);
   };
 
   // Majestic detuned multi-voice synth victory fanfare (unison chorus effect)
   const playVictoryFanfare = () => {
     if (!soundEnabled) return;
-    // Casino jackpot arpeggiator tones (C5, E5, G5, C6, G5, E5) playing in a fast loop
-    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25];
-    const delayStep = 75; // very fast retro arcade casino payout tempo
     
-    for (let loop = 0; loop < 5; loop++) {
-      notes.forEach((freq, idx) => {
-        const timeOffset = (loop * notes.length + idx) * delayStep;
-        setTimeout(() => {
-          // Play fat square waves for authentic arcade coin sound
-          playSynthTone(freq, 'square', 0.12, 0.15, -6);
-          playSynthTone(freq, 'square', 0.12, 0.15, 6);
-        }, timeOffset);
-      });
-    }
+    // Upbeat casino winner song notes: [freq, duration_ms]
+    const melody = [
+      { f: 523.25, d: 80 },  // C5
+      { f: 659.25, d: 80 },  // E5
+      { f: 783.99, d: 80 },  // G5
+      { f: 1046.50, d: 130 }, // C6
+      
+      { f: 659.25, d: 80 },  // E5
+      { f: 783.99, d: 80 },  // G5
+      { f: 1046.50, d: 80 }, // C6
+      { f: 1318.51, d: 130 }, // E6
+      
+      { f: 783.99, d: 80 },  // G5
+      { f: 987.77, d: 80 },  // B5
+      { f: 1174.66, d: 80 }, // D6
+      { f: 1567.98, d: 180 }, // G6 (Peak)
+      
+      // Happy fanfare response
+      { f: 1318.51, d: 100 }, // E6
+      { f: 1046.50, d: 100 }, // C6
+      { f: 1174.66, d: 100 }, // D6
+      { f: 783.99, d: 100 },  // G5
+      { f: 1046.50, d: 350 }, // C6 (Long resolve)
+    ];
+
+    let accumDelay = 0;
+    melody.forEach(note => {
+      setTimeout(() => {
+        // Play unison detuned square waves for authentic 8-bit slot winner sound
+        playSynthTone(note.f, 'square', 0.22, 0.12, -6);
+        playSynthTone(note.f, 'square', 0.22, 0.12, 6);
+      }, accumDelay);
+      accumDelay += note.d;
+    });
   };
 
   // Load Draw History from Supabase & LocalStorage
@@ -324,7 +351,7 @@ export default function NumberDoorprizePage() {
         animationFrameRefs.current.push(timeout);
       } else {
         setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit1: d1, isSpinning1: false } : s));
-        playSlotStopChime();
+        playSlotStopChime(1);
       }
     };
 
@@ -340,7 +367,7 @@ export default function NumberDoorprizePage() {
         animationFrameRefs.current.push(timeout);
       } else {
         setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit2: d2, isSpinning2: false } : s));
-        playSlotStopChime();
+        playSlotStopChime(2);
       }
     };
 
@@ -356,7 +383,7 @@ export default function NumberDoorprizePage() {
         animationFrameRefs.current.push(timeout);
       } else {
         setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit3: d3, isSpinning3: false } : s));
-        playSlotStopChime();
+        playSlotStopChime(3);
 
         // Check if all slots have finished spinning
         setTimeout(() => {
