@@ -203,7 +203,7 @@ export default function NumberDoorprizePage() {
   }, [activePrize, wonCountForActivePrize]);
 
   const isFocusMode = useMemo(() => {
-    return isDrawing || (currentSlots.length > 0 && currentSlots.some(s => s.status === 'PENDING'));
+    return isDrawing || currentSlots.length > 0;
   }, [isDrawing, currentSlots]);
 
 
@@ -926,7 +926,7 @@ export default function NumberDoorprizePage() {
 
             {/* Bottom Controls / Clear Board Button */}
             <div className="flex flex-col items-center w-full mt-4">
-              {currentSlots.length > 0 && !isDrawing && currentSlots.every(s => s.status !== 'PENDING') ? (
+              {currentSlots.length > 0 && !isDrawing && currentSlots.every(s => s.status === 'SAH') ? (
                 <button
                   onClick={() => setCurrentSlots([])}
                   className="group relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl active:scale-95 transition-all select-none border-b-4 border-emerald-800 flex items-center space-x-3 cursor-pointer"
@@ -936,7 +936,7 @@ export default function NumberDoorprizePage() {
                 </button>
               ) : (
                 <button
-                  disabled={isDrawing || eligiblePool.length === 0 || isQuotaMet}
+                  disabled={isDrawing || currentSlots.length > 0 || eligiblePool.length === 0 || isQuotaMet}
                   onClick={handleSpinDraw}
                   className="group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-900 disabled:to-slate-950 text-white disabled:text-slate-650 font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl hover:shadow-red-600/10 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-900 flex items-center space-x-3 cursor-pointer"
                 >
