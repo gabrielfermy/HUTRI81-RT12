@@ -125,6 +125,40 @@ export default function NumberDoorprizePage() {
     };
   }, []);
 
+  const wonCountForActivePrize = useMemo(() => {
+    return history.filter(h => h.prizeName === activePrize.name && h.status === 'SAH').length;
+  }, [history, activePrize]);
+
+  const isQuotaMet = useMemo(() => {
+    return activePrize.id !== 'bebas' && wonCountForActivePrize >= activePrize.totalQuantity;
+  }, [activePrize, wonCountForActivePrize]);
+
+  const isFocusMode = useMemo(() => {
+    return isDrawing || (currentSlots.length > 0 && currentSlots.some(s => s.status === 'PENDING'));
+  }, [isDrawing, currentSlots]);
+
+
+  // Sync selected prize and history to show winners immediately if quota is full
+  useEffect(() => {
+    if (isDrawing) return;
+
+    if (isQuotaMet) {
+      const prizeWinners = history
+        .filter(h => h.prizeName === activePrize.name && h.status === 'SAH')
+        .sort((a, b) => new Date(a.drawnAt).getTime() - new Date(b.drawnAt).getTime());
+      
+      setCurrentSlots(prizeWinners.map((w, index) => ({
+        index,
+        number: w.number,
+        isSpinning: false,
+        status: 'SAH' as const
+      })));
+    } else {
+      setCurrentSlots([]);
+    }
+  }, [selectedPrizeId, history, activePrize, isQuotaMet, isDrawing]);
+
+
   const loadHistory = async () => {
     setLoading(true);
     let items: DrawHistoryItem[] = [];
@@ -459,6 +493,15 @@ export default function NumberDoorprizePage() {
 
   return (
     <div className="flex-1 bg-slate-950 text-slate-100 flex flex-col min-h-screen relative overflow-hidden">
+      <style>{`
+        @keyframes slot-roll {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-33.33%); }
+        }
+        .animate-slot-roll {
+          animation: slot-roll 0.08s linear infinite;
+        }
+      `}</style>
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-45 w-full h-full" />
 
       {/* Top Header */}
@@ -518,11 +561,12 @@ export default function NumberDoorprizePage() {
       <div className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 z-10">
         
         {/* Left Side: Prize Picker & Drawer Screen */}
-        <div className="lg:col-span-9 flex flex-col space-y-6">
+        <div className={`${isFocusMode ? 'lg:col-span-12' : 'lg:col-span-9'} flex flex-col space-y-6`}>
           
           {/* Prize Selector Tabs */}
-          <div className="bg-slate-900 border border-slate-800/80 p-3 rounded-2xl">
-            <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2.5 px-1.5">
+          {!isFocusMode && (
+            <div className="bg-slate-900 border border-slate-800/80 p-3 rounded-2xl">
+              <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2.5 px-1.5">
               Pilih Hadiah yang Diperebutkan:
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2">
@@ -532,7 +576,7 @@ export default function NumberDoorprizePage() {
                 return (
                   <button
                     key={p.id}
-                    disabled={isDrawing}
+                    disabled={isDrawing || (currentSlots.length > 0 && !isQuotaMet)}
                     onClick={() => setSelectedPrizeId(p.id)}
                     className={`relative p-3.5 rounded-xl border flex flex-col items-center justify-between text-center transition-all ${
                       isSelected 
@@ -565,6 +609,7 @@ export default function NumberDoorprizePage() {
               </div>
             )}
           </div>
+          )}
 
           {/* Core Visual Draw Board */}
           <div 
@@ -607,20 +652,43 @@ export default function NumberDoorprizePage() {
                       <div 
                         key={slot.index}
                         className={`relative border-4 rounded-[2.5rem] p-10 md:p-14 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[340px] border-slate-800 transition-all ${
-                          slot.status === 'SAH' ? 'border-emerald-500 ring-4 ring-emerald-500/20' : 
-                          slot.status === 'GUGUR' ? 'border-red-500/70 ring-4 ring-red-500/10 opacity-60' : ''
+                          slot.status === 'SAH' ? 'border-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.35)]' : 
+                          slot.status === 'GUGUR' ? 'border-red-500/70 ring-4 ring-red-500/10 opacity-60' : 
+                          slot.isSpinning ? 'border-yellow-500/80 ring-4 ring-yellow-500/15 shadow-[0_0_30px_rgba(245,158,11,0.25)]' : ''
                         }`}
                         style={{ background: 'linear-gradient(to bottom, #0f172a, #020617)' }}
                       >
-                        {/* Number Display */}
-                        <div 
-                          className={`font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest ${
-                            slot.isSpinning ? 'animate-pulse' : ''
-                          }`}
-                          style={numberStyle}
-                        >
-                          {displayNum}
-                        </div>
+                        {/* Number Display - Jackpot Reel Style */}
+                        {slot.isSpinning ? (
+                          <div className="h-[140px] overflow-hidden relative w-full flex items-center justify-center bg-slate-950/60 border-y-4 border-slate-900 rounded-2xl px-6 py-2">
+                            <div 
+                              className="animate-slot-roll flex flex-col items-center justify-center"
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '2.5rem',
+                              }}
+                            >
+                              <span className="font-mono font-black text-6xl opacity-20 select-none" style={{ color: '#F87171' }}>
+                                {((slot.number - 1 + 200) % 200 || 200).toString().padStart(3, '0')}
+                              </span>
+                              <span className="font-mono font-black text-8xl select-none" style={{ color: '#FBBF24' }}>
+                                {slot.number.toString().padStart(3, '0')}
+                              </span>
+                              <span className="font-mono font-black text-6xl opacity-20 select-none" style={{ color: '#F87171' }}>
+                                {((slot.number + 1) % 200 || 1).toString().padStart(3, '0')}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div 
+                            className="font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest"
+                            style={numberStyle}
+                          >
+                            {displayNum}
+                          </div>
+                        )}
 
                         {/* Interactive Status Badges/Controls */}
                         {!slot.isSpinning && (
@@ -672,12 +740,15 @@ export default function NumberDoorprizePage() {
             {/* Spinner Button */}
             <div className="flex flex-col items-center w-full mt-4">
               <button
-                disabled={isDrawing || eligiblePool.length === 0}
+                disabled={isDrawing || eligiblePool.length === 0 || isQuotaMet}
                 onClick={handleSpinDraw}
                 className="group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-900 disabled:to-slate-950 text-white disabled:text-slate-650 font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl hover:shadow-red-600/10 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-900 flex items-center space-x-3"
               >
                 <Play className="h-5.5 w-5.5 fill-current" />
-                <span>{isDrawing ? 'MENGOCAK NOMOR...' : 'KOCAK DOORPRIZE'}</span>
+                <span>
+                  {isDrawing ? 'MENGOCAK NOMOR...' : 
+                   isQuotaMet ? 'KUOTA PEMENANG PENUH' : 'KOCAK DOORPRIZE'}
+                </span>
               </button>
 
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4 bg-slate-900 border border-slate-800/80 px-4 py-2 rounded-full select-none">
@@ -689,71 +760,73 @@ export default function NumberDoorprizePage() {
         </div>
 
         {/* Right Side: Winner logs */}
-        <div className="lg:col-span-3 flex flex-col space-y-6">
-          
-          {/* Sah Pemenang List */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col h-[280px]">
-            <h3 className="text-xs font-bold text-white tracking-wider uppercase pb-2.5 border-b border-slate-800 flex items-center justify-between">
-              <span>Daftar Pemenang</span>
-              <span className="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800/30">
-                {history.filter(h => h.status === 'SAH').length}
-              </span>
-            </h3>
-            <div className="flex-1 overflow-y-auto mt-3 space-y-2 pr-1 text-xs">
-              {loading ? (
-                <div className="h-full flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
-                </div>
-              ) : history.filter(h => h.status === 'SAH').length === 0 ? (
-                <div className="h-full flex items-center justify-center text-slate-600 italic">Belum ada pemenang sah.</div>
-              ) : (
-                history.filter(h => h.status === 'SAH').map((w, idx) => (
-                  <div key={w.id} className="flex items-center justify-between bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80">
-                    <div>
-                      <span className="font-extrabold text-red-400 text-sm">#{w.number.toString().padStart(3, '0')}</span>
-                      <span className="text-[10px] font-black text-white ml-2 bg-slate-900 py-0.5 px-2 rounded border border-slate-850">{w.prizeName}</span>
-                      {w.winnerName && (
-                        <div className="text-[10px] text-emerald-400 font-bold mt-1 bg-emerald-950/30 border border-emerald-900/30 py-0.5 px-1.5 rounded w-fit">
-                          👤 {w.winnerName}
-                        </div>
-                      )}
-                    </div>
+        {!isFocusMode && (
+          <div className="lg:col-span-3 flex flex-col space-y-6">
+            
+            {/* Sah Pemenang List */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col h-[280px]">
+              <h3 className="text-xs font-bold text-white tracking-wider uppercase pb-2.5 border-b border-slate-800 flex items-center justify-between">
+                <span>Daftar Pemenang</span>
+                <span className="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800/30">
+                  {history.filter(h => h.status === 'SAH').length}
+                </span>
+              </h3>
+              <div className="flex-1 overflow-y-auto mt-3 space-y-2 pr-1 text-xs">
+                {loading ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Disqualified / Gugur List */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col h-[280px]">
-            <h3 className="text-xs font-bold text-white tracking-wider uppercase pb-2.5 border-b border-slate-800 flex items-center justify-between">
-              <span>Nomor Gugur (Absent)</span>
-              <span className="text-[10px] bg-red-950 text-red-400 px-2 py-0.5 rounded border border-red-800/30">
-                {history.filter(h => h.status === 'GUGUR').length}
-              </span>
-            </h3>
-            <div className="flex-1 overflow-y-auto mt-3 space-y-2 pr-1 text-xs">
-              {loading ? (
-                <div className="h-full flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
-                </div>
-              ) : history.filter(h => h.status === 'GUGUR').length === 0 ? (
-                <div className="h-full flex items-center justify-center text-slate-600 italic">Tidak ada nomor gugur.</div>
-              ) : (
-                history.filter(h => h.status === 'GUGUR').map((g) => (
-                  <div key={g.id} className="flex items-center justify-between bg-red-950/10 p-2.5 rounded-xl border border-red-900/20">
-                    <div>
-                      <span className="font-extrabold text-slate-400 line-through text-sm">#{g.number.toString().padStart(3, '0')}</span>
-                      <span className="text-[9px] font-bold text-red-300 ml-2 bg-red-950/30 py-0.5 px-2 rounded border border-red-900/20">{g.prizeName}</span>
-                      <span className="block text-[8px] text-slate-500 mt-1">Gugur pada: {new Date(g.drawnAt).toLocaleTimeString('id-ID')}</span>
+                ) : history.filter(h => h.status === 'SAH').length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-slate-600 italic">Belum ada pemenang sah.</div>
+                ) : (
+                  history.filter(h => h.status === 'SAH').map((w, idx) => (
+                    <div key={w.id} className="flex items-center justify-between bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80">
+                      <div>
+                        <span className="font-extrabold text-red-400 text-sm">#{w.number.toString().padStart(3, '0')}</span>
+                        <span className="text-[10px] font-black text-white ml-2 bg-slate-900 py-0.5 px-2 rounded border border-slate-850">{w.prizeName}</span>
+                        {w.winnerName && (
+                          <div className="text-[10px] text-emerald-400 font-bold mt-1 bg-emerald-950/30 border border-emerald-900/30 py-0.5 px-1.5 rounded w-fit">
+                            👤 {w.winnerName}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
-          </div>
 
-        </div>
+            {/* Disqualified / Gugur List */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex flex-col h-[280px]">
+              <h3 className="text-xs font-bold text-white tracking-wider uppercase pb-2.5 border-b border-slate-800 flex items-center justify-between">
+                <span>Nomor Gugur (Absent)</span>
+                <span className="text-[10px] bg-red-950 text-red-400 px-2 py-0.5 rounded border border-red-800/30">
+                  {history.filter(h => h.status === 'GUGUR').length}
+                </span>
+              </h3>
+              <div className="flex-1 overflow-y-auto mt-3 space-y-2 pr-1 text-xs">
+                {loading ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                  </div>
+                ) : history.filter(h => h.status === 'GUGUR').length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-slate-600 italic">Tidak ada nomor gugur.</div>
+                ) : (
+                  history.filter(h => h.status === 'GUGUR').map((g) => (
+                    <div key={g.id} className="flex items-center justify-between bg-red-950/10 p-2.5 rounded-xl border border-red-900/20">
+                      <div>
+                        <span className="font-extrabold text-slate-400 line-through text-sm">#{g.number.toString().padStart(3, '0')}</span>
+                        <span className="text-[9px] font-bold text-red-300 ml-2 bg-red-950/30 py-0.5 px-2 rounded border border-red-900/20">{g.prizeName}</span>
+                        <span className="block text-[8px] text-slate-500 mt-1">Gugur pada: {new Date(g.drawnAt).toLocaleTimeString('id-ID')}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+          </div>
+        )}
 
       </div>
     </div>
