@@ -51,8 +51,13 @@ export default function NumberDoorprizePage() {
   const [currentSlots, setCurrentSlots] = useState<{
     index: number;
     number: number;
-    isSpinning: boolean;
     status: 'PENDING' | 'SAH' | 'GUGUR';
+    digit1: number;
+    digit2: number;
+    digit3: number;
+    isSpinning1: boolean;
+    isSpinning2: boolean;
+    isSpinning3: boolean;
   }[]>([]);
 
   // Refs
@@ -177,12 +182,20 @@ export default function NumberDoorprizePage() {
         .filter(h => h.prizeName === activePrize.name && h.status === 'SAH')
         .sort((a, b) => new Date(a.drawnAt).getTime() - new Date(b.drawnAt).getTime());
       
-      setCurrentSlots(prizeWinners.map((w, index) => ({
-        index,
-        number: w.number,
-        isSpinning: false,
-        status: 'SAH' as const
-      })));
+      setCurrentSlots(prizeWinners.map((w, index) => {
+        const paddedNum = w.number.toString().padStart(3, '0');
+        return {
+          index,
+          number: w.number,
+          status: 'SAH' as const,
+          digit1: parseInt(paddedNum[0]) || 0,
+          digit2: parseInt(paddedNum[1]) || 0,
+          digit3: parseInt(paddedNum[2]) || 0,
+          isSpinning1: false,
+          isSpinning2: false,
+          isSpinning3: false,
+        };
+      }));
     } else {
       setCurrentSlots([]);
     }
@@ -263,53 +276,101 @@ export default function NumberDoorprizePage() {
     }
 
     // Initialize slots
-    const initialSlots = selectedNumbers.map((num, index) => ({
-      index,
-      number: num,
-      isSpinning: true,
-      status: 'PENDING' as const
-    }));
+    const initialSlots = selectedNumbers.map((num, index) => {
+      const paddedNum = num.toString().padStart(3, '0');
+      return {
+        index,
+        number: num,
+        status: 'PENDING' as const,
+        digit1: Math.floor(Math.random() * 10),
+        digit2: Math.floor(Math.random() * 10),
+        digit3: Math.floor(Math.random() * 10),
+        isSpinning1: true,
+        isSpinning2: true,
+        isSpinning3: true,
+      };
+    });
     setCurrentSlots(initialSlots);
 
     // Start rolling animation for each slot
-    initialSlots.forEach((slot, index) => {
-      animateSlot(index, slot.number);
+    selectedNumbers.forEach((num, index) => {
+      const paddedNum = num.toString().padStart(3, '0');
+      animateSlotDigits(
+        index,
+        parseInt(paddedNum[0]) || 0,
+        parseInt(paddedNum[1]) || 0,
+        parseInt(paddedNum[2]) || 0
+      );
     });
   };
 
-  const animateSlot = (slotIndex: number, finalNumber: number) => {
-    let elapsed = 0;
-    const duration = 2000 + slotIndex * 500; // staggered finish
-    const intervalTime = 40;
+  const animateSlotDigits = (slotIndex: number, d1: number, d2: number, d3: number) => {
+    const intervalTime = 45;
     
-    const run = () => {
-      elapsed += intervalTime;
-      if (elapsed < duration) {
-        // Random 3 digit number for ticker
-        const randomTicker = Math.floor(Math.random() * 200) + 1;
-        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, number: randomTicker } : s));
+    // Reel 1 Animation
+    let elapsed1 = 0;
+    const duration1 = 1500 + slotIndex * 350;
+    const runReel1 = () => {
+      elapsed1 += intervalTime;
+      if (elapsed1 < duration1) {
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit1: Math.floor(Math.random() * 10) } : s));
         playSpinTick();
-        
-        const timeout = setTimeout(run, intervalTime);
+        const timeout = setTimeout(runReel1, intervalTime);
         animationFrameRefs.current.push(timeout);
       } else {
-        // Resolve slot
-        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, number: finalNumber, isSpinning: false } : s));
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit1: d1, isSpinning1: false } : s));
         playSlotStopChime();
-
-        // Check if all finished
-        setCurrentSlots(prev => {
-          const stillSpinning = prev.some(s => s.isSpinning && s.index !== slotIndex);
-          if (!stillSpinning && isDrawing) {
-            setIsDrawing(false);
-            playVictoryFanfare();
-            triggerConfetti();
-          }
-          return prev;
-        });
       }
     };
-    run();
+
+    // Reel 2 Animation
+    let elapsed2 = 0;
+    const duration2 = 2100 + slotIndex * 350;
+    const runReel2 = () => {
+      elapsed2 += intervalTime;
+      if (elapsed2 < duration2) {
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit2: Math.floor(Math.random() * 10) } : s));
+        playSpinTick();
+        const timeout = setTimeout(runReel2, intervalTime);
+        animationFrameRefs.current.push(timeout);
+      } else {
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit2: d2, isSpinning2: false } : s));
+        playSlotStopChime();
+      }
+    };
+
+    // Reel 3 Animation
+    let elapsed3 = 0;
+    const duration3 = 2700 + slotIndex * 350;
+    const runReel3 = () => {
+      elapsed3 += intervalTime;
+      if (elapsed3 < duration3) {
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit3: Math.floor(Math.random() * 10) } : s));
+        playSpinTick();
+        const timeout = setTimeout(runReel3, intervalTime);
+        animationFrameRefs.current.push(timeout);
+      } else {
+        setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, digit3: d3, isSpinning3: false } : s));
+        playSlotStopChime();
+
+        // Check if all slots have finished spinning
+        setTimeout(() => {
+          setCurrentSlots(prev => {
+            const anySpinning = prev.some(s => s.isSpinning1 || s.isSpinning2 || s.isSpinning3);
+            if (!anySpinning && isDrawing) {
+              setIsDrawing(false);
+              playVictoryFanfare();
+              triggerConfetti();
+            }
+            return prev;
+          });
+        }, 100);
+      }
+    };
+
+    runReel1();
+    runReel2();
+    runReel3();
   };
 
   // Redraw specific single slot (The polemic resolver!)
@@ -328,17 +389,32 @@ export default function NumberDoorprizePage() {
       logWinnerToDB(currentNumber, activePrize.name, 'GUGUR');
     }
 
+    const paddedNum = newNumber.toString().padStart(3, '0');
+    const d1 = parseInt(paddedNum[0]) || 0;
+    const d2 = parseInt(paddedNum[1]) || 0;
+    const d3 = parseInt(paddedNum[2]) || 0;
+
     // Set slot to spinning
-    setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, number: newNumber, isSpinning: true, status: 'PENDING' } : s));
+    setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { 
+      ...s, 
+      number: newNumber, 
+      status: 'PENDING',
+      digit1: Math.floor(Math.random() * 10),
+      digit2: Math.floor(Math.random() * 10),
+      digit3: Math.floor(Math.random() * 10),
+      isSpinning1: true,
+      isSpinning2: true,
+      isSpinning3: true,
+    } : s));
     
     // Spin animation just for this slot
-    animateSlot(slotIndex, newNumber);
+    animateSlotDigits(slotIndex, d1, d2, d3);
   };
 
   // Confirm winner for a slot
   const handleConfirmSlot = (slotIndex: number) => {
     const slot = currentSlots.find(s => s.index === slotIndex);
-    if (!slot || slot.isSpinning) return;
+    if (!slot || slot.isSpinning1 || slot.isSpinning2 || slot.isSpinning3) return;
 
     logWinnerToDB(slot.number, activePrize.name, 'SAH');
     
@@ -349,7 +425,7 @@ export default function NumberDoorprizePage() {
   // Disqualify / Gugur a slot
   const handleDisqualifySlot = (slotIndex: number) => {
     const slot = currentSlots.find(s => s.index === slotIndex);
-    if (!slot || slot.isSpinning) return;
+    if (!slot || slot.isSpinning1 || slot.isSpinning2 || slot.isSpinning3) return;
 
     logWinnerToDB(slot.number, activePrize.name, 'GUGUR');
     
@@ -480,6 +556,51 @@ export default function NumberDoorprizePage() {
       }
     };
     animate();
+  };
+
+  const renderJackpotReel = (digit: number, isSpinning: boolean, numberStyle: React.CSSProperties) => {
+    return (
+      <div 
+        className="h-[140px] w-[70px] md:w-[90px] overflow-hidden relative flex items-center justify-center bg-slate-950 border-x border-slate-900 shadow-inner rounded-xl"
+        style={{ border: '2px solid rgba(251, 191, 36, 0.45)' }}
+      >
+        {/* 3D Cylinder curve shadow overlays */}
+        <div className="absolute top-0 left-0 right-0 h-9 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
+        
+        {/* Center horizontal red win payline */}
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-red-600/70 z-20 pointer-events-none shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+
+        {isSpinning ? (
+          <div className="animate-slot-roll flex flex-col items-center justify-center" style={{ gap: '2.5rem' }}>
+            <span className="font-mono font-black text-6xl opacity-15 select-none text-slate-500">
+              {(digit - 1 + 10) % 10}
+            </span>
+            <span className="font-mono font-black text-8xl select-none" style={{ color: '#FBBF24' }}>
+              {digit}
+            </span>
+            <span className="font-mono font-black text-6xl opacity-15 select-none text-slate-500">
+              {(digit + 1) % 10}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center z-0">
+            <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mt-8 text-slate-500">
+              {(digit - 1 + 10) % 10}
+            </span>
+            <span 
+              className="font-mono font-black text-7xl md:text-8xl select-none my-1"
+              style={numberStyle}
+            >
+              {digit}
+            </span>
+            <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mb-8 text-slate-500">
+              {(digit + 1) % 10}
+            </span>
+          </div>
+        )}
+      </div>
+    );
   };
 
   // Backup & Import
@@ -667,10 +788,11 @@ export default function NumberDoorprizePage() {
                 <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-6xl">
                   {currentSlots.map(slot => {
                     const displayNum = slot.number.toString().padStart(3, '0');
+                    const isAnySpinning = slot.isSpinning1 || slot.isSpinning2 || slot.isSpinning3;
                     
                     // Direct inline style colors to bypass global light mode CSS overrides
                     let numberStyle: React.CSSProperties = { color: '#FBBF24' }; // default pending (amber-400)
-                    if (slot.isSpinning) {
+                    if (isAnySpinning) {
                       numberStyle = { color: '#F87171' }; // spinning (red-400)
                     } else if (slot.status === 'SAH') {
                       numberStyle = { color: '#34D399' }; // sah (emerald-400)
@@ -681,90 +803,40 @@ export default function NumberDoorprizePage() {
                     return (
                       <div 
                         key={slot.index}
-                        className={`relative border-4 rounded-[2.5rem] p-6 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[340px] border-slate-800 transition-all ${
+                        className={`relative border-4 rounded-[2.5rem] p-6 shadow-2xl flex flex-col items-center min-w-[280px] md:min-w-[360px] border-slate-800 transition-all ${
                           slot.status === 'SAH' ? 'border-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.35)]' : 
                           slot.status === 'GUGUR' ? 'border-red-500/70 ring-4 ring-red-500/10 opacity-60' : 
-                          slot.isSpinning ? 'border-yellow-500/80 ring-4 ring-yellow-500/15 shadow-[0_0_30px_rgba(245,158,11,0.25)]' : ''
+                          isAnySpinning ? 'border-yellow-500/80 ring-4 ring-yellow-500/15 shadow-[0_0_30px_rgba(245,158,11,0.25)]' : ''
                         }`}
                         style={{ background: 'linear-gradient(to bottom, #0f172a, #020617)' }}
                       >
-                        {/* Number Display - 3D Jackpot Cylinder Reel Style */}
-                        <div className="h-[150px] overflow-hidden relative w-full flex items-center justify-center bg-slate-950/90 border-y-4 border-slate-900 rounded-2xl px-6 py-2 shadow-inner">
-                          {/* 3D Cylinder curve shadow overlays */}
-                          <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" />
-                          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
-                          
-                          {/* Center horizontal red win payline */}
-                          <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[3px] bg-red-600/70 z-20 pointer-events-none shadow-[0_0_10px_rgba(239,68,68,0.6)] animate-pulse" />
-
-                          {slot.isSpinning ? (
-                            <div 
-                              className="animate-slot-roll flex flex-col items-center justify-center"
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '2.5rem',
-                              }}
-                            >
-                              <span className="font-mono font-black text-6xl opacity-15 select-none" style={{ color: '#F87171' }}>
-                                {((slot.number - 1 + 200) % 200 || 200).toString().padStart(3, '0')}
-                              </span>
-                              <span className="font-mono font-black text-8xl select-none" style={{ color: '#FBBF24' }}>
-                                {slot.number.toString().padStart(3, '0')}
-                              </span>
-                              <span className="font-mono font-black text-6xl opacity-15 select-none" style={{ color: '#F87171' }}>
-                                {((slot.number + 1) % 200 || 1).toString().padStart(3, '0')}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center justify-center z-0">
-                              {/* Show subtle background numbers slightly visible on top/bottom for cylinder look */}
-                              <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mt-8" style={{ color: '#64748B' }}>
-                                {((slot.number - 1 + 200) % 200 || 200).toString().padStart(3, '0')}
-                              </span>
-                              <div 
-                                className="font-mono font-black text-7xl md:text-8xl lg:text-9xl tracking-widest my-2 select-all"
-                                style={numberStyle}
-                              >
-                                {displayNum}
-                              </div>
-                              <span className="font-mono font-black text-5xl opacity-10 select-none pointer-events-none -mb-8" style={{ color: '#64748B' }}>
-                                {((slot.number + 1) % 200 || 1).toString().padStart(3, '0')}
-                              </span>
-                            </div>
-                          )}
+                        {/* 3 Reels Side-by-Side - Authentic Jackpot Visual */}
+                        <div className="flex items-center justify-center bg-slate-950 p-4 rounded-3xl border-2 border-slate-900 shadow-inner space-x-1.5 md:space-x-3 w-full">
+                          {renderJackpotReel(slot.digit1, slot.isSpinning1, numberStyle)}
+                          {renderJackpotReel(slot.digit2, slot.isSpinning2, numberStyle)}
+                          {renderJackpotReel(slot.digit3, slot.isSpinning3, numberStyle)}
                         </div>
 
                         {/* Interactive Status Badges/Controls */}
-                        {!slot.isSpinning && (
+                        {!isAnySpinning && (
                           <div className="mt-5 w-full flex flex-col space-y-2">
                             {slot.status === 'PENDING' ? (
-                              <>
-                                <div className="grid grid-cols-2 gap-2">
-                                  <button
-                                    onClick={() => handleConfirmSlot(slot.index)}
-                                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
-                                  >
-                                    <CheckCircle className="h-3.5 w-3.5" />
-                                    <span>Sah</span>
-                                  </button>
-                                  <button
-                                    onClick={() => handleDisqualifySlot(slot.index)}
-                                    className="bg-red-950/60 border border-red-900 hover:bg-red-900/60 text-red-300 font-bold text-[10px] py-2 px-2.5 rounded-lg flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
-                                  >
-                                    <AlertTriangle className="h-3.5 w-3.5" />
-                                    <span>Gugur</span>
-                                  </button>
-                                </div>
+                              <div className="grid grid-cols-2 gap-2 w-full">
                                 <button
-                                  onClick={() => handleRedrawSlot(slot.index)}
-                                  className="w-full bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:text-white text-slate-400 font-extrabold text-[9px] py-1.5 rounded-lg flex items-center justify-center space-x-1 transition-colors uppercase tracking-widest cursor-pointer"
+                                  onClick={() => handleConfirmSlot(slot.index)}
+                                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2.5 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
                                 >
-                                  <RotateCcw className="h-3 w-3" />
-                                  <span>Undi Ulang Slot Ini</span>
+                                  <CheckCircle className="h-4 w-4" />
+                                  <span>Sah</span>
                                 </button>
-                              </>
+                                <button
+                                  onClick={() => handleDisqualifySlot(slot.index)}
+                                  className="bg-red-950/60 border border-red-900 hover:bg-red-900/60 text-red-300 font-bold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition-colors uppercase tracking-wider cursor-pointer"
+                                >
+                                  <AlertTriangle className="h-4 w-4" />
+                                  <span>Gugur</span>
+                                </button>
+                              </div>
                             ) : (
                               <div className="flex flex-col items-center justify-center space-y-2.5 w-full">
                                 <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${
@@ -775,7 +847,7 @@ export default function NumberDoorprizePage() {
                                 {slot.status === 'GUGUR' && (
                                   <button
                                     onClick={() => handleRedrawSlot(slot.index)}
-                                    className="w-full mt-1 bg-red-600 hover:bg-red-500 text-white font-black text-[10px] py-2 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition-all active:scale-95 shadow-md cursor-pointer uppercase tracking-wider"
+                                    className="w-full mt-1 bg-red-600 hover:bg-red-500 text-white font-black text-[10px] py-2 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition-all active:scale-95 shadow-md cursor-pointer uppercase tracking-wider animate-pulse"
                                   >
                                     <RotateCcw className="h-3.5 w-3.5" />
                                     <span>Kocok Ulang Slot Ini</span>
@@ -792,19 +864,29 @@ export default function NumberDoorprizePage() {
               )}
             </div>
 
-            {/* Spinner Button */}
+            {/* Bottom Controls / Clear Board Button */}
             <div className="flex flex-col items-center w-full mt-4">
-              <button
-                disabled={isDrawing || eligiblePool.length === 0 || isQuotaMet}
-                onClick={handleSpinDraw}
-                className="group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-900 disabled:to-slate-950 text-white disabled:text-slate-650 font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl hover:shadow-red-600/10 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-900 flex items-center space-x-3"
-              >
-                <Play className="h-5.5 w-5.5 fill-current" />
-                <span>
-                  {isDrawing ? 'MENGOCAK NOMOR...' : 
-                   isQuotaMet ? 'KUOTA PEMENANG PENUH' : 'KOCAK DOORPRIZE'}
-                </span>
-              </button>
+              {currentSlots.length > 0 && !isDrawing && currentSlots.every(s => s.status !== 'PENDING') ? (
+                <button
+                  onClick={() => setCurrentSlots([])}
+                  className="group relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl active:scale-95 transition-all select-none border-b-4 border-emerald-800 flex items-center space-x-3 cursor-pointer"
+                >
+                  <CheckCircle className="h-5.5 w-5.5 fill-current" />
+                  <span>Selesai & Bersihkan Papan</span>
+                </button>
+              ) : (
+                <button
+                  disabled={isDrawing || eligiblePool.length === 0 || isQuotaMet}
+                  onClick={handleSpinDraw}
+                  className="group relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:from-slate-900 disabled:to-slate-950 text-white disabled:text-slate-650 font-black text-lg md:text-xl tracking-widest uppercase py-4 px-14 rounded-2xl shadow-xl hover:shadow-red-600/10 active:scale-95 transition-all select-none border-b-4 border-red-800 disabled:border-slate-900 flex items-center space-x-3 cursor-pointer"
+                >
+                  <Play className="h-5.5 w-5.5 fill-current" />
+                  <span>
+                    {isDrawing ? 'MENGOCAK NOMOR...' : 
+                     isQuotaMet ? 'KUOTA PEMENANG PENUH' : 'KOCAK DOORPRIZE'}
+                  </span>
+                </button>
+              )}
 
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4 bg-slate-900 border border-slate-800/80 px-4 py-2 rounded-full select-none">
                 Sisa nomor di Pool: <span className="text-red-400 font-extrabold">{eligiblePool.length}</span> dari 200 Nomor
