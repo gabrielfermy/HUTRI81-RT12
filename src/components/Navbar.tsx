@@ -7,7 +7,6 @@ import { Menu, X, Flag, Calendar, Users, Gift } from 'lucide-react';
 
 const navItems = [
   { name: 'Portal Warga', href: '/', icon: Flag },
-  { name: 'Doorprize', href: '/doorprize', icon: Gift },
   { name: 'Akses Panitia', href: '/kepanitiaan', icon: Users },
   { name: 'Backdrop Panggung', href: '/backdrop', icon: Calendar },
 ];

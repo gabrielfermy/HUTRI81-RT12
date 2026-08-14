@@ -450,11 +450,24 @@ export default function NumberDoorprizePage() {
 
     logWinnerToDB(slot.number, activePrize.name, 'SAH');
     
-    setCurrentSlots(prev => prev.map(s => s.index === slotIndex ? { ...s, status: 'SAH' } : s));
-    
-    // Trigger celebratory fanfare and confetti on Sah winner validation!
-    playVictoryFanfare();
-    triggerConfetti();
+    setCurrentSlots(prev => {
+      const nextSlots = prev.map(s => s.index === slotIndex ? { ...s, status: 'SAH' as const } : s);
+      
+      // Check if all slots are now confirmed SAH
+      const allSah = nextSlots.every(s => s.status === 'SAH');
+      if (allSah) {
+        // Trigger celebratory fanfare and confetti on final winner validation!
+        playVictoryFanfare();
+        triggerConfetti();
+        
+        // Auto-clear board after 3.5 seconds to return to welcome/prize selector screen
+        setTimeout(() => {
+          setCurrentSlots([]);
+        }, 3500);
+      }
+      
+      return nextSlots;
+    });
   };
 
   // Disqualify / Gugur a slot
