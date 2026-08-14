@@ -964,8 +964,8 @@ export default function NumberDoorprizePage() {
                 >
                   <Play className="h-5.5 w-5.5 fill-current" />
                   <span>
-                    {isDrawing ? 'MENGOCAK NOMOR...' : 
-                     isQuotaMet ? 'KUOTA PEMENANG PENUH' : 'KOCAK DOORPRIZE'}
+                    {isDrawing ? 'MENGOCOK NOMOR...' : 
+                     isQuotaMet ? 'KUOTA PEMENANG PENUH' : 'KOCOK DOORPRIZE'}
                   </span>
                 </button>
               )}
